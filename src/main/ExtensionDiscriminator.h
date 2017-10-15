@@ -18,4 +18,3 @@ class ExtensionDiscriminator {
     return instance;
   }
 };
-

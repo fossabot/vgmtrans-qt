@@ -34,27 +34,26 @@ void TamSoftPS1Scanner::Scan(RawFile *file, void *info) {
       std::wstringstream seqname;
       seqname << basename << L" (" << songIndex << L")";
 
-      TamSoftPS1Seq *newSeq = new TamSoftPS1Seq(file, 0, songIndex, seqname.str());
+      TamSoftPS1Seq *newSeq =
+          new TamSoftPS1Seq(file, 0, songIndex, seqname.str());
       if (newSeq->LoadVGMFile()) {
         newSeq->unLength = file->size();
-      }
-      else {
+      } else {
         delete newSeq;
       }
     }
-  }
-  else if (extension == L"tvb" || extension == L"tvb2") {
+  } else if (extension == L"tvb" || extension == L"tvb2") {
     bool ps2 = false;
     if (extension == L"tvb2") {
       // note: this is not a real extension
       ps2 = true;
     }
 
-    TamSoftPS1InstrSet *newInstrSet = new TamSoftPS1InstrSet(file, 0, ps2, basename);
+    TamSoftPS1InstrSet *newInstrSet =
+        new TamSoftPS1InstrSet(file, 0, ps2, basename);
     if (newInstrSet->LoadVGMFile()) {
       newInstrSet->unLength = file->size();
-    }
-    else {
+    } else {
       delete newInstrSet;
     }
   }

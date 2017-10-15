@@ -8,14 +8,14 @@
 #define VERSION "1.0.3"
 
 #define KILOBYTE 1024
-#define MEGABYTE (KILOBYTE*1024)
-#define GIGABYTE (MEGABYTE*1024)
+#define MEGABYTE (KILOBYTE * 1024)
+#define GIGABYTE (MEGABYTE * 1024)
 
 #define F_EPSILON 0.00001
 
 #define FORWARD_DECLARE_TYPEDEF_STRUCT(type) \
-    struct _##type;    \
-    typedef _##type type
+  struct _##type;                            \
+  typedef _##type type
 
 std::wstring StringToUpper(std::wstring myString);
 std::wstring StringToLower(std::wstring myString);
@@ -28,7 +28,7 @@ Converts a std::string to any class with a proper overload of the >> opertor
 @param temp			The string to be converted
 @param out	[OUT]	The container for the returned value
 */
-template<class T>
+template <class T>
 void FromString(const std::string &temp, T *out) {
   std::istringstream val(temp);
   val >> *out;
@@ -56,14 +56,14 @@ inline std::wstring string2wstring(std::string &str) {
   return wstr;
 }
 
-//std::string WstringToString(std::wstring& wstr)
+// std::string WstringToString(std::wstring& wstr)
 //{
 //	std::stringstream stream;
 //	stream << wstr;
 //	return stream.str();
 //}
 //
-//std::wstring StringToWstring(std::string& str)
+// std::wstring StringToWstring(std::string& str)
 //{
 //	std::wostringstream stream;
 //	stream << str;
@@ -73,19 +73,18 @@ inline std::wstring string2wstring(std::string &str) {
 inline int CountBytesOfVal(uint8_t *buf, uint32_t numBytes, uint8_t val) {
   int count = 0;
   for (uint32_t i = 0; i < numBytes; i++)
-    if (buf[i] == val)
-      count++;
+    if (buf[i] == val) count++;
   return count;
 }
 
 inline bool isEqual(float x, float y) {
-  //const double epsilon = 0.00001/* some small number such as 1e-5 */;
+  // const double epsilon = 0.00001/* some small number such as 1e-5 */;
   return std::abs(x - y) <= F_EPSILON * std::abs(x);
   // see Knuth section 4.2.2 pages 217-218
 }
 
 inline int roundi(double x) {
-  return (x > 0) ? (int) (x + 0.5) : (int) (x - 0.5);
+  return (x > 0) ? (int)(x + 0.5) : (int)(x - 0.5);
 }
 
 inline uint8_t pow7bit(uint8_t x, double y) {
@@ -106,17 +105,11 @@ struct SizeOffsetPair {
   uint32_t size;
   uint32_t offset;
 
-  SizeOffsetPair() :
-      size(0),
-      offset(0) {
-  }
+  SizeOffsetPair() : size(0), offset(0) {}
 
-  SizeOffsetPair(uint32_t offset, uint32_t size) :
-      size(size),
-      offset(offset) {
-  }
+  SizeOffsetPair(uint32_t offset, uint32_t size) : size(size), offset(offset) {}
 };
 
 wchar_t *GetFileWithBase(const wchar_t *f, const wchar_t *newfile);
 
-#endif // !defined(COMMON_H)
+#endif  // !defined(COMMON_H)

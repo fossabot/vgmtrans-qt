@@ -2,16 +2,12 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-enum MoriSnesVersion: uint8_t; // see MoriSnesFormat.h
+enum MoriSnesVersion : uint8_t;  // see MoriSnesFormat.h
 
-class MoriSnesScanner:
-    public VGMScanner {
+class MoriSnesScanner : public VGMScanner {
  public:
-  MoriSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~MoriSnesScanner(void) {
-  }
+  MoriSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~MoriSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForMoriSnesFromARAM(RawFile *file);

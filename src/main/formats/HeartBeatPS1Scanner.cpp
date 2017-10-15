@@ -4,22 +4,21 @@
 
 #define SRCH_BUF_SIZE 0x20000
 
-HeartBeatPS1Scanner::HeartBeatPS1Scanner(void) {
-}
+HeartBeatPS1Scanner::HeartBeatPS1Scanner(void) {}
 
-HeartBeatPS1Scanner::~HeartBeatPS1Scanner(void) {
-}
-
+HeartBeatPS1Scanner::~HeartBeatPS1Scanner(void) {}
 
 void HeartBeatPS1Scanner::Scan(RawFile *file, void *info) {
   SearchForHeartBeatPS1VGMFile(file);
   return;
 }
 
-std::vector<VGMFile *> HeartBeatPS1Scanner::SearchForHeartBeatPS1VGMFile(RawFile *file) {
+std::vector<VGMFile *> HeartBeatPS1Scanner::SearchForHeartBeatPS1VGMFile(
+    RawFile *file) {
   std::vector<VGMFile *> loadedFiles;
 
-  for (uint32_t offset = 0; offset + HEARTBEATPS1_SND_HEADER_SIZE <= file->size(); offset++) {
+  for (uint32_t offset = 0;
+       offset + HEARTBEATPS1_SND_HEADER_SIZE <= file->size(); offset++) {
     uint32_t curOffset = offset;
 
     uint32_t seq_size = file->GetWord(curOffset);
@@ -65,7 +64,8 @@ std::vector<VGMFile *> HeartBeatPS1Scanner::SearchForHeartBeatPS1VGMFile(RawFile
       // check sample/instrset size
       if (sampcoll_size != 0 || instrset_size != 0) {
         // check instrset id collision
-        if (std::find(insetset_ids.begin(), insetset_ids.end(), instrset_id) != insetset_ids.end()) {
+        if (std::find(insetset_ids.begin(), insetset_ids.end(), instrset_id) !=
+            insetset_ids.end()) {
           valid_instrset = false;
           break;
         }
@@ -98,7 +98,8 @@ std::vector<VGMFile *> HeartBeatPS1Scanner::SearchForHeartBeatPS1VGMFile(RawFile
 
       // check PSX-ADPCM content
       if (sampcoll_size != 0) {
-        uint32_t sampLoopInfoOffset = offset + HEARTBEATPS1_SND_HEADER_SIZE + total_instr_size + 1;
+        uint32_t sampLoopInfoOffset =
+            offset + HEARTBEATPS1_SND_HEADER_SIZE + total_instr_size + 1;
         if (sampLoopInfoOffset >= file->size()) {
           valid_instrset = false;
           break;
@@ -123,7 +124,8 @@ std::vector<VGMFile *> HeartBeatPS1Scanner::SearchForHeartBeatPS1VGMFile(RawFile
     }
 
     // check total file size
-    uint32_t total_size = HEARTBEATPS1_SND_HEADER_SIZE + total_instr_size + seq_size;
+    uint32_t total_size =
+        HEARTBEATPS1_SND_HEADER_SIZE + total_instr_size + seq_size;
     if (total_size > 0x200000 || offset + total_size > file->size()) {
       continue;
     }
@@ -132,22 +134,23 @@ std::vector<VGMFile *> HeartBeatPS1Scanner::SearchForHeartBeatPS1VGMFile(RawFile
     uint32_t seq_offset = HEARTBEATPS1_SND_HEADER_SIZE + total_instr_size;
     if (seq_size != 0) {
       const uint8_t SEQ_SIGNATURE[4] = {'q', 'Q', 'E', 'S'};
-      if (!file->MatchBytes(SEQ_SIGNATURE, offset + seq_offset, sizeof(SEQ_SIGNATURE))) {
+      if (!file->MatchBytes(SEQ_SIGNATURE, offset + seq_offset,
+                            sizeof(SEQ_SIGNATURE))) {
         continue;
       }
     }
 
     // valid file, open it as VGMFile
     if (total_instr_size != 0) {
-      //LogDebug(L"HeartBeatPS1InstrSet 0x%X", offset);
+      // LogDebug(L"HeartBeatPS1InstrSet 0x%X", offset);
     }
 
     if (seq_size != 0) {
-      HeartBeatPS1Seq *newHeartBeatPS1Seq = new HeartBeatPS1Seq(file, offset, total_size);
+      HeartBeatPS1Seq *newHeartBeatPS1Seq =
+          new HeartBeatPS1Seq(file, offset, total_size);
       if (newHeartBeatPS1Seq->LoadVGMFile()) {
         loadedFiles.push_back(newHeartBeatPS1Seq);
-      }
-      else {
+      } else {
         delete newHeartBeatPS1Seq;
       }
     }

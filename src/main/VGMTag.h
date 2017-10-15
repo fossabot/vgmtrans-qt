@@ -3,7 +3,8 @@
 class VGMTag {
  public:
   VGMTag(void);
-  VGMTag(const std::wstring &_title, const std::wstring &_artist = L"", const std::wstring &_album = L"");
+  VGMTag(const std::wstring &_title, const std::wstring &_artist = L"",
+         const std::wstring &_album = L"");
   virtual ~VGMTag(void);
 
   bool HasTitle(void);

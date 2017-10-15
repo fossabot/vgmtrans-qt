@@ -8,13 +8,10 @@
 // CompileSnesInstrSet
 // *******************
 
-class CompileSnesInstrSet:
-    public VGMInstrSet {
+class CompileSnesInstrSet : public VGMInstrSet {
  public:
-  CompileSnesInstrSet(RawFile *file,
-                      CompileSnesVersion ver,
-                      uint16_t addrTuningTable,
-                      uint16_t addrPitchTablePtrs,
+  CompileSnesInstrSet(RawFile *file, CompileSnesVersion ver,
+                      uint16_t addrTuningTable, uint16_t addrPitchTablePtrs,
                       uint32_t spcDirAddr,
                       const std::wstring &name = L"CompileSnesInstrSet");
   virtual ~CompileSnesInstrSet(void);
@@ -35,15 +32,11 @@ class CompileSnesInstrSet:
 // CompileSnesInstr
 // ****************
 
-class CompileSnesInstr
-    : public VGMInstr {
+class CompileSnesInstr : public VGMInstr {
  public:
-  CompileSnesInstr(VGMInstrSet *instrSet,
-                   CompileSnesVersion ver,
-                   uint16_t addrTuningTableItem,
-                   uint16_t addrPitchTablePtrs,
-                   uint8_t srcn,
-                   uint32_t spcDirAddr,
+  CompileSnesInstr(VGMInstrSet *instrSet, CompileSnesVersion ver,
+                   uint16_t addrTuningTableItem, uint16_t addrPitchTablePtrs,
+                   uint8_t srcn, uint32_t spcDirAddr,
                    const std::wstring &name = L"CompileSnesInstr");
   virtual ~CompileSnesInstr(void);
 
@@ -62,15 +55,11 @@ class CompileSnesInstr
 // CompileSnesRgn
 // **************
 
-class CompileSnesRgn
-    : public VGMRgn {
+class CompileSnesRgn : public VGMRgn {
  public:
-  CompileSnesRgn(CompileSnesInstr *instr,
-                 CompileSnesVersion ver,
-                 uint16_t addrTuningTableItem,
-                 uint16_t addrPitchTablePtrs,
-                 uint8_t srcn,
-                 uint32_t spcDirAddr);
+  CompileSnesRgn(CompileSnesInstr *instr, CompileSnesVersion ver,
+                 uint16_t addrTuningTableItem, uint16_t addrPitchTablePtrs,
+                 uint8_t srcn, uint32_t spcDirAddr);
   virtual ~CompileSnesRgn(void);
 
   virtual bool LoadRgn();

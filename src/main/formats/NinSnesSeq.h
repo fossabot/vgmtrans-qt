@@ -5,7 +5,8 @@
 #include "NinSnesScanner.h"
 
 enum NinSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -48,19 +49,19 @@ enum NinSnesSeqEventType {
   EVENT_PERCCUSION_PATCH_BASE,
 
   // Nintendo RD2:
-      EVENT_RD2_PROGCHANGE_AND_ADSR,
+  EVENT_RD2_PROGCHANGE_AND_ADSR,
 
   // Konami:
-      EVENT_KONAMI_LOOP_START,
+  EVENT_KONAMI_LOOP_START,
   EVENT_KONAMI_LOOP_END,
   EVENT_KONAMI_ADSR_AND_GAIN,
 
   // Lemmings:
-      EVENT_LEMMINGS_NOTE_PARAM,
+  EVENT_LEMMINGS_NOTE_PARAM,
 
   // Intelligent Systems:
   // Fire Emblem 3 & 4:
-      EVENT_INTELLI_NOTE_PARAM,
+  EVENT_INTELLI_NOTE_PARAM,
   EVENT_INTELLI_ECHO_ON,
   EVENT_INTELLI_ECHO_OFF,
   EVENT_INTELLI_LEGATO_ON,
@@ -104,16 +105,14 @@ class NinSnesTrackSharedData {
   uint8_t konamiLoopCount;
 };
 
-class NinSnesSeq:
-    public VGMMultiSectionSeq {
+class NinSnesSeq : public VGMMultiSectionSeq {
  public:
-  NinSnesSeq(RawFile *file,
-             NinSnesVersion ver,
-             uint32_t offset,
-             uint8_t percussion_base = 0,
-             const std::vector<uint8_t> &theVolumeTable = std::vector<uint8_t>(),
-             const std::vector<uint8_t> &theDurRateTable = std::vector<uint8_t>(),
-             std::wstring theName = L"NinSnes Seq");
+  NinSnesSeq(
+      RawFile *file, NinSnesVersion ver, uint32_t offset,
+      uint8_t percussion_base = 0,
+      const std::vector<uint8_t> &theVolumeTable = std::vector<uint8_t>(),
+      const std::vector<uint8_t> &theDurRateTable = std::vector<uint8_t>(),
+      std::wstring theName = L"NinSnes Seq");
   virtual ~NinSnesSeq();
 
   virtual bool GetHeaderInfo();
@@ -160,7 +159,7 @@ class NinSnesSeq:
   // Falcom:
   uint16_t falcomBaseOffset;
 
-protected:
+ protected:
   VGMHeader *header;
 
  private:
@@ -170,8 +169,7 @@ protected:
   uint8_t spcPercussionBaseInit;
 };
 
-class NinSnesSection
-    : public VGMSeqSection {
+class NinSnesSection : public VGMSeqSection {
  public:
   NinSnesSection(NinSnesSeq *parentFile, long offset = 0, long length = 0);
 
@@ -181,11 +179,10 @@ class NinSnesSection
   uint16_t GetShortAddress(uint32_t offset);
 };
 
-class NinSnesTrack
-    : public SeqTrack {
+class NinSnesTrack : public SeqTrack {
  public:
-  NinSnesTrack
-      (NinSnesSection *parentSection, long offset = 0, long length = 0, const std::wstring &theName = L"NinSnes Track");
+  NinSnesTrack(NinSnesSection *parentSection, long offset = 0, long length = 0,
+               const std::wstring &theName = L"NinSnes Track");
 
   virtual void ResetVars(void);
   virtual bool ReadEvent(void);
@@ -194,7 +191,8 @@ class NinSnesTrack
   uint16_t GetShortAddress(uint32_t offset);
   void GetVolumeBalance(uint16_t pan, double &volumeLeft, double &volumeRight);
   uint8_t ReadPanTable(uint16_t pan);
-  int8_t CalcPanValue(uint8_t pan, double &volumeScale, bool &reverseLeft, bool &reverseRight);
+  int8_t CalcPanValue(uint8_t pan, double &volumeScale, bool &reverseLeft,
+                      bool &reverseRight);
 
   NinSnesSection *parentSection;
   NinSnesTrackSharedData *shared;

@@ -31,7 +31,8 @@ class PSFFile {
 
  private:
   uint8_t version;
-  DataSeg *exeData; // decompressed program section, valid only when it has been decompressed
+  DataSeg *exeData;  // decompressed program section, valid only when it has
+                     // been decompressed
   DataSeg *exeCompData;
   DataSeg *reservedData;
   uint32_t exeCRC;
@@ -40,5 +41,6 @@ class PSFFile {
   uint8_t *stripBuf;
   size_t stripBufSize;
 
-  int myuncompress(Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen, uLong stripLen) const;
+  int myuncompress(Bytef *dest, uLongf *destLen, const Bytef *source,
+                   uLong sourceLen, uLong stripLen) const;
 };

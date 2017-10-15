@@ -2,14 +2,10 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-class RareSnesScanner:
-    public VGMScanner {
+class RareSnesScanner : public VGMScanner {
  public:
-  RareSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~RareSnesScanner(void) {
-  }
+  RareSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~RareSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForRareSnesFromARAM(RawFile *file);

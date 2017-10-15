@@ -4,7 +4,8 @@
 #include "HeartBeatSnesFormat.h"
 
 enum HeartBeatSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -52,7 +53,8 @@ enum HeartBeatSnesSeqEventType {
 };
 
 enum HeartBeatSnesSeqSubEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   SUBEVENT_UNKNOWN0 = 1,
   SUBEVENT_UNKNOWN1,
   SUBEVENT_UNKNOWN2,
@@ -68,11 +70,11 @@ enum HeartBeatSnesSeqSubEventType {
   SUBEVENT_SURROUND,
 };
 
-class HeartBeatSnesSeq
-    : public VGMSeq {
+class HeartBeatSnesSeq : public VGMSeq {
  public:
-  HeartBeatSnesSeq
-      (RawFile *file, HeartBeatSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"HeartBeat SNES Seq");
+  HeartBeatSnesSeq(RawFile *file, HeartBeatSnesVersion ver,
+                   uint32_t seqdataOffset,
+                   std::wstring newName = L"HeartBeat SNES Seq");
   virtual ~HeartBeatSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -93,11 +95,10 @@ class HeartBeatSnesSeq
   void LoadEventMap(void);
 };
 
-
-class HeartBeatSnesTrack
-    : public SeqTrack {
+class HeartBeatSnesTrack : public SeqTrack {
  public:
-  HeartBeatSnesTrack(HeartBeatSnesSeq *parentFile, long offset = 0, long length = 0);
+  HeartBeatSnesTrack(HeartBeatSnesSeq *parentFile, long offset = 0,
+                     long length = 0);
   virtual void ResetVars(void);
   virtual bool ReadEvent(void);
 

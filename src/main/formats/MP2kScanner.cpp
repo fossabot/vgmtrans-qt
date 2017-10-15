@@ -14,12 +14,11 @@
 #define SRCH_BUF_SIZE 0x20000
 
 typedef struct {
-  unsigned int polyphony           : 4;
-  unsigned int main_vol            : 4;
+  unsigned int polyphony : 4;
+  unsigned int main_vol : 4;
   unsigned int sampling_rate_index : 4;
-  unsigned int dac_bits            : 4;
-}
-    sound_engine_param_t;
+  unsigned int dac_bits : 4;
+} sound_engine_param_t;
 
 static sound_engine_param_t sound_engine_param(uint32_t data) {
   sound_engine_param_t s;
@@ -31,30 +30,27 @@ static sound_engine_param_t sound_engine_param(uint32_t data) {
 }
 
 // Test if an area of ROM is eligible to be the base pointer
-static bool test_pointer_validity(RawFile *file, off_t offset, uint32_t inGBA_length) {
+static bool test_pointer_validity(RawFile *file, off_t offset,
+                                  uint32_t inGBA_length) {
   sound_engine_param_t params = sound_engine_param(file->GetWord(offset));
 
   /* Compute (supposed ?) address of song table */
-  uint32_t song_tbl_adr = (file->GetWord(offset + 8) & 0x3FFFFFF) + 12 * file->GetWord(offset + 4);
+  uint32_t song_tbl_adr =
+      (file->GetWord(offset + 8) & 0x3FFFFFF) + 12 * file->GetWord(offset + 4);
 
   /* Prevent illegal values for all fields */
-  return params.main_vol != 0
-      && params.polyphony <= 12
-      && params.dac_bits >= 6
-      && params.dac_bits <= 9
-      && params.sampling_rate_index >= 1
-      && params.sampling_rate_index <= 12
-      && song_tbl_adr < inGBA_length
-      && file->GetWord(offset + 4) < 256
-      && ((file->GetWord(offset) & 0xff000000) == 0);
+  return params.main_vol != 0 && params.polyphony <= 12 &&
+         params.dac_bits >= 6 && params.dac_bits <= 9 &&
+         params.sampling_rate_index >= 1 && params.sampling_rate_index <= 12 &&
+         song_tbl_adr < inGBA_length && file->GetWord(offset + 4) < 256 &&
+         ((file->GetWord(offset) & 0xff000000) == 0);
 }
 
 MP2kScanner::MP2kScanner(void) {
-//	USE_EXTENSION(L"gba")
+  //	USE_EXTENSION(L"gba")
 }
 
-MP2kScanner::~MP2kScanner(void) {
-}
+MP2kScanner::~MP2kScanner(void) {}
 
 void MP2kScanner::Scan(RawFile *file, void *info) {
   uint32_t sound_engine_adr;
@@ -65,8 +61,10 @@ void MP2kScanner::Scan(RawFile *file, void *info) {
   }
 
   // compute address of song table
-  uint32_t song_levels = file->GetWord(sound_engine_adr + 4);    // Read # of song levels
-  uint32_t song_tbl_ptr = (file->GetWord(sound_engine_adr + 8) & 0x1FFFFFF) + 12 * song_levels;
+  uint32_t song_levels =
+      file->GetWord(sound_engine_adr + 4);  // Read # of song levels
+  uint32_t song_tbl_ptr =
+      (file->GetWord(sound_engine_adr + 8) & 0x1FFFFFF) + 12 * song_levels;
 
   // Ignores entries which are made of 0s at the start of the song table
   // this fix was necessarily for the game Fire Emblem
@@ -105,20 +103,17 @@ void MP2kScanner::Scan(RawFile *file, void *info) {
 
 // Sappy sound engine detector (c) 2014 by Bregalad, loveemu
 bool MP2kScanner::Mp2kDetector(RawFile *file, uint32_t &mp2k_offset) {
-  const uint8_t CODESEG_SELECTSONG[0x1E] =
-      {
-          0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49,
-          0x40, 0x0B, 0x40, 0x18, 0x83, 0x88, 0x59, 0x00,
-          0xC9, 0x18, 0x89, 0x00, 0x89, 0x18, 0x0A, 0x68,
-          0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0,
-      };
+  const uint8_t CODESEG_SELECTSONG[0x1E] = {
+      0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49, 0x40, 0x0B,
+      0x40, 0x18, 0x83, 0x88, 0x59, 0x00, 0xC9, 0x18, 0x89, 0x00,
+      0x89, 0x18, 0x0A, 0x68, 0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0,
+  };
 
   const int M4A_MAIN_PATT_COUNT = 1;
   const int M4A_MAIN_LEN = 2;
 
   const uint8_t CODESEG_MAIN[M4A_MAIN_PATT_COUNT][M4A_MAIN_LEN] = {
-      {0x00, 0xB5}
-  };
+      {0x00, 0xB5}};
 
   const int M4A_INIT_PATT_COUNT = 2;
   const int M4A_INIT_LEN = 2;
@@ -131,15 +126,18 @@ bool MP2kScanner::Mp2kDetector(RawFile *file, uint32_t &mp2k_offset) {
   off_t m4a_selectsong_search_offset = 0;
   while (m4a_selectsong_search_offset != -1) {
     m4a_selectsong_offset =
-        LooseSearch(file, CODESEG_SELECTSONG, sizeof(CODESEG_SELECTSONG), m4a_selectsong_search_offset, 1, 0);
+        LooseSearch(file, CODESEG_SELECTSONG, sizeof(CODESEG_SELECTSONG),
+                    m4a_selectsong_search_offset, 1, 0);
     if (m4a_selectsong_offset != -1) {
       // obtain song table address
-      uint32_t m4a_songtable_address = file->GetWord(m4a_selectsong_offset + M4A_OFFSET_SONGTABLE);
+      uint32_t m4a_songtable_address =
+          file->GetWord(m4a_selectsong_offset + M4A_OFFSET_SONGTABLE);
       if (!IsGBAROMAddress(m4a_songtable_address)) {
         m4a_selectsong_search_offset = m4a_selectsong_offset + 1;
         continue;
       }
-      uint32_t m4a_songtable_offset_tmp = GBAAddressToOffset(m4a_songtable_address);
+      uint32_t m4a_songtable_offset_tmp =
+          GBAAddressToOffset(m4a_songtable_address);
       if (!IsValidOffset(m4a_songtable_offset_tmp + 4 - 1, file->size())) {
         m4a_selectsong_search_offset = m4a_selectsong_offset + 1;
         continue;
@@ -161,7 +159,8 @@ bool MP2kScanner::Mp2kDetector(RawFile *file, uint32_t &mp2k_offset) {
         if (!IsGBAROMAddress(songaddr)) {
           break;
         }
-        if (!IsValidOffset(GBAAddressToOffset(songaddr) + 4 - 1, file->size())) {
+        if (!IsValidOffset(GBAAddressToOffset(songaddr) + 4 - 1,
+                           file->size())) {
           break;
         }
         validsongcount++;
@@ -171,8 +170,7 @@ bool MP2kScanner::Mp2kDetector(RawFile *file, uint32_t &mp2k_offset) {
         continue;
       }
       break;
-    }
-    else {
+    } else {
       m4a_selectsong_search_offset = -1;
     }
   }
@@ -184,10 +182,13 @@ bool MP2kScanner::Mp2kDetector(RawFile *file, uint32_t &mp2k_offset) {
   if (!IsValidOffset(m4a_main_offset_tmp + M4A_MAIN_LEN - 1, file->size())) {
     return false;
   }
-  while (m4a_main_offset_tmp > 0 && m4a_main_offset_tmp > ((uint32_t) m4a_selectsong_offset - 0x20)) {
-    for (int mainpattern = 0; mainpattern < M4A_MAIN_PATT_COUNT; mainpattern++) {
-      if (file->MatchBytes(CODESEG_MAIN[mainpattern], m4a_main_offset_tmp, M4A_INIT_LEN)) {
-        m4a_main_offset = (long) m4a_main_offset_tmp;
+  while (m4a_main_offset_tmp > 0 &&
+         m4a_main_offset_tmp > ((uint32_t)m4a_selectsong_offset - 0x20)) {
+    for (int mainpattern = 0; mainpattern < M4A_MAIN_PATT_COUNT;
+         mainpattern++) {
+      if (file->MatchBytes(CODESEG_MAIN[mainpattern], m4a_main_offset_tmp,
+                           M4A_INIT_LEN)) {
+        m4a_main_offset = (long)m4a_main_offset_tmp;
         break;
       }
     }
@@ -195,8 +196,10 @@ bool MP2kScanner::Mp2kDetector(RawFile *file, uint32_t &mp2k_offset) {
   }
 
   // Test validity of engine offset with -16 and -32
-  bool valid_m16 = test_pointer_validity(file, m4a_main_offset - 16, file->size());    // For most games
-  bool valid_m32 = test_pointer_validity(file, m4a_main_offset - 32, file->size());    // For pokemon
+  bool valid_m16 = test_pointer_validity(file, m4a_main_offset - 16,
+                                         file->size());  // For most games
+  bool valid_m32 = test_pointer_validity(file, m4a_main_offset - 32,
+                                         file->size());  // For pokemon
 
   // If neither is found there is an error
   if (!valid_m16 && !valid_m32) {
@@ -223,7 +226,8 @@ uint32_t MP2kScanner::GBAAddressToOffset(uint32_t address) {
   return address & 0x01FFFFFF;
 }
 
-off_t MP2kScanner::LooseSearch(RawFile *file, const uint8_t *src, size_t srcsize, off_t file_offset,
+off_t MP2kScanner::LooseSearch(RawFile *file, const uint8_t *src,
+                               size_t srcsize, off_t file_offset,
                                size_t alignment, int diff_threshold) {
   // alignment must be more than 0
   if (alignment == 0) {
@@ -236,7 +240,8 @@ off_t MP2kScanner::LooseSearch(RawFile *file, const uint8_t *src, size_t srcsize
   }
 
   // do loose filemem search
-  for (size_t offset = file_offset; (offset + srcsize) <= file->size(); offset += alignment) {
+  for (size_t offset = file_offset; (offset + srcsize) <= file->size();
+       offset += alignment) {
     int diff = 0;
 
     for (size_t i = 0; i < srcsize; i++) {

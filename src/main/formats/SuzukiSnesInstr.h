@@ -8,16 +8,11 @@
 // SuzukiSnesInstrSet
 // ******************
 
-class SuzukiSnesInstrSet:
-    public VGMInstrSet {
+class SuzukiSnesInstrSet : public VGMInstrSet {
  public:
-  SuzukiSnesInstrSet(RawFile *file,
-                     SuzukiSnesVersion ver,
-                     uint32_t spcDirAddr,
-                     uint16_t addrSRCNTable,
-                     uint16_t addrVolumeTable,
-                     uint16_t addrADSRTable,
-                     uint16_t addrTuningTable,
+  SuzukiSnesInstrSet(RawFile *file, SuzukiSnesVersion ver, uint32_t spcDirAddr,
+                     uint16_t addrSRCNTable, uint16_t addrVolumeTable,
+                     uint16_t addrADSRTable, uint16_t addrTuningTable,
                      const std::wstring &name = L"SuzukiSnesInstrSet");
   virtual ~SuzukiSnesInstrSet(void);
 
@@ -39,16 +34,11 @@ class SuzukiSnesInstrSet:
 // SuzukiSnesInstr
 // *************
 
-class SuzukiSnesInstr
-    : public VGMInstr {
+class SuzukiSnesInstr : public VGMInstr {
  public:
-  SuzukiSnesInstr(VGMInstrSet *instrSet,
-                  SuzukiSnesVersion ver,
-                  uint8_t instrNum,
-                  uint32_t spcDirAddr,
-                  uint16_t addrSRCNTable,
-                  uint16_t addrVolumeTable,
-                  uint16_t addrADSRTable,
+  SuzukiSnesInstr(VGMInstrSet *instrSet, SuzukiSnesVersion ver,
+                  uint8_t instrNum, uint32_t spcDirAddr, uint16_t addrSRCNTable,
+                  uint16_t addrVolumeTable, uint16_t addrADSRTable,
                   uint16_t addrTuningTable,
                   const std::wstring &name = L"SuzukiSnesInstr");
   virtual ~SuzukiSnesInstr(void);
@@ -69,16 +59,11 @@ class SuzukiSnesInstr
 // SuzukiSnesRgn
 // *************
 
-class SuzukiSnesRgn
-    : public VGMRgn {
+class SuzukiSnesRgn : public VGMRgn {
  public:
-  SuzukiSnesRgn(SuzukiSnesInstr *instr,
-                SuzukiSnesVersion ver,
-                uint8_t instrNum,
-                uint32_t spcDirAddr,
-                uint16_t addrSRCNTable,
-                uint16_t addrVolumeTable,
-                uint16_t addrADSRTable,
+  SuzukiSnesRgn(SuzukiSnesInstr *instr, SuzukiSnesVersion ver, uint8_t instrNum,
+                uint32_t spcDirAddr, uint16_t addrSRCNTable,
+                uint16_t addrVolumeTable, uint16_t addrADSRTable,
                 uint16_t addrTuningTable);
   virtual ~SuzukiSnesRgn(void);
 

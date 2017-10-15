@@ -3,7 +3,7 @@
 #include "VGMSampColl.h"
 #include "VGMRgn.h"
 
-//VAB Header
+// VAB Header
 struct VabHdr {
   int32_t form;
   /*always "VABp"*/
@@ -32,8 +32,7 @@ struct VabHdr {
   uint32_t reserved1; /*system reserved*/
 };
 
-
-//Program Attributes
+// Program Attributes
 struct ProgAtr {
   uint8_t tones;
   /*number of effective tones which compose the program*/
@@ -54,11 +53,11 @@ struct ProgAtr {
   uint32_t reserved2; /*system reserved*/
 };
 
-
-//Tone Attributes
+// Tone Attributes
 struct VagAtr {
   uint8_t prior;
-  /*tone priority (0 - 127); used for controlling allocation when more voices than can be keyed on are requested*/
+  /*tone priority (0 - 127); used for controlling allocation when more voices
+   * than can be keyed on are requested*/
   uint8_t mode;
   /*tone mode (0 = normal; 4 = reverb applied */
   uint8_t vol;
@@ -100,9 +99,7 @@ struct VagAtr {
   int16_t reserved[4]; /*system reserved*/
 };
 
-
-class Vab:
-    public VGMInstrSet {
+class Vab : public VGMInstrSet {
  public:
   Vab(RawFile *file, uint32_t offset);
   virtual ~Vab(void);
@@ -114,19 +111,14 @@ class Vab:
   VabHdr hdr;
 };
 
-
 // ********
 // VabInstr
 // ********
 
-class VabInstr
-    : public VGMInstr {
+class VabInstr : public VGMInstr {
  public:
-  VabInstr(VGMInstrSet *instrSet,
-           uint32_t offset,
-           uint32_t length,
-           uint32_t theBank,
-           uint32_t theInstrNum,
+  VabInstr(VGMInstrSet *instrSet, uint32_t offset, uint32_t length,
+           uint32_t theBank, uint32_t theInstrNum,
            const std::wstring &name = L"Instrument");
   virtual ~VabInstr(void);
 
@@ -137,21 +129,19 @@ class VabInstr
   uint8_t masterVol;
 };
 
-
 // ******
 // VabRgn
 // ******
 
-class VabRgn
-    : public VGMRgn {
+class VabRgn : public VGMRgn {
  public:
   VabRgn(VabInstr *instr, uint32_t offset);
 
   virtual bool LoadRgn();
 
  public:
-  uint16_t ADSR1;                //raw ps2 ADSR1 value (articulation data)
-  uint16_t ADSR2;                //raw ps2 ADSR2 value (articulation data)
+  uint16_t ADSR1;  // raw ps2 ADSR1 value (articulation data)
+  uint16_t ADSR2;  // raw ps2 ADSR2 value (articulation data)
   uint8_t bStereoRegion;
   uint8_t StereoPairOrder;
   uint8_t bFirstRegion;

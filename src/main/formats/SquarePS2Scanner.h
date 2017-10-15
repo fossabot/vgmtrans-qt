@@ -1,10 +1,10 @@
 #pragma once
 #include "Scanner.h"
 
-class SquarePS2Scanner:
-    public VGMScanner {
+class SquarePS2Scanner : public VGMScanner {
  public:
   SquarePS2Scanner(void);
+
  public:
   ~SquarePS2Scanner(void);
 
@@ -12,4 +12,3 @@ class SquarePS2Scanner:
   void SearchForBGMSeq(RawFile *file);
   void SearchForWDSet(RawFile *file);
 };
-

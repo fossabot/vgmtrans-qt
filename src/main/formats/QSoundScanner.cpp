@@ -10,11 +10,12 @@ using namespace std;
 //#define qs_samp_info_TABLE_OFFSET 0x8000
 
 void QSoundScanner::Scan(RawFile *file, void *info) {
-  MAMEGameEntry *gameentry = (MAMEGameEntry *) info;
-  MAMERomGroupEntry *seqRomGroupEntry = gameentry->GetRomGroupOfType("audiocpu");
-  MAMERomGroupEntry *sampsRomGroupEntry = gameentry->GetRomGroupOfType("qsound");
-  if (!seqRomGroupEntry || !sampsRomGroupEntry)
-    return;
+  MAMEGameEntry *gameentry = (MAMEGameEntry *)info;
+  MAMERomGroupEntry *seqRomGroupEntry =
+      gameentry->GetRomGroupOfType("audiocpu");
+  MAMERomGroupEntry *sampsRomGroupEntry =
+      gameentry->GetRomGroupOfType("qsound");
+  if (!seqRomGroupEntry || !sampsRomGroupEntry) return;
   uint32_t seq_table_offset;
   uint32_t seq_table_length = 0;
   uint32_t instr_table_offset;
@@ -33,7 +34,8 @@ void QSoundScanner::Scan(RawFile *file, void *info) {
 
   QSoundVer ver = GetVersionEnum(gameentry->fmt_version_str);
   if (ver == VER_UNDEFINED) {
-    wstring alert = L"XML entry uses an undefined QSound version: " + string2wstring(gameentry->fmt_version_str);
+    wstring alert = L"XML entry uses an undefined QSound version: " +
+                    string2wstring(gameentry->fmt_version_str);
     pRoot->AddLogItem(new LogItem(alert, LOG_LEVEL_ERR, L"PSF2Loader"));
     return;
   }
@@ -41,13 +43,12 @@ void QSoundScanner::Scan(RawFile *file, void *info) {
   if (ver < VER_116B) {
     if (!seqRomGroupEntry->GetHexAttribute("instr_table", &instr_table_offset))
       return;
-  }
-  else if (!seqRomGroupEntry->GetHexAttribute("instr_table_ptrs", &instr_table_offset))
+  } else if (!seqRomGroupEntry->GetHexAttribute("instr_table_ptrs",
+                                                &instr_table_offset))
     return;
   if (ver >= VER_130 &&
       !seqRomGroupEntry->GetHexAttribute("artic_table", &artic_table_offset))
     return;
-
 
   QSoundInstrSet *instrset = 0;
   QSoundSampColl *sampcoll = 0;
@@ -76,43 +77,41 @@ void QSoundScanner::Scan(RawFile *file, void *info) {
   name << gameentry->name.c_str() << L" sequence pointer table";
   seq_table_name = name.str();
 
-
   RawFile *programFile = seqRomGroupEntry->file;
   RawFile *samplesFile = sampsRomGroupEntry->file;
   uint32_t nProgramFileLength = programFile->size();
 
   // LOAD INSTRUMENTS AND SAMPLES
 
-  //fix because Vampire Savior sample table bleeds into artic table and no way to detect this
+  // fix because Vampire Savior sample table bleeds into artic table and no way
+  // to detect this
   if (!samp_table_length && (artic_table_offset > samp_table_offset))
     samp_table_length = artic_table_offset - samp_table_offset;
-  sampInfoTable = new QSoundSampleInfoTable(programFile, samp_info_table_name, samp_table_offset, samp_table_length);
+  sampInfoTable = new QSoundSampleInfoTable(
+      programFile, samp_info_table_name, samp_table_offset, samp_table_length);
   sampInfoTable->LoadVGMFile();
   if (artic_table_offset) {
-    articTable = new QSoundArticTable(programFile, artic_table_name, artic_table_offset, artic_table_length);
+    articTable = new QSoundArticTable(programFile, artic_table_name,
+                                      artic_table_offset, artic_table_length);
     if (!articTable->LoadVGMFile()) {
       delete articTable;
       articTable = NULL;
     }
   }
 
-  instrset = new QSoundInstrSet(programFile,
-                                ver,
-                                instr_table_offset,
-                                num_instr_banks,
-                                sampInfoTable,
-                                articTable,
-                                instrset_name);
+  instrset =
+      new QSoundInstrSet(programFile, ver, instr_table_offset, num_instr_banks,
+                         sampInfoTable, articTable, instrset_name);
   if (!instrset->LoadVGMFile()) {
     delete instrset;
     instrset = NULL;
   }
-  sampcoll = new QSoundSampColl(samplesFile, instrset, sampInfoTable, 0, 0, sampcoll_name);
+  sampcoll = new QSoundSampColl(samplesFile, instrset, sampInfoTable, 0, 0,
+                                sampcoll_name);
   if (!sampcoll->LoadVGMFile()) {
     delete sampcoll;
     sampcoll = NULL;
   }
-
 
   // LOAD SEQUENCES FROM SEQUENCE TABLE AND CREATE COLLECTIONS
   //  Set the seq table length to be the distance to the first seq pointer
@@ -120,12 +119,14 @@ void QSoundScanner::Scan(RawFile *file, void *info) {
   unsigned int k = 0;
   uint32_t seqPointer = 0;
   while (seqPointer == 0)
-    seqPointer = programFile->GetWordBE(seq_table_offset + (k++ * 4)) & 0x0FFFFF;
+    seqPointer =
+        programFile->GetWordBE(seq_table_offset + (k++ * 4)) & 0x0FFFFF;
   seq_table_length = seqPointer - seq_table_offset;
 
   // Add SeqTable as Miscfile
   VGMMiscFile *seqTable =
-      new VGMMiscFile(QSoundFormat::name, seqRomGroupEntry->file, seq_table_offset, seq_table_length, seq_table_name);
+      new VGMMiscFile(QSoundFormat::name, seqRomGroupEntry->file,
+                      seq_table_offset, seq_table_length, seq_table_name);
   if (!seqTable->LoadVGMFile()) {
     delete seqTable;
     seqTable = NULL;
@@ -134,8 +135,7 @@ void QSoundScanner::Scan(RawFile *file, void *info) {
   for (k = 0; (seq_table_length == 0 || k < seq_table_length); k += 4) {
     // & 0x0FFFFF because SSF2 sets 0x100000 for some reason
     seqPointer = programFile->GetWordBE(seq_table_offset + k) & 0x0FFFFF;
-    if (seqPointer == 0)
-      continue;
+    if (seqPointer == 0) continue;
     seqTable->AddSimpleItem(seq_table_offset + k, 4, L"Sequence Pointer");
 
     name.str(L"");
@@ -150,13 +150,11 @@ void QSoundScanner::Scan(RawFile *file, void *info) {
       coll->AddInstrSet(instrset);
       coll->AddSampColl(sampcoll);
       coll->AddMiscFile(sampInfoTable);
-      if (articTable)
-        coll->AddMiscFile(articTable);
+      if (articTable) coll->AddMiscFile(articTable);
       if (!coll->Load()) {
         delete coll;
       }
-    }
-    else {
+    } else {
       delete newSeq;
       delete coll;
     }

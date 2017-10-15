@@ -7,7 +7,8 @@
 #define MORISNES_CALLSTACK_SIZE 10
 
 enum MoriSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -47,10 +48,10 @@ enum MoriSnesSeqEventType {
   EVENT_TIMEBASE,
 };
 
-class MoriSnesSeq
-    : public VGMSeq {
+class MoriSnesSeq : public VGMSeq {
  public:
-  MoriSnesSeq(RawFile *file, MoriSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"Mint SNES Seq");
+  MoriSnesSeq(RawFile *file, MoriSnesVersion ver, uint32_t seqdataOffset,
+              std::wstring newName = L"Mint SNES Seq");
   virtual ~MoriSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -73,15 +74,15 @@ class MoriSnesSeq
   void LoadEventMap(void);
 };
 
-class MoriSnesTrack
-    : public SeqTrack {
+class MoriSnesTrack : public SeqTrack {
  public:
   MoriSnesTrack(MoriSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);
   virtual bool ReadEvent(void);
 
   void ParseInstrument(uint16_t instrAddress, uint8_t instrNum);
-  void ParseInstrumentEvents(uint16_t offset, uint8_t instrNum, bool percussion = false, uint8_t percNoteKey = 0);
+  void ParseInstrumentEvents(uint16_t offset, uint8_t instrNum,
+                             bool percussion = false, uint8_t percNoteKey = 0);
 
  private:
   std::list<int8_t> tiedNoteKeys;
@@ -94,6 +95,6 @@ class MoriSnesTrack
   int8_t spcTranspose;
   uint8_t spcTuning;
 
-  uint8_t spcCallStack[MORISNES_CALLSTACK_SIZE]; // shared by multiple commands
+  uint8_t spcCallStack[MORISNES_CALLSTACK_SIZE];  // shared by multiple commands
   uint8_t spcCallStackPtr;
 };

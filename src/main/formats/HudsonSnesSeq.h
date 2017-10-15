@@ -3,12 +3,13 @@
 #include "SeqTrack.h"
 #include "HudsonSnesFormat.h"
 
-#define HUDSONSNES_CALLSTACK_SIZE   0x10
-#define HUDSONSNES_USERRAM_SIZE     0x08
+#define HUDSONSNES_CALLSTACK_SIZE 0x10
+#define HUDSONSNES_USERRAM_SIZE 0x08
 
 enum HudsonSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
-   EVENT_UNKNOWN0 = 1,
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
+  EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
   EVENT_UNKNOWN3,
@@ -50,7 +51,8 @@ enum HudsonSnesSeqEventType {
 };
 
 enum HudsonSnesSeqSubEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   SUBEVENT_UNKNOWN0 = 1,
   SUBEVENT_UNKNOWN1,
   SUBEVENT_UNKNOWN2,
@@ -95,11 +97,10 @@ enum HudsonSnesSeqHeaderEventType {
   HEADER_EVENT_09,
 };
 
-class HudsonSnesSeq
-    : public VGMSeq {
+class HudsonSnesSeq : public VGMSeq {
  public:
-  HudsonSnesSeq
-      (RawFile *file, HudsonSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"Hudson SNES Seq");
+  HudsonSnesSeq(RawFile *file, HudsonSnesVersion ver, uint32_t seqdataOffset,
+                std::wstring newName = L"Hudson SNES Seq");
   virtual ~HudsonSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -131,9 +132,7 @@ class HudsonSnesSeq
   void LoadEventMap(void);
 };
 
-
-class HudsonSnesTrack
-    : public SeqTrack {
+class HudsonSnesTrack : public SeqTrack {
  public:
   HudsonSnesTrack(HudsonSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);
@@ -146,6 +145,7 @@ class HudsonSnesTrack
   bool loopPointOnceProcessed;
   uint8_t spcNoteQuantize;
   uint8_t spcVolume;
-  uint8_t spcCallStack[HUDSONSNES_CALLSTACK_SIZE]; // shared by multiple commands
+  uint8_t
+      spcCallStack[HUDSONSNES_CALLSTACK_SIZE];  // shared by multiple commands
   uint8_t spcCallStackPtr;
 };

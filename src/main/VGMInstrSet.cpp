@@ -13,13 +13,11 @@ using namespace std;
 // VGMInstrSet
 // ***********
 
-VGMInstrSet::VGMInstrSet(const string &format,/*FmtID fmtID,*/
-                         RawFile *file,
-                         uint32_t offset,
-                         uint32_t length,
-                         wstring name,
-                         VGMSampColl *theSampColl)
-    : VGMFile(FILETYPE_INSTRSET, /*fmtID,*/format, file, offset, length, name), sampColl(theSampColl) {
+VGMInstrSet::VGMInstrSet(const string &format, /*FmtID fmtID,*/
+                         RawFile *file, uint32_t offset, uint32_t length,
+                         wstring name, VGMSampColl *theSampColl)
+    : VGMFile(FILETYPE_INSTRSET, /*fmtID,*/ format, file, offset, length, name),
+      sampColl(theSampColl) {
   AddContainer<VGMInstr>(aInstrs);
 }
 
@@ -28,30 +26,27 @@ VGMInstrSet::~VGMInstrSet() {
   delete sampColl;
 }
 
-
-VGMInstr *VGMInstrSet::AddInstr(uint32_t offset, uint32_t length, unsigned long bank,
-                                unsigned long instrNum, const wstring &instrName) {
+VGMInstr *VGMInstrSet::AddInstr(uint32_t offset, uint32_t length,
+                                unsigned long bank, unsigned long instrNum,
+                                const wstring &instrName) {
   wostringstream name;
   if (instrName == L"")
     name << L"Instrument " << aInstrs.size();
   else
     name << instrName;
 
-  VGMInstr *instr = new VGMInstr(this, offset, length, bank, instrNum, name.str());
+  VGMInstr *instr =
+      new VGMInstr(this, offset, length, bank, instrNum, name.str());
   aInstrs.push_back(instr);
   return instr;
 }
 
 bool VGMInstrSet::Load() {
-  if (!GetHeaderInfo())
-    return false;
-  if (!GetInstrPointers())
-    return false;
-  if (!LoadInstrs())
-    return false;
+  if (!GetHeaderInfo()) return false;
+  if (!GetInstrPointers()) return false;
+  if (!LoadInstrs()) return false;
 
-  if (aInstrs.size() == 0)
-    return false;
+  if (aInstrs.size() == 0) return false;
 
   if (unLength == 0) {
     SetGuessedLength();
@@ -59,7 +54,8 @@ bool VGMInstrSet::Load() {
 
   if (sampColl != NULL) {
     if (!sampColl->Load()) {
-      pRoot->AddLogItem(new LogItem(L"Failed to load VGMSampColl.", LOG_LEVEL_ERR, L"VGMInstrSet"));
+      pRoot->AddLogItem(new LogItem(L"Failed to load VGMSampColl.",
+                                    LOG_LEVEL_ERR, L"VGMInstrSet"));
     }
   }
 
@@ -69,27 +65,21 @@ bool VGMInstrSet::Load() {
   return true;
 }
 
-bool VGMInstrSet::GetHeaderInfo() {
-  return true;
-}
+bool VGMInstrSet::GetHeaderInfo() { return true; }
 
-bool VGMInstrSet::GetInstrPointers() {
-  return true;
-}
-
+bool VGMInstrSet::GetInstrPointers() { return true; }
 
 bool VGMInstrSet::LoadInstrs() {
   size_t nInstrs = aInstrs.size();
   for (size_t i = 0; i < nInstrs; i++) {
-    if (!aInstrs[i]->LoadInstr())
-      return false;
+    if (!aInstrs[i]->LoadInstr()) return false;
   }
   return true;
 }
 
-
 bool VGMInstrSet::OnSaveAsDLS(void) {
-  wstring filepath = pRoot->UI_GetSaveFilePath(ConvertToSafeFileName(name), L"dls");
+  wstring filepath =
+      pRoot->UI_GetSaveFilePath(ConvertToSafeFileName(name), L"dls");
   if (filepath.length() != 0) {
     return SaveAsDLS(filepath.c_str());
   }
@@ -97,13 +87,13 @@ bool VGMInstrSet::OnSaveAsDLS(void) {
 }
 
 bool VGMInstrSet::OnSaveAsSF2(void) {
-  wstring filepath = pRoot->UI_GetSaveFilePath(ConvertToSafeFileName(name), L"sf2");
+  wstring filepath =
+      pRoot->UI_GetSaveFilePath(ConvertToSafeFileName(name), L"sf2");
   if (filepath.length() != 0) {
     return SaveAsSF2(filepath);
   }
   return false;
 }
-
 
 bool VGMInstrSet::SaveAsDLS(const std::wstring &filepath) {
   DLSFile dlsfile;
@@ -135,13 +125,12 @@ bool VGMInstrSet::SaveAsSF2(const std::wstring &filepath) {
   return false;
 }
 
-
 // ********
 // VGMInstr
 // ********
 
-VGMInstr::VGMInstr(VGMInstrSet *instrSet, uint32_t offset, uint32_t length, uint32_t theBank,
-                   uint32_t theInstrNum, const wstring &name)
+VGMInstr::VGMInstr(VGMInstrSet *instrSet, uint32_t offset, uint32_t length,
+                   uint32_t theBank, uint32_t theInstrNum, const wstring &name)
     : VGMContainerItem(instrSet, offset, length, name),
       parInstrSet(instrSet),
       bank(theBank),
@@ -149,32 +138,24 @@ VGMInstr::VGMInstr(VGMInstrSet *instrSet, uint32_t offset, uint32_t length, uint
   AddContainer<VGMRgn>(aRgns);
 }
 
-VGMInstr::~VGMInstr() {
-  DeleteVect<VGMRgn>(aRgns);
-}
+VGMInstr::~VGMInstr() { DeleteVect<VGMRgn>(aRgns); }
 
-void VGMInstr::SetBank(uint32_t bankNum) {
-  bank = bankNum;
-}
+void VGMInstr::SetBank(uint32_t bankNum) { bank = bankNum; }
 
-void VGMInstr::SetInstrNum(uint32_t theInstrNum) {
-  instrNum = theInstrNum;
-}
+void VGMInstr::SetInstrNum(uint32_t theInstrNum) { instrNum = theInstrNum; }
 
 VGMRgn *VGMInstr::AddRgn(VGMRgn *rgn) {
   aRgns.push_back(rgn);
   return rgn;
 }
 
-VGMRgn *VGMInstr::AddRgn(uint32_t offset, uint32_t length, int sampNum, uint8_t keyLow, uint8_t keyHigh,
-                         uint8_t velLow, uint8_t velHigh) {
-  VGMRgn *newRgn = new VGMRgn(this, offset, length, keyLow, keyHigh, velLow, velHigh, sampNum);
+VGMRgn *VGMInstr::AddRgn(uint32_t offset, uint32_t length, int sampNum,
+                         uint8_t keyLow, uint8_t keyHigh, uint8_t velLow,
+                         uint8_t velHigh) {
+  VGMRgn *newRgn = new VGMRgn(this, offset, length, keyLow, keyHigh, velLow,
+                              velHigh, sampNum);
   aRgns.push_back(newRgn);
   return newRgn;
 }
 
-
-bool VGMInstr::LoadInstr() {
-  return true;
-}
-
+bool VGMInstr::LoadInstr() { return true; }

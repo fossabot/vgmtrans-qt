@@ -2,16 +2,12 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-enum HudsonSnesVersion: uint8_t; // see HudsonSnesFormat.h
+enum HudsonSnesVersion : uint8_t;  // see HudsonSnesFormat.h
 
-class HudsonSnesScanner:
-    public VGMScanner {
+class HudsonSnesScanner : public VGMScanner {
  public:
-  HudsonSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~HudsonSnesScanner(void) {
-  }
+  HudsonSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~HudsonSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForHudsonSnesFromARAM(RawFile *file);

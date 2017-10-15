@@ -8,7 +8,8 @@
 #define GRAPHRESSNES_LOOP_LEVEL_MAX 4
 
 enum GraphResSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -42,11 +43,11 @@ enum GraphResSnesSeqEventType {
   EVENT_END,
 };
 
-class GraphResSnesSeq
-    : public VGMSeq {
+class GraphResSnesSeq : public VGMSeq {
  public:
-  GraphResSnesSeq
-      (RawFile *file, GraphResSnesVersion ver, uint32_t seqdata_offset, std::wstring newName = L"GraphRes SNES Seq");
+  GraphResSnesSeq(RawFile *file, GraphResSnesVersion ver,
+                  uint32_t seqdata_offset,
+                  std::wstring newName = L"GraphRes SNES Seq");
   virtual ~GraphResSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -62,11 +63,10 @@ class GraphResSnesSeq
   void LoadEventMap(void);
 };
 
-
-class GraphResSnesTrack
-    : public SeqTrack {
+class GraphResSnesTrack : public SeqTrack {
  public:
-  GraphResSnesTrack(GraphResSnesSeq *parentFile, long offset = 0, long length = 0);
+  GraphResSnesTrack(GraphResSnesSeq *parentFile, long offset = 0,
+                    long length = 0);
   virtual void ResetVars(void);
   virtual bool ReadEvent(void);
 

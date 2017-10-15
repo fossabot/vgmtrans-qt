@@ -53,25 +53,24 @@ QT_END_NAMESPACE
 class DropArea;
 
 //! [DropSiteWindow header]
-class DropSiteWindow : public QWidget
-{
-    Q_OBJECT
+class DropSiteWindow : public QWidget {
+  Q_OBJECT
 
-public:
-    DropSiteWindow();
+ public:
+  DropSiteWindow();
 
-public slots:
-    void updateFormatsTable(const QMimeData *mimeData);
+ public slots:
+  void updateFormatsTable(const QMimeData *mimeData);
 
-private:
-    DropArea *dropArea;
-    QLabel *abstractLabel;
-    QTableWidget *formatsTable;
+ private:
+  DropArea *dropArea;
+  QLabel *abstractLabel;
+  QTableWidget *formatsTable;
 
-    QPushButton *clearButton;
-    QPushButton *quitButton;
-    QDialogButtonBox *buttonBox;
+  QPushButton *clearButton;
+  QPushButton *quitButton;
+  QDialogButtonBox *buttonBox;
 };
 //! [DropSiteWindow header]
 
-#endif // DROPSITEWINDOW_H
+#endif  // DROPSITEWINDOW_H

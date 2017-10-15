@@ -2,14 +2,10 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-class NinSnesScanner:
-    public VGMScanner {
+class NinSnesScanner : public VGMScanner {
  public:
-  NinSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~NinSnesScanner(void) {
-  }
+  NinSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~NinSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForNinSnesFromARAM(RawFile *file);

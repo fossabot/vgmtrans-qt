@@ -6,13 +6,11 @@
 
 using namespace std;
 
-#define PSF_TAG_SIG             "[TAG]"
-#define PSF_TAG_SIG_LEN         5
-#define PSF_STRIP_BUF_SIZE      4096
+#define PSF_TAG_SIG "[TAG]"
+#define PSF_TAG_SIG_LEN 5
+#define PSF_STRIP_BUF_SIZE 4096
 
-PSFFile::PSFFile(void) :
-    stripBuf(NULL),
-    stripBufSize(PSF_STRIP_BUF_SIZE) {
+PSFFile::PSFFile(void) : stripBuf(NULL), stripBufSize(PSF_STRIP_BUF_SIZE) {
   stripBuf = new uint8_t[PSF_STRIP_BUF_SIZE];
 
   exeData = new DataSeg();
@@ -22,9 +20,8 @@ PSFFile::PSFFile(void) :
   Clear();
 }
 
-PSFFile::PSFFile(RawFile *file) :
-    stripBuf(NULL),
-    stripBufSize(PSF_STRIP_BUF_SIZE) {
+PSFFile::PSFFile(RawFile *file)
+    : stripBuf(NULL), stripBufSize(PSF_STRIP_BUF_SIZE) {
   stripBuf = new uint8_t[PSF_STRIP_BUF_SIZE];
   stripBufSize = PSF_STRIP_BUF_SIZE;
 
@@ -69,8 +66,7 @@ bool PSFFile::Load(RawFile *file) {
   exeCRC = file->GetWord(12);
 
   // Consistency check on section lengths.
-  if ((reservedSize > fileSize) ||
-      (exeSize > fileSize) ||
+  if ((reservedSize > fileSize) || (exeSize > fileSize) ||
       ((16 + reservedSize + exeSize) > fileSize)) {
     errorstr = L"PSF header is inconsistent";
     return false;
@@ -155,25 +151,24 @@ bool PSFFile::Load(RawFile *file) {
     char *pVarVal = pSeparator + 1;
     char *pVarValEnd = pNewLine;
 
-    // Whitespace at the beginning/end of the line and before/after the = are ignored.
-    // All characters 0x01-0x20 are considered whitespace.
-    // (There must be no null (0x00) characters.)
-    // Trim them.
-    while (pVarNameEnd > pVarName && *(unsigned char *) (pVarNameEnd - 1) <= 0x20)
+    // Whitespace at the beginning/end of the line and before/after the = are
+    // ignored. All characters 0x01-0x20 are considered whitespace. (There must
+    // be no null (0x00) characters.) Trim them.
+    while (pVarNameEnd > pVarName &&
+           *(unsigned char *)(pVarNameEnd - 1) <= 0x20)
       pVarNameEnd--;
-    while (pVarValEnd > pVarVal && *(unsigned char *) (pVarValEnd - 1) <= 0x20)
+    while (pVarValEnd > pVarVal && *(unsigned char *)(pVarValEnd - 1) <= 0x20)
       pVarValEnd--;
-    while (pVarName < pVarNameEnd && *(unsigned char *) pVarName <= 0x20)
+    while (pVarName < pVarNameEnd && *(unsigned char *)pVarName <= 0x20)
       pVarName++;
-    while (pVarVal < pVarValEnd && *(unsigned char *) pVarVal <= 0x20)
-      pVarVal++;
+    while (pVarVal < pVarValEnd && *(unsigned char *)pVarVal <= 0x20) pVarVal++;
 
     // Read variable=value as string.
     string varName(pVarName, pVarNameEnd - pVarName);
     string varVal(pVarVal, pVarValEnd - pVarVal);
 
-    // Multiple-line variables must appear as consecutive lines using the same variable name.
-    // For instance:
+    // Multiple-line variables must appear as consecutive lines using the same
+    // variable name. For instance:
     //   comment=This is a
     //   comment=multiple-line
     //   comment=comment.
@@ -182,8 +177,7 @@ bool PSFFile::Load(RawFile *file) {
     if (it != tags.end() && it->first == varName) {
       it->second += "\n";
       it->second += varVal;
-    }
-    else {
+    } else {
       tags.insert(it, make_pair(varName, varVal));
     }
 
@@ -199,10 +193,11 @@ bool PSFFile::ReadExe(uint8_t *buf, size_t len, size_t stripLen) const {
     return true;
   }
 
-  uLong destlen = (uLong) len;
-  int zRet = myuncompress(buf, &destlen, exeCompData->data, (uLong) exeCompData->size, (uLong) stripLen);
+  uLong destlen = (uLong)len;
+  int zRet = myuncompress(buf, &destlen, exeCompData->data,
+                          (uLong)exeCompData->size, (uLong)stripLen);
   if (zRet != Z_OK) {
-    //errorstr = L"Decompression failed";
+    // errorstr = L"Decompression failed";
     return false;
   }
   return true;
@@ -216,10 +211,11 @@ bool PSFFile::ReadExeDataSeg(DataSeg *&seg, size_t len, size_t stripLen) const {
   }
 
   uint8_t *buf = new uint8_t[len];
-  uLong destlen = (uLong) len;
-  int zRet = myuncompress(buf, &destlen, exeCompData->data, (uLong) exeCompData->size, (uLong) stripLen);
+  uLong destlen = (uLong)len;
+  int zRet = myuncompress(buf, &destlen, exeCompData->data,
+                          (uLong)exeCompData->size, (uLong)stripLen);
   if (zRet != Z_OK) {
-    //errorstr = L"Decompression failed";
+    // errorstr = L"Decompression failed";
     seg = NULL;
     delete newSeg;
     delete[] buf;
@@ -227,7 +223,7 @@ bool PSFFile::ReadExeDataSeg(DataSeg *&seg, size_t len, size_t stripLen) const {
   }
 
   size_t actualSize = destlen;
-  newSeg->load(buf, 0, (uint32_t) actualSize);
+  newSeg->load(buf, 0, (uint32_t)actualSize);
   seg = newSeg;
   return true;
 }
@@ -237,8 +233,7 @@ bool PSFFile::Decompress(size_t decompressed_size) {
     exeData->clear();
     if (exeCompData->size == 0) {
       return true;
-    }
-    else {
+    } else {
       errorstr = L"Decompression failed";
       return false;
     }
@@ -250,8 +245,9 @@ bool PSFFile::Decompress(size_t decompressed_size) {
     return false;
   }
 
-  uLong destlen = (uLong) decompressed_size;
-  int zRet = uncompress(buf, &destlen, exeCompData->data, (uLong) exeCompData->size);
+  uLong destlen = (uLong)decompressed_size;
+  int zRet =
+      uncompress(buf, &destlen, exeCompData->data, (uLong)exeCompData->size);
   if (zRet != Z_STREAM_END) {
     errorstr = L"Decompression failed";
     delete[] buf;
@@ -259,30 +255,20 @@ bool PSFFile::Decompress(size_t decompressed_size) {
   }
   size_t actualSize = destlen;
 
-  exeData->load(buf, 0, (uint32_t) actualSize);
+  exeData->load(buf, 0, (uint32_t)actualSize);
   decompressed = true;
   return true;
 }
 
-bool PSFFile::IsDecompressed() const {
-  return decompressed;
-}
+bool PSFFile::IsDecompressed() const { return decompressed; }
 
-uint8_t PSFFile::GetVersion(void) const {
-  return version;
-}
+uint8_t PSFFile::GetVersion(void) const { return version; }
 
-size_t PSFFile::GetExeSize(void) const {
-  return exeData->size;
-}
+size_t PSFFile::GetExeSize(void) const { return exeData->size; }
 
-size_t PSFFile::GetCompressedExeSize(void) const {
-  return exeCompData->size;
-}
+size_t PSFFile::GetCompressedExeSize(void) const { return exeCompData->size; }
 
-size_t PSFFile::GetReservedSize(void) const {
-  return reservedData->size;
-}
+size_t PSFFile::GetReservedSize(void) const { return reservedData->size; }
 
 void PSFFile::Clear() {
   exeData->clear();
@@ -295,40 +281,34 @@ void PSFFile::Clear() {
   parent = NULL;
 }
 
-const wchar_t *PSFFile::GetError(void) const {
-  return errorstr;
-}
+const wchar_t *PSFFile::GetError(void) const { return errorstr; }
 
 // original from zlib/uncompr.c
-int PSFFile::myuncompress(
-    Bytef *dest,
-    uLongf *destLen,
-    const Bytef *source,
-    uLong sourceLen,
-    uLong stripLen) const {
+int PSFFile::myuncompress(Bytef *dest, uLongf *destLen, const Bytef *source,
+                          uLong sourceLen, uLong stripLen) const {
   z_stream stream;
   int err;
 
   uLong stripAvailLen = 0;
   uLong strippedLen = 0;
 
-  stream.next_in = (z_const Bytef *) source;
-  stream.avail_in = (uInt) sourceLen;
+  stream.next_in = (z_const Bytef *)source;
+  stream.avail_in = (uInt)sourceLen;
   /* Check for source > 64K on 16-bit machine: */
-  if ((uLong) stream.avail_in != sourceLen) return Z_BUF_ERROR;
+  if ((uLong)stream.avail_in != sourceLen) return Z_BUF_ERROR;
 
   stream.next_out = dest;
-  stream.avail_out = (uInt) *destLen;
-  if ((uLong) stream.avail_out != *destLen) return Z_BUF_ERROR;
+  stream.avail_out = (uInt)*destLen;
+  if ((uLong)stream.avail_out != *destLen) return Z_BUF_ERROR;
 
   if (stripLen != 0) {
-    stripAvailLen = min(stripLen, (uLong) stripBufSize);
-    stream.next_out = (z_const Bytef *) stripBuf;
-    stream.avail_out = (uInt) stripAvailLen;
+    stripAvailLen = min(stripLen, (uLong)stripBufSize);
+    stream.next_out = (z_const Bytef *)stripBuf;
+    stream.avail_out = (uInt)stripAvailLen;
   }
 
-  stream.zalloc = (alloc_func) 0;
-  stream.zfree = (free_func) 0;
+  stream.zalloc = (alloc_func)0;
+  stream.zfree = (free_func)0;
 
   err = inflateInit(&stream);
   if (err != Z_OK) return err;
@@ -338,18 +318,16 @@ int PSFFile::myuncompress(
     if (err == Z_OK && strippedLen + stripAvailLen < stripLen) {
       // try stripping more bytes
       strippedLen += stripAvailLen;
-      stripAvailLen = min(stripLen - strippedLen, (uLong) stripBufSize);
-      stream.next_out = (z_const Bytef *) stripBuf;
-      stream.avail_out = (uInt) stripAvailLen;
-    }
-    else if (err == Z_OK && stripAvailLen != 0) {
+      stripAvailLen = min(stripLen - strippedLen, (uLong)stripBufSize);
+      stream.next_out = (z_const Bytef *)stripBuf;
+      stream.avail_out = (uInt)stripAvailLen;
+    } else if (err == Z_OK && stripAvailLen != 0) {
       // finish stripping
       strippedLen += stripAvailLen;
       stripAvailLen = 0;
       stream.next_out = dest;
-      stream.avail_out = (uInt) *destLen;
-    }
-    else {
+      stream.avail_out = (uInt)*destLen;
+    } else {
       if (err == Z_OK) {
         inflateEnd(&stream);
         if (stripAvailLen != 0)
@@ -357,11 +335,9 @@ int PSFFile::myuncompress(
         else
           *destLen = stream.total_out;
         return Z_OK;
-      }
-      else if (err != Z_STREAM_END) {
+      } else if (err != Z_STREAM_END) {
         inflateEnd(&stream);
-        if (err == Z_NEED_DICT)
-          return Z_DATA_ERROR;
+        if (err == Z_NEED_DICT) return Z_DATA_ERROR;
         return err;
       }
       *destLen = stream.total_out;

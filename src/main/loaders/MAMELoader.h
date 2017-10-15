@@ -5,21 +5,16 @@
 class TiXmlElement;
 class VirtFile;
 
-enum LoadMethod {
-  LM_APPEND,
-  LM_APPEND_SWAP16,
-  LM_DEINTERLACE
-};
+enum LoadMethod { LM_APPEND, LM_APPEND_SWAP16, LM_DEINTERLACE };
 
 using namespace std;
 
 typedef struct _MAMERomGroupEntry {
-  _MAMERomGroupEntry() : file(NULL) { }
-  template<class T>
+  _MAMERomGroupEntry() : file(NULL) {}
+  template <class T>
   bool GetAttribute(const std::string &attrName, T *out) {
     string strValue = attributes[attrName];
-    if (strValue.empty())
-      return false;            //Attribute name does not exist.
+    if (strValue.empty()) return false;  // Attribute name does not exist.
 
     FromString(strValue, out);
     return true;
@@ -35,29 +30,30 @@ typedef struct _MAMERomGroupEntry {
 } MAMERomGroupEntry;
 
 typedef struct _MAMEGameEntry {
-  _MAMEGameEntry() { }
+  _MAMEGameEntry() {}
   MAMERomGroupEntry *GetRomGroupOfType(const std::string &strType);
 
   std::string name;
   std::string format;
   float fmt_version;
   std::string fmt_version_str;
-  //map<const std::string, const std::string> attributes;
+  // map<const std::string, const std::string> attributes;
   std::list<MAMERomGroupEntry> romgroupentries;
 } MAMEGameEntry;
 
 typedef std::map<std::string, MAMEGameEntry *> GameMap;
 
-
-class MAMELoader:
-    public VGMLoader {
+class MAMELoader : public VGMLoader {
  public:
   MAMELoader();
   ~MAMELoader();
   virtual PostLoadCommand Apply(RawFile *theFile);
+
  private:
-  VirtFile *LoadRomGroup(MAMERomGroupEntry *romgroupentry, const std::string &format, unzFile &cur_file);
+  VirtFile *LoadRomGroup(MAMERomGroupEntry *romgroupentry,
+                         const std::string &format, unzFile &cur_file);
   void DeleteBuffers(std::list<std::pair<uint8_t *, uint32_t>> &buffers);
+
  private:
   int LoadXML();
   MAMEGameEntry *LoadGameEntry(TiXmlElement *gameElmt);

@@ -1,0 +1,6 @@
+---
+# Use Google code formatting rules.
+Language: Cpp
+BasedOnStyle: Google
+SortIncludes: false
+...

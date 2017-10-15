@@ -6,26 +6,24 @@
 class VGMFile;
 
 class HexView : public QAbstractScrollArea {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    HexView(VGMFile *vgmfile, QWidget *parent = 0);
-    ~HexView();
+ public:
+  HexView(VGMFile *vgmfile, QWidget *parent = 0);
+  ~HexView();
 
-private:
-    VGMFile *vgmfile;
-    int mLineHeight;
-    int mLinesPerScreen;
-    int mLineBaseline;
+ private:
+  VGMFile *vgmfile;
+  int mLineHeight;
+  int mLinesPerScreen;
+  int mLineBaseline;
 
-    void drawLineColor(QPainter &painter, QFontMetrics &fontMetrics, uint32_t line);
+  void drawLineColor(QPainter &painter, QFontMetrics &fontMetrics,
+                     uint32_t line);
 
-
-protected:
-    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
-    void resizeEvent(QResizeEvent *event);
-
+ protected:
+  void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
+  void resizeEvent(QResizeEvent *event);
 };
 
-
-#endif //VGMTRANS_HEXVIEW_H
+#endif  // VGMTRANS_HEXVIEW_H

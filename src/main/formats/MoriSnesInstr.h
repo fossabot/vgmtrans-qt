@@ -5,15 +5,14 @@
 #include "MoriSnesFormat.h"
 
 struct MoriSnesInstrHint {
-  MoriSnesInstrHint() :
-      startAddress(0),
-      size(0),
-      seqAddress(0),
-      seqSize(0),
-      rgnAddress(0),
-      transpose(0),
-      pan(0) {
-  }
+  MoriSnesInstrHint()
+      : startAddress(0),
+        size(0),
+        seqAddress(0),
+        seqSize(0),
+        rgnAddress(0),
+        transpose(0),
+        pan(0) {}
 
   uint16_t startAddress;
   uint16_t size;
@@ -25,11 +24,7 @@ struct MoriSnesInstrHint {
 };
 
 struct MoriSnesInstrHintDir {
-  MoriSnesInstrHintDir() :
-      startAddress(0),
-      size(0),
-      percussion(false) {
-  }
+  MoriSnesInstrHintDir() : startAddress(0), size(0), percussion(false) {}
 
   uint16_t startAddress;
   uint16_t size;
@@ -43,12 +38,9 @@ struct MoriSnesInstrHintDir {
 // MoriSnesInstrSet
 // ****************
 
-class MoriSnesInstrSet:
-    public VGMInstrSet {
+class MoriSnesInstrSet : public VGMInstrSet {
  public:
-  MoriSnesInstrSet(RawFile *file,
-                   MoriSnesVersion ver,
-                   uint32_t spcDirAddr,
+  MoriSnesInstrSet(RawFile *file, MoriSnesVersion ver, uint32_t spcDirAddr,
                    std::vector<uint16_t> instrumentAddresses,
                    std::map<uint16_t, MoriSnesInstrHintDir> instrumentHints,
                    const std::wstring &name = L"MoriSnesInstrSet");
@@ -70,14 +62,10 @@ class MoriSnesInstrSet:
 // MoriSnesInstr
 // *************
 
-class MoriSnesInstr
-    : public VGMInstr {
+class MoriSnesInstr : public VGMInstr {
  public:
-  MoriSnesInstr(VGMInstrSet *instrSet,
-                MoriSnesVersion ver,
-                uint8_t instrNum,
-                uint32_t spcDirAddr,
-                const MoriSnesInstrHintDir &instrHintDir,
+  MoriSnesInstr(VGMInstrSet *instrSet, MoriSnesVersion ver, uint8_t instrNum,
+                uint32_t spcDirAddr, const MoriSnesInstrHintDir &instrHintDir,
                 const std::wstring &name = L"MoriSnesInstr");
   virtual ~MoriSnesInstr(void);
 
@@ -94,14 +82,10 @@ class MoriSnesInstr
 // MoriSnesRgn
 // ***********
 
-class MoriSnesRgn
-    : public VGMRgn {
+class MoriSnesRgn : public VGMRgn {
  public:
-  MoriSnesRgn(MoriSnesInstr *instr,
-              MoriSnesVersion ver,
-              uint32_t spcDirAddr,
-              const MoriSnesInstrHint &instrHint,
-              int8_t percNoteKey = -1);
+  MoriSnesRgn(MoriSnesInstr *instr, MoriSnesVersion ver, uint32_t spcDirAddr,
+              const MoriSnesInstrHint &instrHint, int8_t percNoteKey = -1);
   virtual ~MoriSnesRgn(void);
 
   virtual bool LoadRgn();

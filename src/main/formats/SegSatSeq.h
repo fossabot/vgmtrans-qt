@@ -3,8 +3,7 @@
 #include "SegSatFormat.h"
 #include "SegSatScanner.h"
 
-class SegSatSeq:
-    public VGMSeqNoTrks {
+class SegSatSeq : public VGMSeqNoTrks {
  public:
   SegSatSeq(RawFile *file, uint32_t offset);
   virtual ~SegSatSeq(void);

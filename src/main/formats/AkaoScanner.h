@@ -1,10 +1,10 @@
 #pragma once
 #include "Scanner.h"
 
-class AkaoScanner:
-    public VGMScanner {
+class AkaoScanner : public VGMScanner {
  public:
   AkaoScanner(void);
+
  public:
   virtual ~AkaoScanner(void);
 

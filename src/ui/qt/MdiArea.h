@@ -6,25 +6,24 @@
 class QAbstractButton;
 
 class MdiArea : public QMdiArea {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    static MdiArea *getInstance() {
-        static MdiArea *instance = new MdiArea;
-        return instance;
-    }
+ public:
+  static MdiArea *getInstance() {
+    static MdiArea *instance = new MdiArea;
+    return instance;
+  }
 
-    MdiArea(QWidget *parent = 0);
+  MdiArea(QWidget *parent = 0);
 
-    QMdiSubWindow *addSubWindow(QWidget *widget);
+  QMdiSubWindow *addSubWindow(QWidget *widget);
 
-protected:
-    QTabBar *getTabBar();
-    QAbstractButton *getCloseButton();
+ protected:
+  QTabBar *getTabBar();
+  QAbstractButton *getCloseButton();
 
-public slots:
-    void closeButtonClicked();
-
+ public slots:
+  void closeButtonClicked();
 };
 
-#endif //VGMTRANS_MDIAREA_H
+#endif  // VGMTRANS_MDIAREA_H

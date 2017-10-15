@@ -3,10 +3,11 @@
 #include "SeqTrack.h"
 #include "SuzukiSnesFormat.h"
 
-#define SUZUKISNES_LOOP_LEVEL_MAX   10
+#define SUZUKISNES_LOOP_LEVEL_MAX 10
 
 enum SuzukiSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -70,11 +71,10 @@ enum SuzukiSnesSeqEventType {
   EVENT_CALL_SFX_HI,
 };
 
-class SuzukiSnesSeq
-    : public VGMSeq {
+class SuzukiSnesSeq : public VGMSeq {
  public:
-  SuzukiSnesSeq
-      (RawFile *file, SuzukiSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"Square SUZUKI SNES Seq");
+  SuzukiSnesSeq(RawFile *file, SuzukiSnesVersion ver, uint32_t seqdataOffset,
+                std::wstring newName = L"Square SUZUKI SNES Seq");
   virtual ~SuzukiSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -94,9 +94,7 @@ class SuzukiSnesSeq
   void LoadEventMap(void);
 };
 
-
-class SuzukiSnesTrack
-    : public SeqTrack {
+class SuzukiSnesTrack : public SeqTrack {
  public:
   SuzukiSnesTrack(SuzukiSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);

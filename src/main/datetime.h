@@ -16,10 +16,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -47,10 +47,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -112,12 +112,9 @@ class TimeSpan {
   static const int64_t TicksPerMinute = 600000000LL;
   static const int64_t TicksPerSecond = 10000000LL;
 
-  TimeSpan() {
-  }
+  TimeSpan() {}
 
-  TimeSpan(int64_t ticks)
-      : _ticks(ticks) {
-  }
+  TimeSpan(int64_t ticks) : _ticks(ticks) {}
 
   TimeSpan(int hours, int minutes, int seconds) {
     _ticks = CalculateTicks(0, hours, minutes, seconds, 0);
@@ -131,86 +128,95 @@ class TimeSpan {
     _ticks = CalculateTicks(days, hours, minutes, seconds, milliseconds);
   }
 
-  int get_Days() const { return (int) (_ticks / TicksPerDay); }
-  int get_Hours() const { return (int) (_ticks % TicksPerDay / TicksPerHour); }
-  int get_Milliseconds() const { return (int) (_ticks % TicksPerSecond / TicksPerMillisecond); }
-  int get_Minutes() const { return (int) (_ticks % TicksPerHour / TicksPerMinute); }
-  int get_Seconds() const { return (int) (_ticks % TicksPerMinute / TicksPerSecond); }
+  int get_Days() const { return (int)(_ticks / TicksPerDay); }
+  int get_Hours() const { return (int)(_ticks % TicksPerDay / TicksPerHour); }
+  int get_Milliseconds() const {
+    return (int)(_ticks % TicksPerSecond / TicksPerMillisecond);
+  }
+  int get_Minutes() const {
+    return (int)(_ticks % TicksPerHour / TicksPerMinute);
+  }
+  int get_Seconds() const {
+    return (int)(_ticks % TicksPerMinute / TicksPerSecond);
+  }
   int64_t get_Ticks() const { return _ticks; }
-  double get_TotalDays() const { return (double) _ticks / TicksPerDay; }
-  double get_TotalHours() const { return (double) _ticks / TicksPerHour; }
-  double get_TotalMilliseconds() const { return (double) _ticks / TicksPerMillisecond; }
-  double get_TotalMinutes() const { return (double) _ticks / TicksPerMinute; }
-  double get_TotalSeconds() const { return (double) _ticks / TicksPerSecond; }
+  double get_TotalDays() const { return (double)_ticks / TicksPerDay; }
+  double get_TotalHours() const { return (double)_ticks / TicksPerHour; }
+  double get_TotalMilliseconds() const {
+    return (double)_ticks / TicksPerMillisecond;
+  }
+  double get_TotalMinutes() const { return (double)_ticks / TicksPerMinute; }
+  double get_TotalSeconds() const { return (double)_ticks / TicksPerSecond; }
 
   TimeSpan Add(const TimeSpan &ts) {
     return TimeSpan(_ticks + ts._ticks);
-    //removed:
-    //catch (OverflowException) throw new OverflowException (Locale.GetText ("Resulting timespan is too big."));
+    // removed:
+    // catch (OverflowException) throw new OverflowException (Locale.GetText
+    // ("Resulting timespan is too big."));
   }
 
   static int Compare(const TimeSpan &t1, const TimeSpan &t2) {
-    if (t1._ticks < t2._ticks)
-      return -1;
-    if (t1._ticks > t2._ticks)
-      return 1;
+    if (t1._ticks < t2._ticks) return -1;
+    if (t1._ticks > t2._ticks) return 1;
     return 0;
   }
 
-  int CompareTo(const TimeSpan &value) {
-    return Compare(*this, value);
-  }
+  int CompareTo(const TimeSpan &value) { return Compare(*this, value); }
 
   TimeSpan Duration() {
     return TimeSpan(_ticks < 0 ? -_ticks : _ticks);
-    //removed:
-    //catch (OverflowException) throw new OverflowException (Locale.GetText ("This TimeSpan value is MinValue so you cannot get the duration."));
+    // removed:
+    // catch (OverflowException) throw new OverflowException (Locale.GetText
+    // ("This TimeSpan value is MinValue so you cannot get the duration."));
   }
 
-//	static TimeSpan FromDays (double value)
-//	{
-//		return From (value, TicksPerDay);
-//	}
-//
-//	static TimeSpan FromHours (double value)
-//	{
-//		return From (value, TicksPerHour);
-//	}
-//
-//	static TimeSpan FromMinutes (double value)
-//	{
-//		return From (value, TicksPerMinute);
-//	}
-//
-//	static TimeSpan FromSeconds (double value)
-//	{
-//		return From (value, TicksPerSecond);
-//	}
-//
-//	static TimeSpan FromMilliseconds (double value)
-//	{
-//		return From (value, TicksPerMillisecond);
-//	}
-//
-//	static TimeSpan FromTicks (int64_t value)
-//	{
-//		return TimeSpan (value);
-//	}
+  //	static TimeSpan FromDays (double value)
+  //	{
+  //		return From (value, TicksPerDay);
+  //	}
+  //
+  //	static TimeSpan FromHours (double value)
+  //	{
+  //		return From (value, TicksPerHour);
+  //	}
+  //
+  //	static TimeSpan FromMinutes (double value)
+  //	{
+  //		return From (value, TicksPerMinute);
+  //	}
+  //
+  //	static TimeSpan FromSeconds (double value)
+  //	{
+  //		return From (value, TicksPerSecond);
+  //	}
+  //
+  //	static TimeSpan FromMilliseconds (double value)
+  //	{
+  //		return From (value, TicksPerMillisecond);
+  //	}
+  //
+  //	static TimeSpan FromTicks (int64_t value)
+  //	{
+  //		return TimeSpan (value);
+  //	}
 
   TimeSpan Negate() {
-    //removed error handling
-    //if (_ticks == MinValue()._ticks) throw new OverflowException (Locale.GetText ( "This TimeSpan value is MinValue and cannot be negated."));
+    // removed error handling
+    // if (_ticks == MinValue()._ticks) throw new OverflowException
+    // (Locale.GetText ( "This TimeSpan value is MinValue and cannot be
+    // negated."));
     return TimeSpan(-_ticks);
   }
 
   TimeSpan Subtract(const TimeSpan &ts) {
-    //removed error handling
-    //try { checked {
+    // removed error handling
+    // try { checked {
     return TimeSpan(_ticks - ts._ticks);
     //	}
     //}
-    //catch (OverflowException) {
-    //	throw new OverflowException (Locale.GetText ("Resulting timespan is too big."));
+    // catch (OverflowException) {
+    //	throw new OverflowException (Locale.GetText ("Resulting timespan is too
+    //big."));
     //}
   }
 
@@ -220,49 +226,37 @@ class TimeSpan {
     return temp;
   }
 
-  bool operator==(const TimeSpan &t2) const {
-    return _ticks == t2._ticks;
-  }
+  bool operator==(const TimeSpan &t2) const { return _ticks == t2._ticks; }
 
-  bool operator>(const TimeSpan &t2) const {
-    return _ticks > t2._ticks;
-  }
+  bool operator>(const TimeSpan &t2) const { return _ticks > t2._ticks; }
 
-  bool operator>=(const TimeSpan &t2) const {
-    return _ticks >= t2._ticks;
-  }
+  bool operator>=(const TimeSpan &t2) const { return _ticks >= t2._ticks; }
 
-  bool operator!=(const TimeSpan &t2) const {
-    return _ticks != t2._ticks;
-  }
+  bool operator!=(const TimeSpan &t2) const { return _ticks != t2._ticks; }
 
-  bool operator<(const TimeSpan &t2) const {
-    return _ticks < t2._ticks;
-  }
+  bool operator<(const TimeSpan &t2) const { return _ticks < t2._ticks; }
 
-  bool operator<=(const TimeSpan &t2) const {
-    return _ticks <= t2._ticks;
-  }
+  bool operator<=(const TimeSpan &t2) const { return _ticks <= t2._ticks; }
 
   TimeSpan operator-(const TimeSpan &t2) const {
     TimeSpan temp = *this;
     return temp.Subtract(t2);
   }
 
-  TimeSpan operator-() {
-    return Negate();
-  }
-
+  TimeSpan operator-() { return Negate(); }
 
  private:
   int64_t _ticks;
 
-  static int64_t CalculateTicks(int days, int hours, int minutes, int seconds, int milliseconds) {
+  static int64_t CalculateTicks(int days, int hours, int minutes, int seconds,
+                                int milliseconds) {
     // there's no overflow checks for hours, minutes, ...
-    // so big hours/minutes values can overflow at some point and change expected values
-    int hrssec = (hours * 3600); // break point at (Int32.MaxValue - 596523)
+    // so big hours/minutes values can overflow at some point and change
+    // expected values
+    int hrssec = (hours * 3600);  // break point at (Int32.MaxValue - 596523)
     int minsec = (minutes * 60);
-    int64_t t = ((int64_t) (hrssec + minsec + seconds) * 1000L + (int64_t) milliseconds);
+    int64_t t =
+        ((int64_t)(hrssec + minsec + seconds) * 1000L + (int64_t)milliseconds);
     t *= 10000;
 
     bool overflow = false;
@@ -276,21 +270,18 @@ class TimeSpan {
         t += td;
         // positive days -> total ticks should be lower
         overflow = (ticks > t);
-      }
-      else {
+      } else {
         t += td;
         // positive + positive != negative result
         overflow = (t < 0);
       }
-    }
-    else if (days < 0) {
+    } else if (days < 0) {
       int64_t td = TicksPerDay * days;
       if (t <= 0) {
         t += td;
         // negative + negative != positive result
         overflow = (t > 0);
-      }
-      else {
+      } else {
         int64_t ticks = t;
         t += td;
         // negative days -> total ticks should be lower
@@ -298,35 +289,39 @@ class TimeSpan {
       }
     }
 
-    //removed:
-    //if (overflow) throw ArgumentOutOfRangeException ("The timespan is too big or too small.");
+    // removed:
+    // if (overflow) throw ArgumentOutOfRangeException ("The timespan is too big
+    // or too small.");
 
     return t;
   }
 
-//	static TimeSpan From (double value, int64_t tickMultiplicator)
-//	{
-//		//a bunch of error handling removed
-//
-//		//if (Double.IsNaN (value)) throw new ArgumentException (Locale.GetText ("Value cannot be NaN."), "value");
-//		//if (Double.IsNegativeInfinity (value) || Double.IsPositiveInfinity (value) ||
-//		//	(value < MinValue.Ticks) || (value > MaxValue.Ticks))
-//		//	throw new OverflowException (Locale.GetText ("Outside range [MinValue,MaxValue]"));
-//
-//		//try {
-//		value = (value * (tickMultiplicator / TicksPerMillisecond));
-//
-//		//	checked {
-//		//		long val = (long) Math.Round(value);
-//		//		return new TimeSpan (val * TicksPerMillisecond);
-//		//	}
-//		//}
-//		//catch (OverflowException) {
-//		//	throw new OverflowException (Locale.GetText ("Resulting timespan is too big."));
-//		//}
-//		//}
-//	}
-
+  //	static TimeSpan From (double value, int64_t tickMultiplicator)
+  //	{
+  //		//a bunch of error handling removed
+  //
+  //		//if (Double.IsNaN (value)) throw new ArgumentException
+  //(Locale.GetText ("Value cannot be NaN."), "value");
+  //		//if (Double.IsNegativeInfinity (value) || Double.IsPositiveInfinity
+  //(value) ||
+  //		//	(value < MinValue.Ticks) || (value > MaxValue.Ticks))
+  //		//	throw new OverflowException (Locale.GetText ("Outside range
+  //[MinValue,MaxValue]"));
+  //
+  //		//try {
+  //		value = (value * (tickMultiplicator / TicksPerMillisecond));
+  //
+  //		//	checked {
+  //		//		long val = (long) Math.Round(value);
+  //		//		return new TimeSpan (val * TicksPerMillisecond);
+  //		//	}
+  //		//}
+  //		//catch (OverflowException) {
+  //		//	throw new OverflowException (Locale.GetText ("Resulting
+  //timespan is too big."));
+  //		//}
+  //		//}
+  //	}
 };
 
 class DateTime {
@@ -343,7 +338,7 @@ class DateTime {
   // which is the constant ticks from the .NET epoch
   static const int64_t w32file_epoch = 504911232000000000LL;
 
-  //private const long MAX_VALUE_TICKS = 3155378975400000000L;
+  // private const long MAX_VALUE_TICKS = 3155378975400000000L;
   // -- Microsoft .NET has this value.
   static const int64_t MAX_VALUE_TICKS = 3155378975999999999LL;
 
@@ -353,13 +348,13 @@ class DateTime {
   //
   static const int64_t UnixEpoch = 621355968000000000LL;
 
-
   static const int daysmonth[13];
   static const int daysmonthleap[13];
   static const char *monthnames[13];
 
-  void init(int year, int month, int day, int hour, int minute, int second, int millisecond) {
-    //removed error handling
+  void init(int year, int month, int day, int hour, int minute, int second,
+            int millisecond) {
+    // removed error handling
     /*	if ( year < 1 || year > 9999 ||
     month < 1 || month >12  ||
     day < 1 || day > DaysInMonth(year, month) ||
@@ -370,9 +365,9 @@ class DateTime {
     throw new ArgumentOutOfRangeException ("Parameters describe an " +
     "unrepresentable DateTime.");*/
 
-    ticks = TimeSpan(AbsoluteDays(year, month, day), hour, minute, second, millisecond);
+    ticks = TimeSpan(AbsoluteDays(year, month, day), hour, minute, second,
+                     millisecond);
   }
-
 
   static int AbsoluteDays(int year, int month, int day) {
     const int *days;
@@ -380,18 +375,12 @@ class DateTime {
 
     days = (IsLeapYear(year) ? daysmonthleap : daysmonth);
 
-    while (m < month)
-      temp += days[m++];
-    return ((day - 1) + temp + (365 * (year - 1)) + ((year - 1) / 4) - ((year - 1) / 100) + ((year - 1) / 400));
+    while (m < month) temp += days[m++];
+    return ((day - 1) + temp + (365 * (year - 1)) + ((year - 1) / 4) -
+            ((year - 1) / 100) + ((year - 1) / 400));
   }
 
-
-  enum Which {
-    Which_Day,
-    Which_DayYear,
-    Which_Month,
-    Which_Year
-  };
+  enum Which { Which_Day, Which_DayYear, Which_Month, Which_Year };
 
   int FromTicks(Which what) const {
     int num400, num100, num4, numyears;
@@ -404,7 +393,7 @@ class DateTime {
     totaldays -= num400 * dp400;
 
     num100 = (totaldays / dp100);
-    if (num100 == 4)   // leap
+    if (num100 == 4)  // leap
       num100 = 3;
     totaldays -= (num100 * dp100);
 
@@ -413,41 +402,36 @@ class DateTime {
 
     numyears = totaldays / 365;
 
-    if (numyears == 4)  //leap
+    if (numyears == 4)  // leap
       numyears = 3;
     if (what == Which_Year)
       return num400 * 400 + num100 * 100 + num4 * 4 + numyears + 1;
 
     totaldays -= (numyears * 365);
-    if (what == Which_DayYear)
-      return totaldays + 1;
+    if (what == Which_DayYear) return totaldays + 1;
 
-    if ((numyears == 3) && ((num100 == 3) || !(num4 == 24))) //31 dec leapyear
+    if ((numyears == 3) && ((num100 == 3) || !(num4 == 24)))  // 31 dec leapyear
       days = daysmonthleap;
 
-    while (totaldays >= days[M])
-      totaldays -= days[M++];
+    while (totaldays >= days[M]) totaldays -= days[M++];
 
-    if (what == Which_Month)
-      return M;
+    if (what == Which_Month) return M;
 
     return totaldays + 1;
   }
 
  public:
-  DateTime()
-      : ticks(0) {
-  }
+  DateTime() : ticks(0) {}
 
   static const char *GetNameOfMonth(int month) { return monthnames[month]; }
 
   DateTime(int64_t ticks) {
     this->ticks = TimeSpan(ticks);
-    //removed error handling
-    //if (ticks < get_MinValue().get_Ticks() || ticks > get_MaxValue().get_Ticks()) {
-    //	string msg = Locale.GetText ("Value {0} is outside the valid range [{1},{2}].",
-    //		ticks, MinValue.Ticks, MaxValue.Ticks);
-    //	throw new ArgumentOutOfRangeException ("ticks", msg);
+    // removed error handling
+    // if (ticks < get_MinValue().get_Ticks() || ticks >
+    // get_MaxValue().get_Ticks()) { 	string msg = Locale.GetText ("Value {0}
+    //is outside the valid range [{1},{2}].", 		ticks, MinValue.Ticks,
+    //MaxValue.Ticks); 	throw new ArgumentOutOfRangeException ("ticks", msg);
     //}
   }
 
@@ -461,23 +445,21 @@ class DateTime {
     return val;
   }
 
-  DateTime(int year, int month, int day) {
-    init(year, month, day, 0, 0, 0, 0);
-  }
+  DateTime(int year, int month, int day) { init(year, month, day, 0, 0, 0, 0); }
 
   DateTime(int year, int month, int day, int hour, int minute, int second) {
     init(year, month, day, hour, minute, second, 0);
   }
 
-  DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond) {
+  DateTime(int year, int month, int day, int hour, int minute, int second,
+           int millisecond) {
     init(year, month, day, hour, minute, second, millisecond);
   }
 
-
   DateTime(bool check, const TimeSpan &value) {
-    //removed error handling
-    //if (check && (value.Ticks < MinValue.Ticks || value.Ticks > MaxValue.Ticks))
-    //	throw new ArgumentOutOfRangeException ();
+    // removed error handling
+    // if (check && (value.Ticks < MinValue.Ticks || value.Ticks >
+    // MaxValue.Ticks)) 	throw new ArgumentOutOfRangeException ();
 
     ticks = value;
   }
@@ -486,61 +468,47 @@ class DateTime {
     return DateTime(get_Year(), get_Month(), get_Day());
   }
 
-  int get_Month() const {
-    return FromTicks(Which_Month);
-  }
+  int get_Month() const { return FromTicks(Which_Month); }
 
-  int get_Day() const {
-    return FromTicks(Which_Day);
-  }
+  int get_Day() const { return FromTicks(Which_Day); }
 
   DayOfWeek get_DayOfWeek() const {
-    return ((DayOfWeek) ((ticks.get_Days() + 1) % 7));
+    return ((DayOfWeek)((ticks.get_Days() + 1) % 7));
   }
 
-  int get_DayOfYear() const {
-    return FromTicks(Which_DayYear);
-  }
+  int get_DayOfYear() const { return FromTicks(Which_DayYear); }
 
   TimeSpan get_TimeOfDay() const {
     return TimeSpan(ticks.get_Ticks() % TimeSpan::TicksPerDay);
   }
 
-  int get_Hour() const {
-    return ticks.get_Hours();
-  }
+  int get_Hour() const { return ticks.get_Hours(); }
 
-  int get_Minute() const {
-    return ticks.get_Minutes();
-  }
+  int get_Minute() const { return ticks.get_Minutes(); }
 
-  int get_Second() const {
-    return ticks.get_Seconds();
-  }
+  int get_Second() const { return ticks.get_Seconds(); }
 
-  int get_Millisecond() const {
-    return ticks.get_Milliseconds();
-  }
+  int get_Millisecond() const { return ticks.get_Milliseconds(); }
 
-  //internal static extern int64_t GetTimeMonotonic ();
-  //internal static extern int64_t GetNow ();
+  // internal static extern int64_t GetTimeMonotonic ();
+  // internal static extern int64_t GetNow ();
 
   static DateTime get_Now() {
 #ifdef _ATL_VER
     SYSTEMTIME stTime;
     GetLocalTime(&stTime);
-    return DateTime(stTime.wYear, stTime.wMonth, stTime.wDay, stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds);
+    return DateTime(stTime.wYear, stTime.wMonth, stTime.wDay, stTime.wHour,
+                    stTime.wMinute, stTime.wSecond, stTime.wMilliseconds);
 #else
     time_t timer;
     time(&timer);
     struct tm *tm = localtime(&timer);
-    return DateTime(tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+    return DateTime(tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
+                    tm->tm_hour, tm->tm_min, tm->tm_sec);
 #endif
   }
 
-  int64_t get_Ticks() const {
-    return ticks.get_Ticks();
-  }
+  int64_t get_Ticks() const { return ticks.get_Ticks(); }
 
   static DateTime get_Today() {
     DateTime now = get_Now();
@@ -548,9 +516,7 @@ class DateTime {
     return today;
   }
 
-  int get_Year() const {
-    return FromTicks(Which_Year);
-  }
+  int get_Year() const { return FromTicks(Which_Year); }
 
   DateTime Add(const TimeSpan &value) const {
     DateTime ret = AddTicks(value.get_Ticks());
@@ -562,9 +528,9 @@ class DateTime {
   }
 
   DateTime AddTicks(const int64_t value) const {
-    //removed error handling
-    //if ((value + ticks.Ticks) > MAX_VALUE_TICKS || (value + ticks.Ticks) < 0) {
-    //	throw new ArgumentOutOfRangeException();
+    // removed error handling
+    // if ((value + ticks.Ticks) > MAX_VALUE_TICKS || (value + ticks.Ticks) < 0)
+    // { 	throw new ArgumentOutOfRangeException();
     //}
     return DateTime(value + ticks.get_Ticks());
   }
@@ -574,13 +540,13 @@ class DateTime {
   }
 
   DateTime AddMilliseconds(double value) const {
-    //removed error handling
+    // removed error handling
     /*		if ((value * TimeSpan.TicksPerMillisecond) > long.MaxValue ||
     (value * TimeSpan.TicksPerMillisecond) < long.MinValue) {
     throw new ArgumentOutOfRangeException();
     }
     */
-    int64_t msticks = (int64_t) round(value * TimeSpan::TicksPerMillisecond);
+    int64_t msticks = (int64_t)round(value * TimeSpan::TicksPerMillisecond);
     return AddTicks(msticks);
   }
 
@@ -599,14 +565,12 @@ class DateTime {
     if (month < 1) {
       month = 12 + month;
       year--;
-    }
-    else if (month > 12) {
+    } else if (month > 12) {
       month = month - 12;
       year++;
     }
     maxday = DaysInMonth(year, month);
-    if (day > maxday)
-      day = maxday;
+    if (day > maxday) day = maxday;
 
     temp = (year, month, day);
     return temp.Add(get_TimeOfDay());
@@ -616,9 +580,7 @@ class DateTime {
     return AddMilliseconds(value * 1000);
   }
 
-  DateTime AddYears(int value) const {
-    return AddMonths(value * 12);
-  }
+  DateTime AddYears(int value) const { return AddMonths(value * 12); }
 
   static int Compare(const DateTime &t1, const DateTime &t2) {
     if (t1.ticks < t2.ticks)
@@ -632,15 +594,15 @@ class DateTime {
   static int DaysInMonth(int year, int month) {
     const int *days;
 
-    //removed error handling
-    //if (month < 1 || month >12)throw new ArgumentOutOfRangeException ();
-    //if (year < 1 || year > 9999)throw new ArgumentOutOfRangeException ();
+    // removed error handling
+    // if (month < 1 || month >12)throw new ArgumentOutOfRangeException ();
+    // if (year < 1 || year > 9999)throw new ArgumentOutOfRangeException ();
 
     days = (IsLeapYear(year) ? daysmonthleap : daysmonth);
     return days[month];
   }
   static bool IsLeapYear(int year) {
-    //removed error handling
+    // removed error handling
     /*		if (year < 1 || year > 9999)
     throw new ArgumentOutOfRangeException ();*/
     return ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0);
@@ -662,29 +624,17 @@ class DateTime {
     return DateTime(true, ticks + t);
   }
 
-  bool operator==(const DateTime &d2) const {
-    return (ticks == d2.ticks);
-  }
+  bool operator==(const DateTime &d2) const { return (ticks == d2.ticks); }
 
-  bool operator>(const DateTime &t2) const {
-    return (ticks > t2.ticks);
-  }
+  bool operator>(const DateTime &t2) const { return (ticks > t2.ticks); }
 
-  bool operator>=(const DateTime &t2) const {
-    return (ticks >= t2.ticks);
-  }
+  bool operator>=(const DateTime &t2) const { return (ticks >= t2.ticks); }
 
-  bool operator!=(const DateTime &d2) const {
-    return (ticks != d2.ticks);
-  }
+  bool operator!=(const DateTime &d2) const { return (ticks != d2.ticks); }
 
-  bool operator<(const DateTime &t2) const {
-    return (ticks < t2.ticks);
-  }
+  bool operator<(const DateTime &t2) const { return (ticks < t2.ticks); }
 
-  bool operator<=(const DateTime &t2) const {
-    return (ticks <= t2.ticks);
-  }
+  bool operator<=(const DateTime &t2) const { return (ticks <= t2.ticks); }
 
   TimeSpan operator-(const DateTime &d2) const {
     return TimeSpan((ticks - d2.ticks).get_Ticks());
@@ -694,26 +644,22 @@ class DateTime {
     return DateTime(true, ticks - t);
   }
 
-  //try to have a canonical format here. this was comment was typed at 2010-oct-04 02:16:44:000
+  // try to have a canonical format here. this was comment was typed at
+  // 2010-oct-04 02:16:44:000
 
   std::string ToString() const {
     char tmp[32];
-    sprintf(tmp,
-            "%04d-%s-%02d %02d:%02d:%02d:%03d",
-            get_Year(),
-            monthnames[get_Month()],
-            get_Day(),
-            get_Hour(),
-            get_Minute(),
-            get_Second(),
-            get_Millisecond());
+    sprintf(tmp, "%04d-%s-%02d %02d:%02d:%02d:%03d", get_Year(),
+            monthnames[get_Month()], get_Day(), get_Hour(), get_Minute(),
+            get_Second(), get_Millisecond());
     return tmp;
   }
 
   static bool TryParse(const char *str, DateTime &out) {
     int year, mon = -1, day, hour, min, sec, ms;
     char strmon[4];
-    int done = sscanf(str, "%04d-%3s-%02d %02d:%02d:%02d:%03d", &year, strmon, &day, &hour, &min, &sec, &ms);
+    int done = sscanf(str, "%04d-%3s-%02d %02d:%02d:%02d:%03d", &year, strmon,
+                      &day, &hour, &min, &sec, &ms);
     if (done != 7) return false;
     for (int i = 1; i < 12; i++)
       if (!strncasecmp(monthnames[i], strmon, 3)) {
@@ -730,8 +676,6 @@ class DateTime {
     TryParse(str, ret);
     return ret;
   }
-
 };
 
-
-#endif //_DATETIME_H_
+#endif  //_DATETIME_H_

@@ -2,16 +2,12 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-enum SuzukiSnesVersion: uint8_t; // see SuzukiSnesFormat.h
+enum SuzukiSnesVersion : uint8_t;  // see SuzukiSnesFormat.h
 
-class SuzukiSnesScanner:
-    public VGMScanner {
+class SuzukiSnesScanner : public VGMScanner {
  public:
-  SuzukiSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~SuzukiSnesScanner(void) {
-  }
+  SuzukiSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~SuzukiSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForSuzukiSnesFromARAM(RawFile *file);

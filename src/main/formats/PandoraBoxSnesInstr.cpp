@@ -6,24 +6,21 @@
 // PandoraBoxSnesInstrSet
 // **********************
 
-PandoraBoxSnesInstrSet::PandoraBoxSnesInstrSet(RawFile *file,
-                                               PandoraBoxSnesVersion ver,
-                                               uint32_t spcDirAddr,
-                                               uint16_t addrLocalInstrTable,
-                                               uint16_t addrGlobalInstrTable,
-                                               uint8_t globalInstrumentCount,
-                                               const std::map<uint8_t, uint16_t> &instrADSRHints,
-                                               const std::wstring &name) :
-    VGMInstrSet(PandoraBoxSnesFormat::name, file, addrLocalInstrTable, 0, name), version(ver),
-    spcDirAddr(spcDirAddr),
-    addrLocalInstrTable(addrLocalInstrTable),
-    addrGlobalInstrTable(addrGlobalInstrTable),
-    globalInstrumentCount(globalInstrumentCount),
-    instrADSRHints(instrADSRHints) {
-}
+PandoraBoxSnesInstrSet::PandoraBoxSnesInstrSet(
+    RawFile *file, PandoraBoxSnesVersion ver, uint32_t spcDirAddr,
+    uint16_t addrLocalInstrTable, uint16_t addrGlobalInstrTable,
+    uint8_t globalInstrumentCount,
+    const std::map<uint8_t, uint16_t> &instrADSRHints, const std::wstring &name)
+    : VGMInstrSet(PandoraBoxSnesFormat::name, file, addrLocalInstrTable, 0,
+                  name),
+      version(ver),
+      spcDirAddr(spcDirAddr),
+      addrLocalInstrTable(addrLocalInstrTable),
+      addrGlobalInstrTable(addrGlobalInstrTable),
+      globalInstrumentCount(globalInstrumentCount),
+      instrADSRHints(instrADSRHints) {}
 
-PandoraBoxSnesInstrSet::~PandoraBoxSnesInstrSet() {
-}
+PandoraBoxSnesInstrSet::~PandoraBoxSnesInstrSet() {}
 
 bool PandoraBoxSnesInstrSet::GetHeaderInfo() {
   if (globalInstrumentCount == 0) {
@@ -35,7 +32,8 @@ bool PandoraBoxSnesInstrSet::GetHeaderInfo() {
   }
 
   // read global instrument table into vector
-  for (uint8_t globalInstrNum = 0; globalInstrNum < globalInstrumentCount; globalInstrNum++) {
+  for (uint8_t globalInstrNum = 0; globalInstrNum < globalInstrumentCount;
+       globalInstrNum++) {
     globalInstrTable.push_back(GetByte(addrGlobalInstrTable + globalInstrNum));
   }
 
@@ -55,7 +53,8 @@ bool PandoraBoxSnesInstrSet::GetInstrPointers() {
 
     // search instrument number and get SRCN
     // note: actual engine do backward search, but I do not care
-    auto iterInstrItem = std::find(globalInstrTable.begin(), globalInstrTable.end(), globalInstrNum);
+    auto iterInstrItem = std::find(globalInstrTable.begin(),
+                                   globalInstrTable.end(), globalInstrNum);
     if (iterInstrItem == globalInstrTable.end()) {
       // out of range, perhaps?
       // actual music engine will use SRCN 0 for such case
@@ -68,7 +67,8 @@ bool PandoraBoxSnesInstrSet::GetInstrPointers() {
       break;
     }
 
-    std::vector<uint8_t>::iterator itrSRCN = find(usedSRCNs.begin(), usedSRCNs.end(), srcn);
+    std::vector<uint8_t>::iterator itrSRCN =
+        find(usedSRCNs.begin(), usedSRCNs.end(), srcn);
     if (itrSRCN == usedSRCNs.end()) {
       usedSRCNs.push_back(srcn);
     }
@@ -81,7 +81,8 @@ bool PandoraBoxSnesInstrSet::GetInstrPointers() {
     std::wostringstream instrName;
     instrName << L"Instrument " << srcn;
     PandoraBoxSnesInstr *newInstr =
-        new PandoraBoxSnesInstr(this, version, addrLocalInstrItem, instrNum, srcn, spcDirAddr, adsr, instrName.str());
+        new PandoraBoxSnesInstr(this, version, addrLocalInstrItem, instrNum,
+                                srcn, spcDirAddr, adsr, instrName.str());
     aInstrs.push_back(newInstr);
   }
 
@@ -90,7 +91,8 @@ bool PandoraBoxSnesInstrSet::GetInstrPointers() {
   }
 
   std::sort(usedSRCNs.begin(), usedSRCNs.end());
-  SNESSampColl *newSampColl = new SNESSampColl(PandoraBoxSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
+  SNESSampColl *newSampColl = new SNESSampColl(
+      PandoraBoxSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
   if (!newSampColl->LoadVGMFile()) {
     delete newSampColl;
     return false;
@@ -105,20 +107,17 @@ bool PandoraBoxSnesInstrSet::GetInstrPointers() {
 
 PandoraBoxSnesInstr::PandoraBoxSnesInstr(VGMInstrSet *instrSet,
                                          PandoraBoxSnesVersion ver,
-                                         uint32_t offset,
-                                         uint8_t theInstrNum,
-                                         uint8_t srcn,
-                                         uint32_t spcDirAddr,
+                                         uint32_t offset, uint8_t theInstrNum,
+                                         uint8_t srcn, uint32_t spcDirAddr,
                                          uint16_t adsr,
-                                         const std::wstring &name) :
-    VGMInstr(instrSet, offset, 1, 0, theInstrNum, name), version(ver),
-    spcDirAddr(spcDirAddr),
-    srcn(srcn),
-    adsr(adsr) {
-}
+                                         const std::wstring &name)
+    : VGMInstr(instrSet, offset, 1, 0, theInstrNum, name),
+      version(ver),
+      spcDirAddr(spcDirAddr),
+      srcn(srcn),
+      adsr(adsr) {}
 
-PandoraBoxSnesInstr::~PandoraBoxSnesInstr() {
-}
+PandoraBoxSnesInstr::~PandoraBoxSnesInstr() {}
 
 bool PandoraBoxSnesInstr::LoadInstr() {
   uint32_t offDirEnt = spcDirAddr + (srcn * 4);
@@ -128,7 +127,8 @@ bool PandoraBoxSnesInstr::LoadInstr() {
 
   uint16_t addrSampStart = GetShort(offDirEnt);
 
-  PandoraBoxSnesRgn *rgn = new PandoraBoxSnesRgn(this, version, dwOffset, srcn, spcDirAddr, adsr);
+  PandoraBoxSnesRgn *rgn =
+      new PandoraBoxSnesRgn(this, version, dwOffset, srcn, spcDirAddr, adsr);
   rgn->sampOffset = addrSampStart - spcDirAddr;
   aRgns.push_back(rgn);
 
@@ -141,27 +141,21 @@ bool PandoraBoxSnesInstr::LoadInstr() {
 // *****************
 
 PandoraBoxSnesRgn::PandoraBoxSnesRgn(PandoraBoxSnesInstr *instr,
-                                     PandoraBoxSnesVersion ver,
-                                     uint32_t offset,
-                                     uint8_t srcn,
-                                     uint32_t spcDirAddr,
-                                     uint16_t adsr) :
-    VGMRgn(instr, offset, 1),
-    version(ver) {
+                                     PandoraBoxSnesVersion ver, uint32_t offset,
+                                     uint8_t srcn, uint32_t spcDirAddr,
+                                     uint16_t adsr)
+    : VGMRgn(instr, offset, 1), version(ver) {
   uint8_t adsr1 = adsr >> 8;
   uint8_t adsr2 = adsr & 0xff;
 
   AddSimpleItem(dwOffset, 1, L"Global Instrument #");
 
   sampNum = srcn;
-  unityKey = 45; // o3a = $1000
+  unityKey = 45;  // o3a = $1000
   fineTune = 0;
   SNESConvADSR<VGMRgn>(this, adsr1, adsr2, 0x7f);
 }
 
-PandoraBoxSnesRgn::~PandoraBoxSnesRgn() {
-}
+PandoraBoxSnesRgn::~PandoraBoxSnesRgn() {}
 
-bool PandoraBoxSnesRgn::LoadRgn() {
-  return true;
-}
+bool PandoraBoxSnesRgn::LoadRgn() { return true; }

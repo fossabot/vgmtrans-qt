@@ -3,23 +3,19 @@
 #include "SeqTrack.h"
 #include "KonamiGXFormat.h"
 
-class KonamiGXSeq:
-    public VGMSeq {
+class KonamiGXSeq : public VGMSeq {
  public:
   KonamiGXSeq(RawFile *file, uint32_t offset);
   virtual ~KonamiGXSeq(void);
 
   virtual bool GetHeaderInfo(void);
   virtual bool GetTrackPointers(void);
-  //bool LoadTracks(void);
+  // bool LoadTracks(void);
 
  protected:
-
 };
 
-
-class KonamiGXTrack
-    : public SeqTrack {
+class KonamiGXTrack : public SeqTrack {
  public:
   KonamiGXTrack(KonamiGXSeq *parentSeq, long offset = 0, long length = 0);
 

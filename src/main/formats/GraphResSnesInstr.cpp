@@ -6,22 +6,17 @@
 // GraphResSnesInstrSet
 // ********************
 
-GraphResSnesInstrSet::GraphResSnesInstrSet(RawFile *file,
-                                           GraphResSnesVersion ver,
-                                           uint32_t spcDirAddr,
-                                           const std::map<uint8_t, uint16_t> &instrADSRHints,
-                                           const std::wstring &name) :
-    VGMInstrSet(GraphResSnesFormat::name, file, spcDirAddr, 0, name), version(ver),
-    spcDirAddr(spcDirAddr),
-    instrADSRHints(instrADSRHints) {
-}
+GraphResSnesInstrSet::GraphResSnesInstrSet(
+    RawFile *file, GraphResSnesVersion ver, uint32_t spcDirAddr,
+    const std::map<uint8_t, uint16_t> &instrADSRHints, const std::wstring &name)
+    : VGMInstrSet(GraphResSnesFormat::name, file, spcDirAddr, 0, name),
+      version(ver),
+      spcDirAddr(spcDirAddr),
+      instrADSRHints(instrADSRHints) {}
 
-GraphResSnesInstrSet::~GraphResSnesInstrSet() {
-}
+GraphResSnesInstrSet::~GraphResSnesInstrSet() {}
 
-bool GraphResSnesInstrSet::GetHeaderInfo() {
-  return true;
-}
+bool GraphResSnesInstrSet::GetHeaderInfo() { return true; }
 
 bool GraphResSnesInstrSet::GetInstrPointers() {
   usedSRCNs.clear();
@@ -59,7 +54,8 @@ bool GraphResSnesInstrSet::GetInstrPointers() {
 
     std::wostringstream instrName;
     instrName << L"Instrument " << srcn;
-    GraphResSnesInstr *newInstr = new GraphResSnesInstr(this, version, srcn, spcDirAddr, adsr, instrName.str());
+    GraphResSnesInstr *newInstr = new GraphResSnesInstr(
+        this, version, srcn, spcDirAddr, adsr, instrName.str());
     aInstrs.push_back(newInstr);
   }
 
@@ -68,7 +64,8 @@ bool GraphResSnesInstrSet::GetInstrPointers() {
   }
 
   std::sort(usedSRCNs.begin(), usedSRCNs.end());
-  SNESSampColl *newSampColl = new SNESSampColl(GraphResSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
+  SNESSampColl *newSampColl = new SNESSampColl(
+      GraphResSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
   if (!newSampColl->LoadVGMFile()) {
     delete newSampColl;
     return false;
@@ -82,18 +79,15 @@ bool GraphResSnesInstrSet::GetInstrPointers() {
 // *****************
 
 GraphResSnesInstr::GraphResSnesInstr(VGMInstrSet *instrSet,
-                                     GraphResSnesVersion ver,
-                                     uint8_t srcn,
-                                     uint32_t spcDirAddr,
-                                     uint16_t adsr,
-                                     const std::wstring &name) :
-    VGMInstr(instrSet, spcDirAddr + srcn * 4, 4, 0, srcn, name), version(ver),
-    spcDirAddr(spcDirAddr),
-    adsr(adsr) {
-}
+                                     GraphResSnesVersion ver, uint8_t srcn,
+                                     uint32_t spcDirAddr, uint16_t adsr,
+                                     const std::wstring &name)
+    : VGMInstr(instrSet, spcDirAddr + srcn * 4, 4, 0, srcn, name),
+      version(ver),
+      spcDirAddr(spcDirAddr),
+      adsr(adsr) {}
 
-GraphResSnesInstr::~GraphResSnesInstr() {
-}
+GraphResSnesInstr::~GraphResSnesInstr() {}
 
 bool GraphResSnesInstr::LoadInstr() {
   uint32_t offDirEnt = spcDirAddr + (instrNum * 4);
@@ -103,7 +97,8 @@ bool GraphResSnesInstr::LoadInstr() {
 
   uint16_t addrSampStart = GetShort(offDirEnt);
 
-  GraphResSnesRgn *rgn = new GraphResSnesRgn(this, version, instrNum, spcDirAddr, adsr);
+  GraphResSnesRgn *rgn =
+      new GraphResSnesRgn(this, version, instrNum, spcDirAddr, adsr);
   rgn->sampOffset = addrSampStart - spcDirAddr;
   aRgns.push_back(rgn);
 
@@ -116,12 +111,9 @@ bool GraphResSnesInstr::LoadInstr() {
 // ***************
 
 GraphResSnesRgn::GraphResSnesRgn(GraphResSnesInstr *instr,
-                                 GraphResSnesVersion ver,
-                                 uint8_t srcn,
-                                 uint32_t spcDirAddr,
-                                 uint16_t adsr) :
-    VGMRgn(instr, spcDirAddr + srcn * 4, 4),
-    version(ver) {
+                                 GraphResSnesVersion ver, uint8_t srcn,
+                                 uint32_t spcDirAddr, uint16_t adsr)
+    : VGMRgn(instr, spcDirAddr + srcn * 4, 4), version(ver) {
   uint8_t adsr1 = adsr >> 8;
   uint8_t adsr2 = adsr & 0xff;
 
@@ -130,14 +122,11 @@ GraphResSnesRgn::GraphResSnesRgn(GraphResSnesInstr *instr,
   AddSimpleItem(offDirEnt + 2, 2, L"LSA");
 
   sampNum = srcn;
-  unityKey = 57; // o4a = $1000
+  unityKey = 57;  // o4a = $1000
   fineTune = 0;
   SNESConvADSR<VGMRgn>(this, adsr1, adsr2, 0);
 }
 
-GraphResSnesRgn::~GraphResSnesRgn() {
-}
+GraphResSnesRgn::~GraphResSnesRgn() {}
 
-bool GraphResSnesRgn::LoadRgn() {
-  return true;
-}
+bool GraphResSnesRgn::LoadRgn() { return true; }

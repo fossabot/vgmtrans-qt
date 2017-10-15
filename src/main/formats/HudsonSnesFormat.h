@@ -4,18 +4,17 @@
 #include "Root.h"
 #include "HudsonSnesScanner.h"
 
-
 // ****************
 // HudsonSnesFormat
 // ****************
 
 BEGIN_FORMAT(HudsonSnes)
-  USING_SCANNER(HudsonSnesScanner)
-  USING_MATCHER(FilegroupMatcher)
+USING_SCANNER(HudsonSnesScanner)
+USING_MATCHER(FilegroupMatcher)
 END_FORMAT()
 
-enum HudsonSnesVersion: uint8_t {
-  HUDSONSNES_NONE = 0,              // Unknown Version
+enum HudsonSnesVersion : uint8_t {
+  HUDSONSNES_NONE = 0,  // Unknown Version
   // Earlier Version:
   // Super Bomberman 2, Hagane
   HUDSONSNES_V0,

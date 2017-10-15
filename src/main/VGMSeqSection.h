@@ -8,13 +8,10 @@
 
 class VGMMultiSectionSeq;
 
-class VGMSeqSection
-    : public VGMContainerItem {
+class VGMSeqSection : public VGMContainerItem {
  public:
-  VGMSeqSection(VGMMultiSectionSeq *parentFile,
-                uint32_t theOffset,
-                uint32_t theLength = 0,
-                const std::wstring theName = L"Section",
+  VGMSeqSection(VGMMultiSectionSeq *parentFile, uint32_t theOffset,
+                uint32_t theLength = 0, const std::wstring theName = L"Section",
                 uint8_t color = CLR_HEADER);
   virtual ~VGMSeqSection(void);
 

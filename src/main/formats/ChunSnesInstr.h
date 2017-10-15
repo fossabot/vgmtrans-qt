@@ -8,15 +8,11 @@
 // ChunSnesInstrSet
 // ****************
 
-class ChunSnesInstrSet:
-    public VGMInstrSet {
+class ChunSnesInstrSet : public VGMInstrSet {
  public:
-  ChunSnesInstrSet(RawFile *file,
-                   ChunSnesVersion ver,
-                   uint16_t addrInstrSetTable,
-                   uint16_t addrSampNumTable,
-                   uint16_t addrSampleTable,
-                   uint32_t spcDirAddr,
+  ChunSnesInstrSet(RawFile *file, ChunSnesVersion ver,
+                   uint16_t addrInstrSetTable, uint16_t addrSampNumTable,
+                   uint16_t addrSampleTable, uint32_t spcDirAddr,
                    const std::wstring &name = L"ChunSnesInstrSet");
   virtual ~ChunSnesInstrSet(void);
 
@@ -36,14 +32,10 @@ class ChunSnesInstrSet:
 // ChunSnesInstr
 // *************
 
-class ChunSnesInstr
-    : public VGMInstr {
+class ChunSnesInstr : public VGMInstr {
  public:
-  ChunSnesInstr(VGMInstrSet *instrSet,
-                ChunSnesVersion ver,
-                uint8_t theInstrNum,
-                uint16_t addrInstr,
-                uint16_t addrSampleTable,
+  ChunSnesInstr(VGMInstrSet *instrSet, ChunSnesVersion ver, uint8_t theInstrNum,
+                uint16_t addrInstr, uint16_t addrSampleTable,
                 uint32_t spcDirAddr,
                 const std::wstring &name = L"ChunSnesInstr");
   virtual ~ChunSnesInstr(void);
@@ -61,10 +53,10 @@ class ChunSnesInstr
 // ChunSnesRgn
 // ***********
 
-class ChunSnesRgn
-    : public VGMRgn {
+class ChunSnesRgn : public VGMRgn {
  public:
-  ChunSnesRgn(ChunSnesInstr *instr, ChunSnesVersion ver, uint8_t srcn, uint16_t addrRgn, uint32_t spcDirAddr);
+  ChunSnesRgn(ChunSnesInstr *instr, ChunSnesVersion ver, uint8_t srcn,
+              uint16_t addrRgn, uint32_t spcDirAddr);
   virtual ~ChunSnesRgn(void);
 
   virtual bool LoadRgn();

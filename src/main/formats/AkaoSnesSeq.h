@@ -6,7 +6,8 @@
 #define AKAOSNES_LOOP_LEVEL_MAX 4
 
 enum AkaoSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -87,14 +88,10 @@ enum AkaoSnesSeqEventType {
   EVENT_PLAY_SFX,
 };
 
-class AkaoSnesSeq
-    : public VGMSeq {
+class AkaoSnesSeq : public VGMSeq {
  public:
-  AkaoSnesSeq(RawFile *file,
-              AkaoSnesVersion ver,
-              AkaoSnesMinorVersion minorVer,
-              uint32_t seqdataOffset,
-              uint32_t addrAPURelocBase,
+  AkaoSnesSeq(RawFile *file, AkaoSnesVersion ver, AkaoSnesMinorVersion minorVer,
+              uint32_t seqdataOffset, uint32_t addrAPURelocBase,
               std::wstring newName = L"Square AKAO SNES Seq");
   virtual ~AkaoSnesSeq(void);
 
@@ -127,9 +124,7 @@ class AkaoSnesSeq
   void LoadEventMap(void);
 };
 
-
-class AkaoSnesTrack
-    : public SeqTrack {
+class AkaoSnesTrack : public SeqTrack {
  public:
   AkaoSnesTrack(AkaoSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);

@@ -12,17 +12,13 @@ class FalcomSnesRgn;
 // FalcomSnesInstrSet
 // ******************
 
-class FalcomSnesInstrSet:
-    public VGMInstrSet {
+class FalcomSnesInstrSet : public VGMInstrSet {
  public:
   friend FalcomSnesInstr;
   friend FalcomSnesRgn;
 
-  FalcomSnesInstrSet(RawFile *file,
-                     FalcomSnesVersion ver,
-                     uint32_t offset,
-                     uint32_t addrSampToInstrTable,
-                     uint32_t spcDirAddr,
+  FalcomSnesInstrSet(RawFile *file, FalcomSnesVersion ver, uint32_t offset,
+                     uint32_t addrSampToInstrTable, uint32_t spcDirAddr,
                      const std::map<uint8_t, uint16_t> &instrADSRHints,
                      const std::wstring &name = L"FalcomSnesInstrSet");
   virtual ~FalcomSnesInstrSet(void);
@@ -43,23 +39,19 @@ class FalcomSnesInstrSet:
 // FalcomSnesInstr
 // *************
 
-class FalcomSnesInstr
-    : public VGMInstr {
+class FalcomSnesInstr : public VGMInstr {
  public:
-  FalcomSnesInstr(VGMInstrSet *instrSet,
-                  FalcomSnesVersion ver,
-                  uint32_t offset,
-                  uint32_t theBank,
-                  uint32_t theInstrNum,
-                  uint8_t srcn,
+  FalcomSnesInstr(VGMInstrSet *instrSet, FalcomSnesVersion ver, uint32_t offset,
+                  uint32_t theBank, uint32_t theInstrNum, uint8_t srcn,
                   uint32_t spcDirAddr,
                   const std::wstring &name = L"FalcomSnesInstr");
   virtual ~FalcomSnesInstr(void);
 
   virtual bool LoadInstr();
 
-  static bool IsValidHeader
-      (RawFile *file, FalcomSnesVersion version, uint32_t addrInstrHeader, uint32_t spcDirAddr, bool validateSample);
+  static bool IsValidHeader(RawFile *file, FalcomSnesVersion version,
+                            uint32_t addrInstrHeader, uint32_t spcDirAddr,
+                            bool validateSample);
 
   FalcomSnesVersion version;
 
@@ -72,13 +64,10 @@ class FalcomSnesInstr
 // FalcomSnesRgn
 // ***********
 
-class FalcomSnesRgn
-    : public VGMRgn {
+class FalcomSnesRgn : public VGMRgn {
  public:
-  FalcomSnesRgn(FalcomSnesInstr *instr,
-             FalcomSnesVersion ver,
-             uint32_t offset,
-             uint8_t srcn);
+  FalcomSnesRgn(FalcomSnesInstr *instr, FalcomSnesVersion ver, uint32_t offset,
+                uint8_t srcn);
   virtual ~FalcomSnesRgn(void);
 
   virtual bool LoadRgn();

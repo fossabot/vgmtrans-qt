@@ -2,16 +2,12 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-enum AkaoSnesVersion: uint8_t; // see AkaoSnesFormat.h
+enum AkaoSnesVersion : uint8_t;  // see AkaoSnesFormat.h
 
-class AkaoSnesScanner:
-    public VGMScanner {
+class AkaoSnesScanner : public VGMScanner {
  public:
-  AkaoSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~AkaoSnesScanner(void) {
-  }
+  AkaoSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~AkaoSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForAkaoSnesFromARAM(RawFile *file);

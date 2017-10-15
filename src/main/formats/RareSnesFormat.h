@@ -4,16 +4,14 @@
 #include "Root.h"
 #include "RareSnesScanner.h"
 
-
 // ***************
 // RareSnesFormat
 // ***************
 
 BEGIN_FORMAT(RareSnes)
-  USING_SCANNER(RareSnesScanner)
-  USING_MATCHER(FilegroupMatcher)
+USING_SCANNER(RareSnesScanner)
+USING_MATCHER(FilegroupMatcher)
 END_FORMAT()
-
 
 enum RareSnesVersion {
   RARESNES_NONE = 0,  // Unknown Version

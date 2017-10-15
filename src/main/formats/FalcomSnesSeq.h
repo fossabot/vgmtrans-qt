@@ -5,7 +5,8 @@
 #include "FalcomSnesFormat.h"
 
 enum FalcomSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -46,13 +47,10 @@ enum FalcomSnesSeqEventType {
   EVENT_GOTO,
 };
 
-class FalcomSnesSeq
-    : public VGMSeq {
+class FalcomSnesSeq : public VGMSeq {
  public:
-  FalcomSnesSeq(RawFile *file,
-                    FalcomSnesVersion ver,
-                    uint32_t seqdata_offset,
-                    std::wstring newName = L"Falcom SNES Seq");
+  FalcomSnesSeq(RawFile *file, FalcomSnesVersion ver, uint32_t seqdata_offset,
+                std::wstring newName = L"Falcom SNES Seq");
   virtual ~FalcomSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -75,9 +73,7 @@ class FalcomSnesSeq
   void LoadEventMap(void);
 };
 
-
-class FalcomSnesTrack
-    : public SeqTrack {
+class FalcomSnesTrack : public SeqTrack {
  public:
   FalcomSnesTrack(FalcomSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);

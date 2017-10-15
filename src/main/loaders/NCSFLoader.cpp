@@ -5,16 +5,14 @@
 
 using namespace std;
 
-#define NCSF_VERSION    0x25
-#define NCSF_MAX_ROM_SIZE    0x10000000
+#define NCSF_VERSION 0x25
+#define NCSF_MAX_ROM_SIZE 0x10000000
 
 wchar_t *GetFileWithBase(const wchar_t *f, const wchar_t *newfile);
 
-NCSFLoader::NCSFLoader(void) {
-}
+NCSFLoader::NCSFLoader(void) {}
 
-NCSFLoader::~NCSFLoader(void) {
-}
+NCSFLoader::~NCSFLoader(void) {}
 
 PostLoadCommand NCSFLoader::Apply(RawFile *file) {
   uint8_t sig[4];
@@ -25,18 +23,20 @@ PostLoadCommand NCSFLoader::Apply(RawFile *file) {
       const wchar_t *complaint;
       size_t exebufsize = NCSF_MAX_ROM_SIZE;
       uint8_t *exebuf = NULL;
-      //memset(exebuf, 0, exebufsize);
+      // memset(exebuf, 0, exebufsize);
 
       complaint = psf_read_exe(file, exebuf, exebufsize);
       if (complaint) {
-        pRoot->AddLogItem(new LogItem(std::wstring(complaint), LOG_LEVEL_ERR, L"NCSFLoader"));
+        pRoot->AddLogItem(
+            new LogItem(std::wstring(complaint), LOG_LEVEL_ERR, L"NCSFLoader"));
         delete[] exebuf;
         return KEEP_IT;
       }
-      //pRoot->UI_WriteBufferToFile(L"uncomp.sdat", exebuf, exebufsize);
+      // pRoot->UI_WriteBufferToFile(L"uncomp.sdat", exebuf, exebufsize);
 
       wstring str = file->GetFileName();
-      pRoot->CreateVirtFile(exebuf, (uint32_t) exebufsize, str.data(), L"", file->tag);
+      pRoot->CreateVirtFile(exebuf, (uint32_t)exebufsize, str.data(), L"",
+                            file->tag);
       return DELETE_IT;
     }
   }
@@ -44,12 +44,8 @@ PostLoadCommand NCSFLoader::Apply(RawFile *file) {
   return KEEP_IT;
 }
 
-
-
-
 // The code below was written by Neill Corlett and adapted for VGMTrans.
 // Recursive psflib loading has been added.
-
 
 /***************************************************************************/
 /*
@@ -57,28 +53,25 @@ PostLoadCommand NCSFLoader::Apply(RawFile *file) {
 **
 ** Returns the error message, or NULL on success
 */
-const wchar_t *NCSFLoader::psf_read_exe(
-    RawFile *file,
-    unsigned char *&exebuffer,
-    size_t &exebuffersize
-) {
+const wchar_t *NCSFLoader::psf_read_exe(RawFile *file,
+                                        unsigned char *&exebuffer,
+                                        size_t &exebuffersize) {
   PSFFile psf;
-  if (!psf.Load(file))
-    return psf.GetError();
+  if (!psf.Load(file)) return psf.GetError();
 
   // search exclusively for _lib tag, and if found, perform a recursive load
-  const wchar_t *psflibError = load_psf_libs(psf, file, exebuffer, exebuffersize);
-  if (psflibError != NULL)
-    return psflibError;
+  const wchar_t *psflibError =
+      load_psf_libs(psf, file, exebuffer, exebuffersize);
+  if (psflibError != NULL) return psflibError;
 
   DataSeg *ncsfExeHeadSeg;
-  if (!psf.ReadExeDataSeg(ncsfExeHeadSeg, 0x0c, 0))
-    return psf.GetError();
+  if (!psf.ReadExeDataSeg(ncsfExeHeadSeg, 0x0c, 0)) return psf.GetError();
 
   uint32_t ncsfRomStart = 0;
   uint32_t ncsfRomSize = ncsfExeHeadSeg->GetWord(0x08);
   delete ncsfExeHeadSeg;
-  if (ncsfRomStart + ncsfRomSize > exebuffersize || (exebuffer == NULL && exebuffersize == 0))
+  if (ncsfRomStart + ncsfRomSize > exebuffersize ||
+      (exebuffer == NULL && exebuffersize == 0))
     return L"NCSF ROM section start and/or size values are likely corrupt.";
 
   if (exebuffer == NULL) {
@@ -110,8 +103,7 @@ const wchar_t *NCSFLoader::psf_read_exe(
   return NULL;
 }
 
-const wchar_t *NCSFLoader::load_psf_libs(PSFFile &psf,
-                                         RawFile *file,
+const wchar_t *NCSFLoader::load_psf_libs(PSFFile &psf, RawFile *file,
                                          unsigned char *&exebuffer,
                                          size_t &exebuffersize) {
   char libTagName[16];
@@ -123,8 +115,7 @@ const wchar_t *NCSFLoader::load_psf_libs(PSFFile &psf,
       sprintf(libTagName, "_lib%d", libIndex);
 
     map<string, string>::iterator itLibTag = psf.tags.find(libTagName);
-    if (itLibTag == psf.tags.end())
-      break;
+    if (itLibTag == psf.tags.end()) break;
 
     wchar_t tempfn[PATH_MAX] = {0};
     mbstowcs(tempfn, itLibTag->second.c_str(), itLibTag->second.size());
@@ -142,8 +133,7 @@ const wchar_t *NCSFLoader::load_psf_libs(PSFFile &psf,
     delete fullPath;
     delete newRawFile;
 
-    if (psflibError != NULL)
-      return psflibError;
+    if (psflibError != NULL) return psflibError;
 
     libIndex++;
   }

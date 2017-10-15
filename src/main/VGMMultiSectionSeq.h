@@ -3,14 +3,10 @@
 #include "VGMSeq.h"
 #include "VGMSeqSection.h"
 
-class VGMMultiSectionSeq:
-    public VGMSeq {
+class VGMMultiSectionSeq : public VGMSeq {
  public:
-  VGMMultiSectionSeq(const std::string &format,
-                     RawFile *file,
-                     uint32_t offset,
-                     uint32_t length = 0,
-                     std::wstring name = L"VGM Sequence");
+  VGMMultiSectionSeq(const std::string &format, RawFile *file, uint32_t offset,
+                     uint32_t length = 0, std::wstring name = L"VGM Sequence");
   virtual ~VGMMultiSectionSeq();
 
   virtual void ResetVars();

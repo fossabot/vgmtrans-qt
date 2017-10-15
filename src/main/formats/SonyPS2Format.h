@@ -18,22 +18,18 @@ typedef struct _VersCk {
 // SonyPS2Coll
 // ***********
 
-class SonyPS2Coll:
-    public VGMColl {
+class SonyPS2Coll : public VGMColl {
  public:
-  SonyPS2Coll(std::wstring name = L"Unnamed Collection") : VGMColl(name) { }
-  virtual ~SonyPS2Coll() { }
+  SonyPS2Coll(std::wstring name = L"Unnamed Collection") : VGMColl(name) {}
+  virtual ~SonyPS2Coll() {}
 };
-
 
 // *************
 // SonyPS2Format
 // *************
 
 BEGIN_FORMAT(SonyPS2)
-  USING_SCANNER(SonyPS2Scanner)
-  USING_MATCHER_WITH_ARG(FilenameMatcher, true)
-  USING_COLL(SonyPS2Coll)
+USING_SCANNER(SonyPS2Scanner)
+USING_MATCHER_WITH_ARG(FilenameMatcher, true)
+USING_COLL(SonyPS2Coll)
 END_FORMAT()
-
-

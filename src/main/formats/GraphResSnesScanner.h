@@ -2,14 +2,10 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-class GraphResSnesScanner:
-    public VGMScanner {
+class GraphResSnesScanner : public VGMScanner {
  public:
-  GraphResSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~GraphResSnesScanner(void) {
-  }
+  GraphResSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~GraphResSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForGraphResSnesFromARAM(RawFile *file);

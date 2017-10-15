@@ -15,11 +15,10 @@ KonamiGXSeq::KonamiGXSeq(RawFile *file, uint32_t offset)
   AlwaysWriteInitialVol(127);
 }
 
-KonamiGXSeq::~KonamiGXSeq(void) {
-}
+KonamiGXSeq::~KonamiGXSeq(void) {}
 
 bool KonamiGXSeq::GetHeaderInfo(void) {
-  //nNumTracks = GetByte(dwOffset+8);
+  // nNumTracks = GetByte(dwOffset+8);
   SetPPQN(0x30);
 
   wostringstream theName;
@@ -32,7 +31,8 @@ bool KonamiGXSeq::GetTrackPointers(void) {
   uint32_t pos = dwOffset;
   for (int i = 0; i < 17; i++) {
     uint32_t trackOffset = GetWordBE(pos);
-    if (GetByte(trackOffset) == 0xFF)    // skip empty tracks. don't even bother making them tracks
+    if (GetByte(trackOffset) ==
+        0xFF)  // skip empty tracks. don't even bother making them tracks
       continue;
     nNumTracks++;
     aTracks.push_back(new KonamiGXTrack(this, trackOffset, 0));
@@ -41,7 +41,7 @@ bool KonamiGXSeq::GetTrackPointers(void) {
   return true;
 }
 
-//bool KonamiGXSeq::LoadTracks(void)
+// bool KonamiGXSeq::LoadTracks(void)
 //{
 //	for (uint32_t i=0; i<nNumTracks; i++)
 //	{
@@ -55,17 +55,15 @@ bool KonamiGXSeq::GetTrackPointers(void) {
 // KonamiGXTrack
 // *************
 
-
 KonamiGXTrack::KonamiGXTrack(KonamiGXSeq *parentSeq, long offset, long length)
-    : SeqTrack(parentSeq, offset, length), bInJump(false) {
-}
+    : SeqTrack(parentSeq, offset, length), bInJump(false) {}
 
-
-// I'm going to try to follow closely to the original Salamander 2 code at 0x30C6
+// I'm going to try to follow closely to the original Salamander 2 code at
+// 0x30C6
 bool KonamiGXTrack::ReadEvent(void) {
   uint32_t beginOffset = curOffset;
   uint32_t deltatest = GetTime();
-  //AddDelta(ReadVarLen(curOffset));
+  // AddDelta(ReadVarLen(curOffset));
 
   uint8_t status_byte = GetByte(curOffset++);
 
@@ -73,27 +71,22 @@ bool KonamiGXTrack::ReadEvent(void) {
     if (bInJump) {
       bInJump = false;
       curOffset = jump_return_offset;
-    }
-    else {
+    } else {
       AddEndOfTrack(beginOffset, curOffset - beginOffset);
       return 0;
     }
-  }
-  else if (status_byte == 0x60) {
+  } else if (status_byte == 0x60) {
     return 1;
-  }
-  else if (status_byte == 0x61) {
+  } else if (status_byte == 0x61) {
     return 1;
-  }
-  else if (status_byte < 0xC0)    //note event
+  } else if (status_byte < 0xC0)  // note event
   {
     uint8_t note, delta;
     if (status_byte < 0x62) {
       delta = GetByte(curOffset++);
       note = status_byte;
       prevDelta = delta;
-    }
-    else {
+    } else {
       delta = prevDelta;
       note = status_byte - 0x62;
     }
@@ -104,25 +97,22 @@ bool KonamiGXTrack::ReadEvent(void) {
       dur = nextDataByte;
       prevDur = dur;
       vel = GetByte(curOffset++);
-    }
-    else {
+    } else {
       dur = prevDur;
       vel = nextDataByte - 0x80;
     }
 
-    //AddNoteOn(beginOffset, curOffset-beginOffset, note, vel);
-    //AddDelta(dur);
-    //AddNoteOffNoItem(note);
+    // AddNoteOn(beginOffset, curOffset-beginOffset, note, vel);
+    // AddDelta(dur);
+    // AddNoteOffNoItem(note);
     uint32_t newdur = (delta * dur) / 0x64;
-    if (newdur == 0)
-      newdur = 1;
+    if (newdur == 0) newdur = 1;
     AddNoteByDur(beginOffset, curOffset - beginOffset, note, vel, newdur);
     AddTime(delta);
-//		if (newdur > delta)
-//			ATLTRACE("newdur > delta.  %X > %X.  occurring at %X\n", newdur, delta, beginOffset);
-    //AddDelta(dur);
-  }
-  else
+    //		if (newdur > delta)
+    //			ATLTRACE("newdur > delta.  %X > %X.  occurring at %X\n", newdur,
+    //delta, beginOffset);  AddDelta(dur);
+  } else
     switch (status_byte) {
       case 0xC0:
         curOffset++;
@@ -154,14 +144,14 @@ bool KonamiGXTrack::ReadEvent(void) {
         AddUnknown(beginOffset, curOffset - beginOffset);
         break;
 
-      //Rest
+      // Rest
       case 0xE0: {
         uint8_t delta = GetByte(curOffset++);
         AddTime(delta);
         break;
       }
 
-      //Hold
+      // Hold
       case 0xE1: {
         uint8_t delta = GetByte(curOffset++);
         uint8_t dur = GetByte(curOffset++);
@@ -172,14 +162,14 @@ bool KonamiGXTrack::ReadEvent(void) {
         break;
       }
 
-      //program change
+      // program change
       case 0xE2: {
         uint8_t progNum = GetByte(curOffset++);
         AddProgramChange(beginOffset, curOffset - beginOffset, progNum);
         break;
       }
 
-      //stereo related
+      // stereo related
       case 0xE3:
         curOffset++;
         AddUnknown(beginOffset, curOffset - beginOffset);
@@ -209,7 +199,7 @@ bool KonamiGXTrack::ReadEvent(void) {
         AddUnknown(beginOffset, curOffset - beginOffset);
         break;
 
-      //tempo
+      // tempo
       case 0xEA: {
         uint8_t bpm = GetByte(curOffset++);
         AddTempoBPM(beginOffset, curOffset - beginOffset, bpm);
@@ -221,10 +211,10 @@ bool KonamiGXTrack::ReadEvent(void) {
         AddUnknown(beginOffset, curOffset - beginOffset);
         break;
 
-      //master vol
+      // master vol
       case 0xEE: {
         uint8_t vol = GetByte(curOffset++);
-        //AddMasterVol(beginOffset, curOffset-beginOffset, vol);
+        // AddMasterVol(beginOffset, curOffset-beginOffset, vol);
         break;
       }
 
@@ -263,7 +253,7 @@ bool KonamiGXTrack::ReadEvent(void) {
         AddUnknown(beginOffset, curOffset - beginOffset);
         break;
 
-      //release rate
+      // release rate
       case 0xFA:
         curOffset++;
         AddUnknown(beginOffset, curOffset - beginOffset);
@@ -271,15 +261,17 @@ bool KonamiGXTrack::ReadEvent(void) {
 
       case 0xFD:
         curOffset += 4;
-        AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop", L"", CLR_LOOP);
+        AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop", L"",
+                        CLR_LOOP);
         break;
 
       case 0xFE:
         bInJump = true;
         jump_return_offset = curOffset + 4;
-        AddGenericEvent(beginOffset, jump_return_offset - beginOffset, L"Jump", L"", CLR_LOOP);
+        AddGenericEvent(beginOffset, jump_return_offset - beginOffset, L"Jump",
+                        L"", CLR_LOOP);
         curOffset = GetWordBE(curOffset);
-        //if (curOffset > 0x100000)
+        // if (curOffset > 0x100000)
         //	return 0;
         break;
 

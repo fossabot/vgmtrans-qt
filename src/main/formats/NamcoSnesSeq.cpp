@@ -7,10 +7,11 @@ DECLARE_FORMAT(NamcoSnes);
 //  ************
 //  NamcoSnesSeq
 //  ************
-#define MAX_TRACKS  8
-#define SEQ_PPQN    48
+#define MAX_TRACKS 8
+#define SEQ_PPQN 48
 
-NamcoSnesSeq::NamcoSnesSeq(RawFile *file, NamcoSnesVersion ver, uint32_t seqdataOffset, std::wstring newName)
+NamcoSnesSeq::NamcoSnesSeq(RawFile *file, NamcoSnesVersion ver,
+                           uint32_t seqdataOffset, std::wstring newName)
     : VGMSeqNoTrks(NamcoSnesFormat::name, file, seqdataOffset, newName),
       version(ver) {
   bAllowDiscontinuousTrackData = true;
@@ -23,8 +24,7 @@ NamcoSnesSeq::NamcoSnesSeq(RawFile *file, NamcoSnesVersion ver, uint32_t seqdata
   LoadEventMap();
 }
 
-NamcoSnesSeq::~NamcoSnesSeq(void) {
-}
+NamcoSnesSeq::~NamcoSnesSeq(void) {}
 
 void NamcoSnesSeq::ResetVars(void) {
   VGMSeqNoTrks::ResetVars();
@@ -79,9 +79,9 @@ void NamcoSnesSeq::LoadEventMap() {
   EventMap[0x12] = EVENT_ECHO_FIR;
   EventMap[0x13] = EVENT_ECHO_VOLUME;
   EventMap[0x14] = EVENT_ECHO_ADDRESS;
-  //EventMap[0x15] = (NamcoSnesSeqEventType)0;
-  //EventMap[0x16] = (NamcoSnesSeqEventType)0;
-  //EventMap[0x17] = (NamcoSnesSeqEventType)0;
+  // EventMap[0x15] = (NamcoSnesSeqEventType)0;
+  // EventMap[0x16] = (NamcoSnesSeqEventType)0;
+  // EventMap[0x17] = (NamcoSnesSeqEventType)0;
 
   // note: vcmd 2b-ff are not used
   for (statusByte = 0x18; statusByte <= 0xff; statusByte++) {
@@ -91,19 +91,19 @@ void NamcoSnesSeq::LoadEventMap() {
   ControlChangeMap[0x00] = CONTROL_PROGCHANGE;
   ControlChangeMap[0x01] = CONTROL_VOLUME;
   ControlChangeMap[0x02] = CONTROL_PAN;
-  //ControlChangeMap[0x03] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x04] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x05] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x06] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x07] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x08] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x09] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x03] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x04] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x05] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x06] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x07] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x08] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x09] = (NamcoSnesSeqControlType)0;
   ControlChangeMap[0x0a] = CONTROL_ADSR;
-  //ControlChangeMap[0x0b] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x0c] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x0d] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x0e] = (NamcoSnesSeqControlType)0;
-  //ControlChangeMap[0x0f] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x0b] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x0c] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x0d] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x0e] = (NamcoSnesSeqControlType)0;
+  // ControlChangeMap[0x0f] = (NamcoSnesSeqControlType)0;
 
   ControlChangeNames[CONTROL_PROGCHANGE] = L"Program Change";
   ControlChangeNames[CONTROL_VOLUME] = L"Volume";
@@ -122,8 +122,9 @@ bool NamcoSnesSeq::ReadEvent(void) {
 
   std::wstringstream desc;
 
-  NamcoSnesSeqEventType eventType = (NamcoSnesSeqEventType) 0;
-  std::map<uint8_t, NamcoSnesSeqEventType>::iterator pEventType = EventMap.find(statusByte);
+  NamcoSnesSeqEventType eventType = (NamcoSnesSeqEventType)0;
+  std::map<uint8_t, NamcoSnesSeqEventType>::iterator pEventType =
+      EventMap.find(statusByte);
   if (pEventType != EventMap.end()) {
     eventType = pEventType->second;
   }
@@ -134,27 +135,31 @@ bool NamcoSnesSeq::ReadEvent(void) {
 
   switch (eventType) {
     case EVENT_UNKNOWN0:
-      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2) << std::uppercase << (int) statusByte;
-      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event", desc.str());
+      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2)
+           << std::uppercase << (int)statusByte;
+      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event",
+                 desc.str());
       break;
 
     case EVENT_UNKNOWN1: {
       uint8_t arg1 = GetByte(curOffset++);
-      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2) << std::uppercase << (int) statusByte
-          << std::dec << std::setfill(L' ') << std::setw(0)
-          << L"  Arg1: " << (int) arg1;
-      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event", desc.str());
+      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2)
+           << std::uppercase << (int)statusByte << std::dec
+           << std::setfill(L' ') << std::setw(0) << L"  Arg1: " << (int)arg1;
+      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event",
+                 desc.str());
       break;
     }
 
     case EVENT_UNKNOWN2: {
       uint8_t arg1 = GetByte(curOffset++);
       uint8_t arg2 = GetByte(curOffset++);
-      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2) << std::uppercase << (int) statusByte
-          << std::dec << std::setfill(L' ') << std::setw(0)
-          << L"  Arg1: " << (int) arg1
-          << L"  Arg2: " << (int) arg2;
-      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event", desc.str());
+      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2)
+           << std::uppercase << (int)statusByte << std::dec
+           << std::setfill(L' ') << std::setw(0) << L"  Arg1: " << (int)arg1
+           << L"  Arg2: " << (int)arg2;
+      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event",
+                 desc.str());
       break;
     }
 
@@ -162,19 +167,20 @@ bool NamcoSnesSeq::ReadEvent(void) {
       uint8_t arg1 = GetByte(curOffset++);
       uint8_t arg2 = GetByte(curOffset++);
       uint8_t arg3 = GetByte(curOffset++);
-      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2) << std::uppercase << (int) statusByte
-          << std::dec << std::setfill(L' ') << std::setw(0)
-          << L"  Arg1: " << (int) arg1
-          << L"  Arg2: " << (int) arg2
-          << L"  Arg3: " << (int) arg3;
-      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event", desc.str());
+      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2)
+           << std::uppercase << (int)statusByte << std::dec
+           << std::setfill(L' ') << std::setw(0) << L"  Arg1: " << (int)arg1
+           << L"  Arg2: " << (int)arg2 << L"  Arg3: " << (int)arg3;
+      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event",
+                 desc.str());
       break;
     }
 
     case EVENT_DELTA_TIME: {
       spcDeltaTime = GetByte(curOffset++);
       desc << L"Duration: " << spcDeltaTime;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Delta Time", desc.str(), CLR_CHANGESTATE);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Delta Time",
+                      desc.str(), CLR_CHANGESTATE);
       break;
     }
 
@@ -188,20 +194,18 @@ bool NamcoSnesSeq::ReadEvent(void) {
         }
       }
 
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Open Tracks", desc.str(), CLR_MISC, ICON_TRACK);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Open Tracks",
+                      desc.str(), CLR_MISC, ICON_TRACK);
       break;
     }
 
     case EVENT_CALL: {
       uint16_t dest = GetShort(curOffset);
       curOffset += 2;
-      desc << L"Destination: $" << std::hex << std::setfill(L'0') << std::setw(4) << std::uppercase << (int) dest;
-      AddGenericEvent(beginOffset,
-                      curOffset - beginOffset,
-                      L"Pattern Play",
-                      desc.str().c_str(),
-                      CLR_LOOP,
-                      ICON_STARTREP);
+      desc << L"Destination: $" << std::hex << std::setfill(L'0')
+           << std::setw(4) << std::uppercase << (int)dest;
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Pattern Play",
+                      desc.str().c_str(), CLR_LOOP, ICON_STARTREP);
 
       subReturnAddress = curOffset;
       curOffset = dest;
@@ -213,15 +217,10 @@ bool NamcoSnesSeq::ReadEvent(void) {
         // end of track
         AddEndOfTrack(beginOffset, curOffset - beginOffset);
         bContinue = false;
-      }
-      else {
+      } else {
         // end of subroutine
-        AddGenericEvent(beginOffset,
-                        curOffset - beginOffset,
-                        L"Pattern End",
-                        desc.str().c_str(),
-                        CLR_LOOP,
-                        ICON_ENDREP);
+        AddGenericEvent(beginOffset, curOffset - beginOffset, L"Pattern End",
+                        desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
         curOffset = subReturnAddress;
         subReturnAddress = 0;
       }
@@ -231,7 +230,9 @@ bool NamcoSnesSeq::ReadEvent(void) {
     case EVENT_DELTA_MULTIPLIER: {
       spcDeltaTimeScale = GetByte(curOffset++);
       desc << L"Delta Time Scale: " << spcDeltaTimeScale;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Delta Time Multiplier", desc.str(), CLR_MISC, ICON_TEMPO);
+      AddGenericEvent(beginOffset, curOffset - beginOffset,
+                      L"Delta Time Multiplier", desc.str(), CLR_MISC,
+                      ICON_TEMPO);
       break;
     }
 
@@ -245,16 +246,16 @@ bool NamcoSnesSeq::ReadEvent(void) {
       uint8_t count = GetByte(curOffset++);
       uint16_t dest = GetShort(curOffset);
       curOffset += 2;
-      desc << L"Times: " << count << L"  Destination: $" << std::hex << std::setfill(L'0') << std::setw(4)
-          << std::uppercase << (int) dest;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop Again", desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
+      desc << L"Times: " << count << L"  Destination: $" << std::hex
+           << std::setfill(L'0') << std::setw(4) << std::uppercase << (int)dest;
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop Again",
+                      desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
 
       loopCount++;
       if (loopCount == count) {
         // repeat end
         loopCount = 0;
-      }
-      else {
+      } else {
         // repeat again
         curOffset = dest;
       }
@@ -266,9 +267,10 @@ bool NamcoSnesSeq::ReadEvent(void) {
       uint8_t count = GetByte(curOffset++);
       uint16_t dest = GetShort(curOffset);
       curOffset += 2;
-      desc << L"Times: " << count << L"  Destination: $" << std::hex << std::setfill(L'0') << std::setw(4)
-          << std::uppercase << (int) dest;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop Break", desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
+      desc << L"Times: " << count << L"  Destination: $" << std::hex
+           << std::setfill(L'0') << std::setw(4) << std::uppercase << (int)dest;
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop Break",
+                      desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
 
       loopCount++;
       if (loopCount == count) {
@@ -284,21 +286,16 @@ bool NamcoSnesSeq::ReadEvent(void) {
       uint8_t count = GetByte(curOffset++);
       uint16_t dest = GetShort(curOffset);
       curOffset += 2;
-      desc << L"Times: " << count << L"  Destination: $" << std::hex << std::setfill(L'0') << std::setw(4)
-          << std::uppercase << (int) dest;
-      AddGenericEvent(beginOffset,
-                      curOffset - beginOffset,
-                      L"Loop Again (Alt)",
-                      desc.str().c_str(),
-                      CLR_LOOP,
-                      ICON_ENDREP);
+      desc << L"Times: " << count << L"  Destination: $" << std::hex
+           << std::setfill(L'0') << std::setw(4) << std::uppercase << (int)dest;
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop Again (Alt)",
+                      desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
 
       loopCountAlt++;
       if (loopCountAlt == count) {
         // repeat end
         loopCountAlt = 0;
-      }
-      else {
+      } else {
         // repeat again
         curOffset = dest;
       }
@@ -310,9 +307,10 @@ bool NamcoSnesSeq::ReadEvent(void) {
       uint8_t count = GetByte(curOffset++);
       uint16_t dest = GetShort(curOffset);
       curOffset += 2;
-      desc << L"Times: " << count << L"  Destination: $" << std::hex << std::setfill(L'0') << std::setw(4)
-          << std::uppercase << (int) dest;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop Break", desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
+      desc << L"Times: " << count << L"  Destination: $" << std::hex
+           << std::setfill(L'0') << std::setw(4) << std::uppercase << (int)dest;
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Loop Break",
+                      desc.str().c_str(), CLR_LOOP, ICON_ENDREP);
 
       loopCountAlt++;
       if (loopCountAlt == count) {
@@ -327,19 +325,22 @@ bool NamcoSnesSeq::ReadEvent(void) {
     case EVENT_GOTO: {
       uint16_t dest = GetShort(curOffset);
       curOffset += 2;
-      desc << L"Destination: $" << std::hex << std::setfill(L'0') << std::setw(4) << std::uppercase << (int) dest;
+      desc << L"Destination: $" << std::hex << std::setfill(L'0')
+           << std::setw(4) << std::uppercase << (int)dest;
       uint32_t length = curOffset - beginOffset;
 
       // scan end event
-      if (curOffset + 1 <= 0x10000 && GetByte(curOffset) == 0x03 && (subReturnAddress & 0xff00) == 0) {
-        AddGenericEvent(curOffset, 1, L"End of Track", L"", CLR_TRACKEND, ICON_TRACKEND);
+      if (curOffset + 1 <= 0x10000 && GetByte(curOffset) == 0x03 &&
+          (subReturnAddress & 0xff00) == 0) {
+        AddGenericEvent(curOffset, 1, L"End of Track", L"", CLR_TRACKEND,
+                        ICON_TRACKEND);
       }
 
       curOffset = dest;
       if (!IsOffsetUsed(dest)) {
-        AddGenericEvent(beginOffset, length, L"Jump", desc.str().c_str(), CLR_LOOPFOREVER);
-      }
-      else {
+        AddGenericEvent(beginOffset, length, L"Jump", desc.str().c_str(),
+                        CLR_LOOPFOREVER);
+      } else {
         bContinue = AddLoopForever(beginOffset, length, L"Jump");
       }
       break;
@@ -360,21 +361,18 @@ bool NamcoSnesSeq::ReadEvent(void) {
             key = keyByte - NOTE_NUMBER_PERCUSSION_MIN;
             noteType = NOTE_PERCUSSION;
             desc << L" [" << (trackIndex + 1) << L"] " << L"Perc " << key;
-          }
-          else if (keyByte >= NOTE_NUMBER_NOISE_MIN) {
+          } else if (keyByte >= NOTE_NUMBER_NOISE_MIN) {
             key = keyByte & 0x1f;
             noteType = NOTE_NOISE;
             desc << L" [" << (trackIndex + 1) << L"] " << L"Noise " << key;
-          }
-          else if (keyByte == NOTE_NUMBER_REST) {
+          } else if (keyByte == NOTE_NUMBER_REST) {
             noteType = prevNoteType[trackIndex];
             desc << L" [" << (trackIndex + 1) << L"] " << L"Rest";
-          }
-          else {
+          } else {
             key = keyByte;
             noteType = NOTE_MELODY;
-            desc << L" [" << (trackIndex + 1) << L"] " << key << L" (" << MidiEvent::GetNoteName(key + transpose)
-                << L")";
+            desc << L" [" << (trackIndex + 1) << L"] " << key << L" ("
+                 << MidiEvent::GetNoteName(key + transpose) << L")";
           }
 
           if (VGMSeq::readMode == READMODE_CONVERT_TO_MIDI) {
@@ -417,7 +415,8 @@ bool NamcoSnesSeq::ReadEvent(void) {
         }
       }
 
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Note", desc.str(), CLR_DURNOTE, ICON_NOTE);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Note", desc.str(),
+                      CLR_DURNOTE, ICON_NOTE);
       AddTime(dur);
       break;
     }
@@ -425,7 +424,8 @@ bool NamcoSnesSeq::ReadEvent(void) {
     case EVENT_ECHO_DELAY: {
       uint8_t echoDelay = GetByte(curOffset++);
       desc << L"Echo Delay: " << echoDelay;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Delay", desc.str(), CLR_REVERB, ICON_CONTROL);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Delay",
+                      desc.str(), CLR_REVERB, ICON_CONTROL);
       break;
     }
 
@@ -440,21 +440,24 @@ bool NamcoSnesSeq::ReadEvent(void) {
         }
       }
 
-      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event", desc.str());
+      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event",
+                 desc.str());
       break;
     }
 
     case EVENT_ECHO: {
       bool echoOn = (GetByte(curOffset++) != 0);
       desc << L"Echo Write: " << (echoOn ? L"On" : L"Off");
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo", desc.str(), CLR_REVERB, ICON_CONTROL);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo", desc.str(),
+                      CLR_REVERB, ICON_CONTROL);
       break;
     }
 
     case EVENT_WAIT: {
       uint16_t dur = spcDeltaTime * spcDeltaTimeScale;
       desc << L"Delta Time: " << spcDeltaTime;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Wait", desc.str(), CLR_TIE);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Wait", desc.str(),
+                      CLR_TIE);
       AddTime(dur);
       break;
     }
@@ -462,29 +465,35 @@ bool NamcoSnesSeq::ReadEvent(void) {
     case EVENT_ECHO_FEEDBACK: {
       int8_t echoFeedback = GetByte(curOffset++);
       desc << L"Echo Feedback: " << echoFeedback;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Feedback", desc.str(), CLR_REVERB, ICON_CONTROL);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Feedback",
+                      desc.str(), CLR_REVERB, ICON_CONTROL);
       break;
     }
 
     case EVENT_ECHO_FIR: {
       uint8_t echoFilter = GetByte(curOffset++);
       desc << L"Echo FIR: " << echoFilter;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo FIR", desc.str(), CLR_REVERB, ICON_CONTROL);
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo FIR",
+                      desc.str(), CLR_REVERB, ICON_CONTROL);
       break;
     }
 
     case EVENT_ECHO_VOLUME: {
       int8_t echoVolumeLeft = GetByte(curOffset++);
       int8_t echoVolumeRight = GetByte(curOffset++);
-      desc << L"Echo Volume Left: " << echoVolumeLeft << L"  Echo Volume Right: " << echoVolumeRight;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Volume", desc.str(), CLR_REVERB, ICON_CONTROL);
+      desc << L"Echo Volume Left: " << echoVolumeLeft
+           << L"  Echo Volume Right: " << echoVolumeRight;
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Volume",
+                      desc.str(), CLR_REVERB, ICON_CONTROL);
       break;
     }
 
     case EVENT_ECHO_ADDRESS: {
       uint16_t echoAddress = GetByte(curOffset++) << 8;
-      desc << L"ESA: $" << std::hex << std::setfill(L'0') << std::setw(4) << std::uppercase << (int) echoAddress;
-      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Address", desc.str(), CLR_REVERB, ICON_CONTROL);
+      desc << L"ESA: $" << std::hex << std::setfill(L'0') << std::setw(4)
+           << std::uppercase << (int)echoAddress;
+      AddGenericEvent(beginOffset, curOffset - beginOffset, L"Echo Address",
+                      desc.str(), CLR_REVERB, ICON_CONTROL);
       break;
     }
 
@@ -492,8 +501,9 @@ bool NamcoSnesSeq::ReadEvent(void) {
       uint8_t controlTypeIndex = statusByte & 0x0f;
       uint8_t targetChannels = GetByte(curOffset++);
 
-      NamcoSnesSeqControlType controlType = (NamcoSnesSeqControlType) 0;
-      std::map<uint8_t, NamcoSnesSeqControlType>::iterator pControlType = ControlChangeMap.find(controlTypeIndex);
+      NamcoSnesSeqControlType controlType = (NamcoSnesSeqControlType)0;
+      std::map<uint8_t, NamcoSnesSeqControlType>::iterator pControlType =
+          ControlChangeMap.find(controlTypeIndex);
       std::wstring controlName = L"Unknown Event";
       if (pControlType != ControlChangeMap.end()) {
         controlType = pControlType->second;
@@ -525,8 +535,10 @@ bool NamcoSnesSeq::ReadEvent(void) {
                 uint8_t volumeRight = (newValue & 0x0f) << 4;
 
                 // TODO: apply volume scale
-                double linearPan = (double) volumeRight / (volumeLeft + volumeRight);
-                uint8_t midiPan = ConvertLinearPercentPanValToStdMidiVal(linearPan);
+                double linearPan =
+                    (double)volumeRight / (volumeLeft + volumeRight);
+                uint8_t midiPan =
+                    ConvertLinearPercentPanValToStdMidiVal(linearPan);
 
                 AddPanNoItem(midiPan);
                 break;
@@ -538,28 +550,28 @@ bool NamcoSnesSeq::ReadEvent(void) {
 
       switch (controlType) {
         case CONTROL_PROGCHANGE:
-          AddGenericEvent(beginOffset,
-                          curOffset - beginOffset,
-                          controlName,
-                          desc.str(),
-                          CLR_PROGCHANGE,
-                          ICON_PROGCHANGE);
+          AddGenericEvent(beginOffset, curOffset - beginOffset, controlName,
+                          desc.str(), CLR_PROGCHANGE, ICON_PROGCHANGE);
           break;
 
         case CONTROL_VOLUME:
-          AddGenericEvent(beginOffset, curOffset - beginOffset, controlName, desc.str(), CLR_VOLUME, ICON_CONTROL);
+          AddGenericEvent(beginOffset, curOffset - beginOffset, controlName,
+                          desc.str(), CLR_VOLUME, ICON_CONTROL);
           break;
 
         case CONTROL_PAN:
-          AddGenericEvent(beginOffset, curOffset - beginOffset, controlName, desc.str(), CLR_PAN, ICON_CONTROL);
+          AddGenericEvent(beginOffset, curOffset - beginOffset, controlName,
+                          desc.str(), CLR_PAN, ICON_CONTROL);
           break;
 
         case CONTROL_ADSR:
-          AddGenericEvent(beginOffset, curOffset - beginOffset, controlName, desc.str(), CLR_ADSR, ICON_CONTROL);
+          AddGenericEvent(beginOffset, curOffset - beginOffset, controlName,
+                          desc.str(), CLR_ADSR, ICON_CONTROL);
           break;
 
         default:
-          AddUnknown(beginOffset, curOffset - beginOffset, controlName, desc.str());
+          AddUnknown(beginOffset, curOffset - beginOffset, controlName,
+                     desc.str());
           break;
       }
 
@@ -567,18 +579,22 @@ bool NamcoSnesSeq::ReadEvent(void) {
     }
 
     default:
-      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2) << std::uppercase << (int) statusByte;
-      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event", desc.str());
-      pRoot->AddLogItem(new LogItem((std::wstring(L"Unknown Event - ") + desc.str()).c_str(),
-                                    LOG_LEVEL_ERR,
-                                    L"NamcoSnesSeq"));
+      desc << L"Event: 0x" << std::hex << std::setfill(L'0') << std::setw(2)
+           << std::uppercase << (int)statusByte;
+      AddUnknown(beginOffset, curOffset - beginOffset, L"Unknown Event",
+                 desc.str());
+      pRoot->AddLogItem(
+          new LogItem((std::wstring(L"Unknown Event - ") + desc.str()).c_str(),
+                      LOG_LEVEL_ERR, L"NamcoSnesSeq"));
       bContinue = false;
       break;
   }
 
-  //std::wostringstream ssTrace;
-  //ssTrace << L"" << std::hex << std::setfill(L'0') << std::setw(8) << std::uppercase << beginOffset << L": " << std::setw(2) << (int)statusByte  << L" -> " << std::setw(8) << curOffset << std::endl;
-  //OutputDebugString(ssTrace.str().c_str());
+  // std::wostringstream ssTrace;
+  // ssTrace << L"" << std::hex << std::setfill(L'0') << std::setw(8) <<
+  // std::uppercase << beginOffset << L": " << std::setw(2) << (int)statusByte
+  // << L" -> " << std::setw(8) << curOffset << std::endl;
+  // OutputDebugString(ssTrace.str().c_str());
 
   return bContinue;
 }

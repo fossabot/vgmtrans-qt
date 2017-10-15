@@ -2,11 +2,9 @@
 #include "SPCLoader.h"
 #include "Root.h"
 
-SPCLoader::SPCLoader(void) {
-}
+SPCLoader::SPCLoader(void) {}
 
-SPCLoader::~SPCLoader(void) {
-}
+SPCLoader::~SPCLoader(void) {}
 
 PostLoadCommand SPCLoader::Apply(RawFile *file) {
   if (file->size() < 0x10180) {
@@ -15,7 +13,8 @@ PostLoadCommand SPCLoader::Apply(RawFile *file) {
 
   char signature[34] = {0};
   file->GetBytes(0, 33, signature);
-  if (memcmp(signature, "SNES-SPC700 Sound File Data", 27) != 0 || file->GetShort(0x21) != 0x1a1a) {
+  if (memcmp(signature, "SNES-SPC700 Sound File Data", 27) != 0 ||
+      file->GetShort(0x21) != 0x1a1a) {
     return KEEP_IT;
   }
 
@@ -24,10 +23,12 @@ PostLoadCommand SPCLoader::Apply(RawFile *file) {
 
   VirtFile *spcFile = new VirtFile(spcData, 0x10000, file->GetFileName());
 
-  std::vector<uint8_t> dsp(file->buf.data + 0x10100, file->buf.data + 0x10100 + 0x80);
+  std::vector<uint8_t> dsp(file->buf.data + 0x10100,
+                           file->buf.data + 0x10100 + 0x80);
   spcFile->tag.binaries[L"dsp"] = dsp;
 
-  // Parse [ID666](http://vspcplay.raphnet.net/spc_file_format.txt) if available.
+  // Parse [ID666](http://vspcplay.raphnet.net/spc_file_format.txt) if
+  // available.
   if (file->GetByte(0x23) == 0x1a) {
     char s[256];
 
@@ -53,9 +54,8 @@ PostLoadCommand SPCLoader::Apply(RawFile *file) {
       s_str = s;
       spcFile->tag.artist = string2wstring(s_str);
 
-      spcFile->tag.length = (double) (file->GetWord(0xa9) & 0xffffff);
-    }
-    else {
+      spcFile->tag.length = (double)(file->GetWord(0xa9) & 0xffffff);
+    } else {
       // text format
       file->GetBytes(0xb1, 32, s);
       s[32] = '\0';
@@ -73,7 +73,8 @@ PostLoadCommand SPCLoader::Apply(RawFile *file) {
     char xid6_signature[4] = {0};
     file->GetBytes(0x10200, 4, xid6_signature);
     uint32_t xid6_end_offset = 0x10208 + file->GetWord(0x10204);
-    if (memcmp(xid6_signature, "xid6", 4) == 0 && file->size() >= xid6_end_offset) {
+    if (memcmp(xid6_signature, "xid6", 4) == 0 &&
+        file->size() >= xid6_end_offset) {
       uint32_t xid6_offset = 0x10208;
       while (xid6_offset + 4 < xid6_end_offset) {
         uint8_t xid6_id = file->GetByte(xid6_offset);
@@ -84,8 +85,7 @@ PostLoadCommand SPCLoader::Apply(RawFile *file) {
         uint16_t xid6_length;
         if (xid6_type == 0) {
           xid6_length = 0;
-        }
-        else {
+        } else {
           xid6_length = xid6_data;
         }
 
@@ -101,7 +101,8 @@ PostLoadCommand SPCLoader::Apply(RawFile *file) {
 
           case 1: {
             // String (data contains null character)
-            std::string s_str = std::string((char *) (file->buf.data + xid6_offset + 4), xid6_length - 1);
+            std::string s_str = std::string(
+                (char *)(file->buf.data + xid6_offset + 4), xid6_length - 1);
             std::wstring xid6_string = string2wstring(s_str);
             switch (xid6_id) {
               case 1:

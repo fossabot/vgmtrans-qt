@@ -8,38 +8,37 @@ class SeqTrack;
 class SeqEvent;
 class ISeqSlider;
 
-enum ReadMode: uint8_t {
+enum ReadMode : uint8_t {
   READMODE_ADD_TO_UI,
   READMODE_CONVERT_TO_MIDI,
   READMODE_FIND_DELTA_LENGTH
 };
 
-
-class VGMSeq: public VGMFile {
+class VGMSeq : public VGMFile {
  public:
   BEGIN_MENU_SUB(VGMSeq, VGMFile)
-      MENU_ITEM(VGMSeq, OnSaveAsMidi, L"Save as MIDI")
+  MENU_ITEM(VGMSeq, OnSaveAsMidi, L"Save as MIDI")
   END_MENU()
 
-  VGMSeq(const std::string &format,
-         RawFile *file,
-         uint32_t offset,
-         uint32_t length = 0,
-         std::wstring name = L"VGM Sequence");
+  VGMSeq(const std::string &format, RawFile *file, uint32_t offset,
+         uint32_t length = 0, std::wstring name = L"VGM Sequence");
   virtual ~VGMSeq(void);
 
   virtual Icon GetIcon() { return ICON_SEQ; }
 
-  virtual bool Load();                //Function to load all the information about the sequence
+  virtual bool
+  Load();  // Function to load all the information about the sequence
   virtual bool LoadMain();
   virtual bool GetHeaderInfo(void);
-  virtual bool GetTrackPointers(void);    //Function to find all of the track pointers.   Returns number of total tracks.
+  virtual bool GetTrackPointers(void);  // Function to find all of the track
+                                        // pointers.   Returns number of total
+                                        // tracks.
   virtual void ResetVars(void);
   virtual MidiFile *ConvertToMidi();
   virtual MidiTrack *GetFirstMidiTrack();
   void SetPPQN(uint16_t ppqn);
   uint16_t GetPPQN(void);
-  //void SetTimeSignature(uint8_t numer, denom);
+  // void SetTimeSignature(uint8_t numer, denom);
   void AddInstrumentRef(uint32_t progNum);
 
   void UseReverb() { bReverb = true; }
@@ -85,13 +84,17 @@ class VGMSeq: public VGMFile {
   MidiFile *midi;
   double tempoBPM;
   uint16_t ppqn;
-  long time;                //absolute current time (ticks)
+  long time;  // absolute current time (ticks)
 
-//attributes
-  bool bMonophonicTracks;         //Only 1 voice at a time on a track.  We can assume note offs always use last note on key.
-                                  //which is important when drivers allow things like global transposition events mid note
-  bool bUseLinearAmplitudeScale;  //This will cause all all velocity, volume, and expression events to be
-                                  //automatically converted from a linear scale to MIDI's logarithmic scale
+  // attributes
+  bool bMonophonicTracks;  // Only 1 voice at a time on a track.  We can assume
+                           // note offs always use last note on key.  which is
+                           // important when drivers allow things like global
+                           // transposition events mid note
+  bool bUseLinearAmplitudeScale;  // This will cause all all velocity, volume,
+                                  // and expression events to be  automatically
+                                  // converted from a linear scale to MIDI's
+                                  // logarithmic scale
   bool bAlwaysWriteInitialTempo;
   bool bAlwaysWriteInitialVol;
   bool bAlwaysWriteInitialExpression;
@@ -100,15 +103,18 @@ class VGMSeq: public VGMFile {
   bool bAlwaysWriteInitialMono;
   bool bAllowDiscontinuousTrackData;
 
-  // True if each tracks in a sequence needs to be loaded simultaneously in tick by tick, as the real music player does.
-  // Pros:
+  // True if each tracks in a sequence needs to be loaded simultaneously in tick
+  // by tick, as the real music player does. Pros:
   //   - It allows to share some variables between two or more tracks.
-  //   - It might be useful when you want to emulate envelopes like vibrato for every ticks.
+  //   - It might be useful when you want to emulate envelopes like vibrato for
+  //   every ticks.
   // Cons:
   //   - It prohibits that each tracks have different timings (delta time).
-  //   - It is not very suitable for formats like SMF format 1 (multitrack, delta time first format),
-  //     because a track must pause the parsing every time a parser encounters to delta time event.
-  //     It can be used anyway, but it is useless and annoys you, in most cases.
+  //   - It is not very suitable for formats like SMF format 1 (multitrack,
+  //   delta time first format),
+  //     because a track must pause the parsing every time a parser encounters
+  //     to delta time event. It can be used anyway, but it is useless and
+  //     annoys you, in most cases.
   bool bLoadTickByTick;
 
   uint8_t initialVol;
@@ -120,11 +126,10 @@ class VGMSeq: public VGMFile {
   bool bReverb;
   float reverbTime;
 
-  std::vector<SeqTrack *> aTracks;        //array of track pointers
+  std::vector<SeqTrack *> aTracks;  // array of track pointers
   std::vector<uint32_t> aInstrumentsUsed;
 
   std::vector<ISeqSlider *> aSliders;
 };
-
 
 extern uint8_t mode;

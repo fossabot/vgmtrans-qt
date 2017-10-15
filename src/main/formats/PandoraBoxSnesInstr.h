@@ -8,16 +8,14 @@
 // PandoraBoxSnesInstrSet
 // **********************
 
-class PandoraBoxSnesInstrSet:
-    public VGMInstrSet {
+class PandoraBoxSnesInstrSet : public VGMInstrSet {
  public:
-  PandoraBoxSnesInstrSet(RawFile *file,
-                         PandoraBoxSnesVersion ver,
-                         uint32_t spcDirAddr,
-                         uint16_t addrLocalInstrTable,
+  PandoraBoxSnesInstrSet(RawFile *file, PandoraBoxSnesVersion ver,
+                         uint32_t spcDirAddr, uint16_t addrLocalInstrTable,
                          uint16_t addrGlobalInstrTable,
                          uint8_t globalInstrumentCount,
-                         const std::map<uint8_t, uint16_t> &instrADSRHints = std::map<uint8_t, uint16_t>(),
+                         const std::map<uint8_t, uint16_t> &instrADSRHints =
+                             std::map<uint8_t, uint16_t>(),
                          const std::wstring &name = L"PandoraBoxSnesInstrSet");
   virtual ~PandoraBoxSnesInstrSet(void);
 
@@ -40,16 +38,11 @@ class PandoraBoxSnesInstrSet:
 // PandoraBoxSnesInstr
 // *******************
 
-class PandoraBoxSnesInstr
-    : public VGMInstr {
+class PandoraBoxSnesInstr : public VGMInstr {
  public:
-  PandoraBoxSnesInstr(VGMInstrSet *instrSet,
-                      PandoraBoxSnesVersion ver,
-                      uint32_t offset,
-                      uint8_t theInstrNum,
-                      uint8_t srcn,
-                      uint32_t spcDirAddr,
-                      uint16_t adsr = 0x8fe0,
+  PandoraBoxSnesInstr(VGMInstrSet *instrSet, PandoraBoxSnesVersion ver,
+                      uint32_t offset, uint8_t theInstrNum, uint8_t srcn,
+                      uint32_t spcDirAddr, uint16_t adsr = 0x8fe0,
                       const std::wstring &name = L"PandoraBoxSnesInstr");
   virtual ~PandoraBoxSnesInstr(void);
 
@@ -67,14 +60,10 @@ class PandoraBoxSnesInstr
 // PandoraBoxSnesRgn
 // *****************
 
-class PandoraBoxSnesRgn
-    : public VGMRgn {
+class PandoraBoxSnesRgn : public VGMRgn {
  public:
-  PandoraBoxSnesRgn(PandoraBoxSnesInstr *instr,
-                    PandoraBoxSnesVersion ver,
-                    uint32_t offset,
-                    uint8_t srcn,
-                    uint32_t spcDirAddr,
+  PandoraBoxSnesRgn(PandoraBoxSnesInstr *instr, PandoraBoxSnesVersion ver,
+                    uint32_t offset, uint8_t srcn, uint32_t spcDirAddr,
                     uint16_t adsr = 0x8fe0);
   virtual ~PandoraBoxSnesRgn(void);
 

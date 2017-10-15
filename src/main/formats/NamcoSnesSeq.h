@@ -4,7 +4,8 @@
 #include "NamcoSnesFormat.h"
 
 enum NamcoSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -33,7 +34,8 @@ enum NamcoSnesSeqEventType {
 };
 
 enum NamcoSnesSeqControlType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   CONTROL_PROGCHANGE = 1,
   CONTROL_VOLUME,
   CONTROL_PAN,
@@ -46,10 +48,10 @@ enum NamcoSnesSeqNoteType {
   NOTE_PERCUSSION,
 };
 
-class NamcoSnesSeq
-    : public VGMSeqNoTrks {
+class NamcoSnesSeq : public VGMSeqNoTrks {
  public:
-  NamcoSnesSeq(RawFile *file, NamcoSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"Namco SNES Seq");
+  NamcoSnesSeq(RawFile *file, NamcoSnesVersion ver, uint32_t seqdataOffset,
+               std::wstring newName = L"Namco SNES Seq");
   virtual ~NamcoSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);

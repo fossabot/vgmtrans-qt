@@ -5,8 +5,7 @@
 
 class TriAcePS1ScorePattern;
 
-class TriAcePS1Seq:
-    public VGMSeq {
+class TriAcePS1Seq : public VGMSeq {
  public:
   typedef struct _TrkInfo {
     uint16_t unknown1;
@@ -14,8 +13,8 @@ class TriAcePS1Seq:
     uint16_t trkOffset;
   } TrkInfo;
 
-
-  TriAcePS1Seq(RawFile *file, uint32_t offset, const std::wstring &name = std::wstring(L"TriAce Seq"));
+  TriAcePS1Seq(RawFile *file, uint32_t offset,
+               const std::wstring &name = std::wstring(L"TriAce Seq"));
   virtual ~TriAcePS1Seq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -30,16 +29,13 @@ class TriAcePS1Seq:
   uint8_t initialTempoBPM;
 };
 
-class TriAcePS1ScorePattern
-    : public VGMContainerItem {
+class TriAcePS1ScorePattern : public VGMContainerItem {
  public:
   TriAcePS1ScorePattern(TriAcePS1Seq *parentSeq, uint32_t offset)
-      : VGMContainerItem(parentSeq, offset, 0, L"Score Pattern") { }
+      : VGMContainerItem(parentSeq, offset, 0, L"Score Pattern") {}
 };
 
-
-class TriAcePS1Track
-    : public SeqTrack {
+class TriAcePS1Track : public SeqTrack {
  public:
   TriAcePS1Track(TriAcePS1Seq *parentSeq, long offset = 0, long length = 0);
 

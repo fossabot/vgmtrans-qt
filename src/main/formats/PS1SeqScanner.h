@@ -3,8 +3,7 @@
 #include "PS1Seq.h"
 #include "Vab.h"
 
-class PS1SeqScanner:
-    public VGMScanner {
+class PS1SeqScanner : public VGMScanner {
  public:
   PS1SeqScanner(void);
   virtual ~PS1SeqScanner(void);

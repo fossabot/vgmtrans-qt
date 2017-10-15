@@ -7,13 +7,11 @@
 // RareSnesInstrSet
 // ****************
 
-class RareSnesInstrSet:
-    public VGMInstrSet {
+class RareSnesInstrSet : public VGMInstrSet {
  public:
-  RareSnesInstrSet(RawFile *file, uint32_t offset, uint32_t spcDirAddr, const std::wstring &name = L"RareSnesInstrSet");
-  RareSnesInstrSet(RawFile *file,
-                   uint32_t offset,
-                   uint32_t spcDirAddr,
+  RareSnesInstrSet(RawFile *file, uint32_t offset, uint32_t spcDirAddr,
+                   const std::wstring &name = L"RareSnesInstrSet");
+  RareSnesInstrSet(RawFile *file, uint32_t offset, uint32_t spcDirAddr,
                    const std::map<uint8_t, int8_t> &instrUnityKeyHints,
                    const std::map<uint8_t, int16_t> &instrPitchHints,
                    const std::map<uint8_t, uint16_t> &instrADSRHints,
@@ -41,17 +39,11 @@ class RareSnesInstrSet:
 // RareSnesInstr
 // *************
 
-class RareSnesInstr
-    : public VGMInstr {
+class RareSnesInstr : public VGMInstr {
  public:
-  RareSnesInstr(VGMInstrSet *instrSet,
-                uint32_t offset,
-                uint32_t theBank,
-                uint32_t theInstrNum,
-                uint32_t spcDirAddr,
-                int8_t transpose = 0,
-                int16_t pitch = 0,
-                uint16_t adsr = 0x8FE0,
+  RareSnesInstr(VGMInstrSet *instrSet, uint32_t offset, uint32_t theBank,
+                uint32_t theInstrNum, uint32_t spcDirAddr, int8_t transpose = 0,
+                int16_t pitch = 0, uint16_t adsr = 0x8FE0,
                 const std::wstring &name = L"RareSnesInstr");
   virtual ~RareSnesInstr(void);
 
@@ -68,10 +60,10 @@ class RareSnesInstr
 // RareSnesRgn
 // ***********
 
-class RareSnesRgn
-    : public VGMRgn {
+class RareSnesRgn : public VGMRgn {
  public:
-  RareSnesRgn(RareSnesInstr *instr, uint32_t offset, int8_t transpose = 0, int16_t pitch = 0, uint16_t adsr = 0x8FE0);
+  RareSnesRgn(RareSnesInstr *instr, uint32_t offset, int8_t transpose = 0,
+              int16_t pitch = 0, uint16_t adsr = 0x8FE0);
   virtual ~RareSnesRgn(void);
 
   virtual bool LoadRgn();

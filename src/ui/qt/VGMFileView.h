@@ -9,20 +9,18 @@ class HexView;
 class VGMFileTreeView;
 
 class VGMFileView : public QSplitter {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    VGMFileView(VGMFile *vgmFile);
-    ~VGMFileView();
+ public:
+  VGMFileView(VGMFile *vgmFile);
+  ~VGMFileView();
 
-    void addToMdi();
+  void addToMdi();
 
-
-protected:
-    QSplitter *horzSplitter;
-    HexView *hexView;
-    VGMFileTreeView *treeView;
+ protected:
+  QSplitter *horzSplitter;
+  HexView *hexView;
+  VGMFileTreeView *treeView;
 };
 
-
-#endif //VGMTRANS_BREAKDOWNVIEW_H
+#endif  // VGMTRANS_BREAKDOWNVIEW_H

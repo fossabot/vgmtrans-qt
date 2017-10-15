@@ -3,11 +3,12 @@
 #include "SeqTrack.h"
 #include "ChunSnesFormat.h"
 
-#define CHUNSNES_SUBLEVEL_MAX   3
+#define CHUNSNES_SUBLEVEL_MAX 3
 
 enum ChunSnesSeqEventType {
-  EVENT_UNKNOWN0 =
-  1, //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  EVENT_UNKNOWN0 = 1,  // start enum at 1 because if map[] look up fails, it
+                       // returns 0, and we don't want that to get confused with
+                       // a legit event
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
   EVENT_UNKNOWN3,
@@ -53,18 +54,15 @@ enum ChunSnesSeqEventType {
 };
 
 enum ChunSnesSeqPresetType {
-  PRESET_CONDITION =
-  1, //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  PRESET_CONDITION = 1,  // start enum at 1 because if map[] look up fails, it
+                         // returns 0, and we don't want that to get confused
+                         // with a legit event
 };
 
-class ChunSnesSeq
-    : public VGMSeq {
+class ChunSnesSeq : public VGMSeq {
  public:
-  ChunSnesSeq(RawFile *file,
-              ChunSnesVersion ver,
-              ChunSnesMinorVersion minorVer,
-              uint32_t seqdataOffset,
-              std::wstring newName = L"Chun SNES Seq");
+  ChunSnesSeq(RawFile *file, ChunSnesVersion ver, ChunSnesMinorVersion minorVer,
+              uint32_t seqdataOffset, std::wstring newName = L"Chun SNES Seq");
   virtual ~ChunSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -85,9 +83,7 @@ class ChunSnesSeq
   void LoadEventMap(void);
 };
 
-
-class ChunSnesTrack
-    : public SeqTrack {
+class ChunSnesTrack : public SeqTrack {
  public:
   ChunSnesTrack(ChunSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);

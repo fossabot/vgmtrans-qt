@@ -1,21 +1,15 @@
 #include "pch.h"
 #include "DataSeg.h"
 
+DataSeg::DataSeg(void) : startOff(0), size(0), endOff(0), bAlloced(false) {}
 
-DataSeg::DataSeg(void)
-    : startOff(0), size(0), endOff(0), bAlloced(false) {
-}
-
-DataSeg::~DataSeg(void) {
-  clear();
-}
+DataSeg::~DataSeg(void) { clear(); }
 
 void DataSeg::reposition(uint32_t newBegin) {
   if (newBegin < endOff && newBegin >= startOff) {
     uint32_t diff = newBegin - startOff;
     memmove(data, data + diff, size - diff);
-  }
-  else if (newBegin + size <= endOff && newBegin + size >= startOff) {
+  } else if (newBegin + size <= endOff && newBegin + size >= startOff) {
     uint32_t diff = endOff - (newBegin + size);
     memmove(data + diff, data, size - diff);
   }
@@ -46,11 +40,9 @@ void DataSeg::load(uint8_t *buf, uint32_t startVirtOffset, uint32_t theSize) {
   bAlloced = true;
 }
 
-
 void DataSeg::clear() {
-  if (bAlloced)
-    delete[] data;
-  //data.clear();
+  if (bAlloced) delete[] data;
+  // data.clear();
   startOff = 0;
   size = 0;
   endOff = 0;

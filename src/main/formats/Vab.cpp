@@ -1,18 +1,15 @@
 #include "pch.h"
 #include "Vab.h"
-#include "Format.h"			//include PS1-specific format header file when it is ready
+#include "Format.h"  //include PS1-specific format header file when it is ready
 #include "PSXSPU.h"
 #include "PS1Format.h"
 
 using namespace std;
 
 Vab::Vab(RawFile *file, uint32_t offset)
-    : VGMInstrSet(PS1Format::name, file, offset) {
-}
+    : VGMInstrSet(PS1Format::name, file, offset) {}
 
-Vab::~Vab(void) {
-}
-
+Vab::~Vab(void) {}
 
 bool Vab::GetHeaderInfo() {
   uint32_t nEndOffset = GetEndOffset();
@@ -57,7 +54,8 @@ bool Vab::GetInstrPointers() {
   uint32_t offVAGOffsets = offToneAttrs + (32 * 16 * numPrograms);
 
   VGMHeader *progsHdr = AddHeader(offProgs, 16 * 128, L"Program Table");
-  VGMHeader *toneAttrsHdr = AddHeader(offToneAttrs, 32 * 16, L"Tone Attributes Table");
+  VGMHeader *toneAttrsHdr =
+      AddHeader(offToneAttrs, 32 * 16, L"Tone Attributes Table");
 
   if (numPrograms > 128) {
     return false;
@@ -71,7 +69,8 @@ bool Vab::GetInstrPointers() {
   // See Clock Tower PSF for example of null instrument.
   for (uint32_t i = 0; i < 128; i++) {
     uint32_t offCurrProg = offProgs + (i * 16);
-    uint32_t offCurrToneAttrs = offToneAttrs + (uint32_t) (aInstrs.size() * 32 * 16);
+    uint32_t offCurrToneAttrs =
+        offToneAttrs + (uint32_t)(aInstrs.size() * 32 * 16);
 
     if (offCurrToneAttrs + (32 * 16) > nEndOffset) {
       break;
@@ -82,9 +81,9 @@ bool Vab::GetInstrPointers() {
       wchar_t log[512];
       swprintf(log, 512, L"Too many tones (%u) in Program #%u.", numTones, i);
       pRoot->AddLogItem(new LogItem(log, LOG_LEVEL_WARN, L"Vab"));
-    }
-    else if (numTones != 0) {
-      VabInstr *newInstr = new VabInstr(this, offCurrToneAttrs, 0x20 * 16, 0, i);
+    } else if (numTones != 0) {
+      VabInstr *newInstr =
+          new VabInstr(this, offCurrToneAttrs, 0x20 * 16, 0, i);
       aInstrs.push_back(newInstr);
       GetBytes(offCurrProg, 0x10, &newInstr->attr);
 
@@ -109,7 +108,8 @@ bool Vab::GetInstrPointers() {
     wchar_t name[256];
     std::vector<SizeOffsetPair> vagLocations;
     uint32_t totalVAGSize = 0;
-    VGMHeader *vagOffsetHdr = AddHeader(offVAGOffsets, 2 * 256, L"VAG Pointer Table");
+    VGMHeader *vagOffsetHdr =
+        AddHeader(offVAGOffsets, 2 * 256, L"VAG Pointer Table");
 
     uint32_t vagStartOffset = GetShort(offVAGOffsets) * 8;
     vagOffsetHdr->AddSimpleItem(offVAGOffsets, 2, L"VAG Size /8 #0");
@@ -122,9 +122,9 @@ bool Vab::GetInstrPointers() {
       if (i == 0) {
         vagOffset = vagStartOffset;
         vagSize = GetShort(offVAGOffsets + (i + 1) * 2) * 8;
-      }
-      else {
-        vagOffset = vagStartOffset + vagLocations[i - 1].offset + vagLocations[i - 1].size;
+      } else {
+        vagOffset = vagStartOffset + vagLocations[i - 1].offset +
+                    vagLocations[i - 1].size;
         vagSize = GetShort(offVAGOffsets + (i + 1) * 2) * 8;
       }
 
@@ -134,10 +134,11 @@ bool Vab::GetInstrPointers() {
       if (vagOffset + vagSize <= nEndOffset) {
         vagLocations.push_back(SizeOffsetPair(vagOffset, vagSize));
         totalVAGSize += vagSize;
-      }
-      else {
+      } else {
         wchar_t log[512];
-        swprintf(log, 512, L"VAG #%u pointer (offset=0x%08X, size=%u) is invalid.", i + 1, vagOffset, vagSize);
+        swprintf(log, 512,
+                 L"VAG #%u pointer (offset=0x%08X, size=%u) is invalid.", i + 1,
+                 vagOffset, vagSize);
         pRoot->AddLogItem(new LogItem(log, LOG_LEVEL_WARN, L"Vab"));
       }
     }
@@ -147,12 +148,12 @@ bool Vab::GetInstrPointers() {
     uint32_t offVAGs = offVAGOffsets + 2 * 256;
     if (dwOffset == 0 && vagLocations.size() != 0) {
       // load samples as well
-      PSXSampColl *newSampColl = new PSXSampColl(format, this, offVAGs, totalVAGSize, vagLocations);
+      PSXSampColl *newSampColl =
+          new PSXSampColl(format, this, offVAGs, totalVAGSize, vagLocations);
       if (newSampColl->LoadVGMFile()) {
         pRoot->AddVGMFile(newSampColl);
-        //this->sampColl = newSampColl;
-      }
-      else {
+        // this->sampColl = newSampColl;
+      } else {
         delete newSampColl;
       }
     }
@@ -161,28 +162,16 @@ bool Vab::GetInstrPointers() {
   return true;
 }
 
-
-
-
-
-
 // ********
 // VabInstr
 // ********
 
-VabInstr::VabInstr(VGMInstrSet *instrSet,
-                   uint32_t offset,
-                   uint32_t length,
-                   uint32_t theBank,
-                   uint32_t theInstrNum,
-                   const wstring &name)
+VabInstr::VabInstr(VGMInstrSet *instrSet, uint32_t offset, uint32_t length,
+                   uint32_t theBank, uint32_t theInstrNum, const wstring &name)
     : VGMInstr(instrSet, offset, length, theBank, theInstrNum, name),
-      masterVol(127) {
-}
+      masterVol(127) {}
 
-VabInstr::~VabInstr(void) {
-}
-
+VabInstr::~VabInstr(void) {}
 
 bool VabInstr::LoadInstr() {
   int8_t numRgns = attr.tones;
@@ -197,27 +186,21 @@ bool VabInstr::LoadInstr() {
   return true;
 }
 
-
-
-
-
 // ******
 // VabRgn
 // ******
 
-VabRgn::VabRgn(VabInstr *instr, uint32_t offset)
-    : VGMRgn(instr, offset) {
-}
-
+VabRgn::VabRgn(VabInstr *instr, uint32_t offset) : VGMRgn(instr, offset) {}
 
 bool VabRgn::LoadRgn() {
-  VabInstr *instr = (VabInstr *) parInstr;
+  VabInstr *instr = (VabInstr *)parInstr;
   unLength = 0x20;
   GetBytes(dwOffset, 0x20, &attr);
 
   AddGeneralItem(dwOffset, 1, L"Priority");
   AddGeneralItem(dwOffset + 1, 1, L"Mode (use reverb?)");
-  AddVolume((GetByte(dwOffset + 2) * instr->masterVol) / (127.0 * 127.0), dwOffset + 2, 1);
+  AddVolume((GetByte(dwOffset + 2) * instr->masterVol) / (127.0 * 127.0),
+            dwOffset + 2, 1);
   AddPan(GetByte(dwOffset + 3), dwOffset + 3);
   AddUnityKey(GetByte(dwOffset + 4), dwOffset + 4);
   AddGeneralItem(dwOffset + 5, 1, L"Pitch Tune");
@@ -241,20 +224,18 @@ bool VabRgn::LoadRgn() {
   AddGeneralItem(dwOffset + 30, 2, L"Reserved");
   ADSR1 = attr.adsr1;
   ADSR2 = attr.adsr2;
-  if ((int) sampNum < 0)
-    sampNum = 0;
+  if ((int)sampNum < 0) sampNum = 0;
 
-  if (keyLow > keyHigh)
-    return false;
-
+  if (keyLow > keyHigh) return false;
 
   // gocha: AFAIK, the valid range of pitch is 0-127. It must not be negative.
-  // If it exceeds 127, driver clips the value and it will become 127. (In Hokuto no Ken, at least)
-  // I am not sure if the interpretation of this value depends on a driver or VAB version.
-  // The following code takes the byte as signed, since it could be a typical extended implementation.
-  int8_t ft = (int8_t) GetByte(dwOffset + 5);
+  // If it exceeds 127, driver clips the value and it will become 127. (In
+  // Hokuto no Ken, at least) I am not sure if the interpretation of this value
+  // depends on a driver or VAB version. The following code takes the byte as
+  // signed, since it could be a typical extended implementation.
+  int8_t ft = (int8_t)GetByte(dwOffset + 5);
   double cents = ft * 100.0 / 128.0;
-  SetFineTune((int16_t) cents);
+  SetFineTune((int16_t)cents);
 
   PSXConvADSR<VabRgn>(this, ADSR1, ADSR2, false);
   return true;

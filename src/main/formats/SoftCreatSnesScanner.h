@@ -2,14 +2,10 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-class SoftCreatSnesScanner:
-    public VGMScanner {
+class SoftCreatSnesScanner : public VGMScanner {
  public:
-  SoftCreatSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~SoftCreatSnesScanner(void) {
-  }
+  SoftCreatSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~SoftCreatSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForSoftCreatSnesFromARAM(RawFile *file);

@@ -5,8 +5,9 @@
 #include "PrismSnesFormat.h"
 
 enum PrismSnesSeqEventType {
-  EVENT_UNKNOWN0 =
-  1, //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  EVENT_UNKNOWN0 = 1,  // start enum at 1 because if map[] look up fails, it
+                       // returns 0, and we don't want that to get confused with
+                       // a legit event
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
   EVENT_UNKNOWN3,
@@ -69,10 +70,10 @@ enum PrismSnesSeqEventType {
   EVENT_END,
 };
 
-class PrismSnesSeq
-    : public VGMSeq {
+class PrismSnesSeq : public VGMSeq {
  public:
-  PrismSnesSeq(RawFile *file, PrismSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"I'Max SNES Seq");
+  PrismSnesSeq(RawFile *file, PrismSnesVersion ver, uint32_t seqdataOffset,
+               std::wstring newName = L"I'Max SNES Seq");
   virtual ~PrismSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -96,9 +97,7 @@ class PrismSnesSeq
   void LoadEventMap(void);
 };
 
-
-class PrismSnesTrack
-    : public SeqTrack {
+class PrismSnesTrack : public SeqTrack {
  public:
   PrismSnesTrack(PrismSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);
@@ -108,9 +107,9 @@ class PrismSnesTrack
 
  private:
   uint8_t defaultLength;
-  bool slur; // bit $01
-  bool manualDuration; // bit $10
-  bool prevNoteSlurred; // bit $20
+  bool slur;             // bit $01
+  bool manualDuration;   // bit $10
+  bool prevNoteSlurred;  // bit $20
   int8_t prevNoteKey;
   uint8_t autoDurationThreshold;
   uint8_t spcVolume;

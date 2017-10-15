@@ -4,8 +4,6 @@
 #include "VGMColl.h"
 #include "KonamiGXScanner.h"
 
-
 BEGIN_FORMAT(KonamiGX)
-  USING_SCANNER(KonamiGXScanner)
+USING_SCANNER(KonamiGXScanner)
 END_FORMAT()
-

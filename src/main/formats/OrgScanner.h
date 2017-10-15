@@ -1,8 +1,7 @@
 #pragma once
 #include "Scanner.h"
 
-class OrgScanner:
-    public VGMScanner {
+class OrgScanner : public VGMScanner {
  public:
   OrgScanner(void);
   virtual ~OrgScanner(void);

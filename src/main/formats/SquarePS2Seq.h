@@ -3,8 +3,7 @@
 #include "SeqTrack.h"
 #include "SquarePS2Format.h"
 
-class BGMSeq:
-    public VGMSeq {
+class BGMSeq : public VGMSeq {
  public:
   BGMSeq(RawFile *file, uint32_t offset);
   virtual ~BGMSeq(void);
@@ -18,9 +17,7 @@ class BGMSeq:
   unsigned short assocWDID;
 };
 
-
-class BGMTrack
-    : public SeqTrack {
+class BGMTrack : public SeqTrack {
  public:
   BGMTrack(BGMSeq *parentSeq, long offset = 0, long length = 0);
 

@@ -5,48 +5,44 @@
 #include "VGMRgn.h"
 #include "SonyPS2Format.h"
 
-//FORWARD_DECLARE_TYPEDEF_STRUCT(ProgParam);
+// FORWARD_DECLARE_TYPEDEF_STRUCT(ProgParam);
 
+#define SCEHD_LFO_NON 0
+#define SCEHD_LFO_SAWUP 1
+#define SCEHD_LFO_SAWDOWN 2
+#define SCEHD_LFO_TRIANGLE 3
+#define SCEHD_LFO_SQUEARE 4
+#define SCEHD_LFO_NOISE 5
+#define SCEHD_LFO_SIN 6
+#define SCEHD_LFO_USER 0x80
 
-#define SCEHD_LFO_NON        0
-#define SCEHD_LFO_SAWUP      1
-#define SCEHD_LFO_SAWDOWN    2
-#define SCEHD_LFO_TRIANGLE   3
-#define SCEHD_LFO_SQUEARE    4
-#define SCEHD_LFO_NOISE      5
-#define SCEHD_LFO_SIN        6
-#define SCEHD_LFO_USER       0x80
+#define SCEHD_CROSSFADE 0x80
 
-#define SCEHD_CROSSFADE      0x80
+#define SCEHD_LFO_PITCH_KEYON 0x01
+#define SCEHD_LFO_PITCH_KEYOFF 0x02
+#define SCEHD_LFO_PITCH_BOTH 0x04
+#define SCEHD_LFO_AMP_KEYON 0x10
+#define SCEHD_LFO_AMP_KEYOFF 0x20
+#define SCEHD_LFO_AMP_BOTH 0x40
 
+#define SCEHD_SPU_DIRECTSEND_L 0x01
+#define SCEHD_SPU_DIRECTSEND_R 0x02
+#define SCEHD_SPU_EFFECTSEND_L 0x04
+#define SCEHD_SPU_EFFECTSEND_R 0x08
+#define SCEHD_SPU_CORE_0 0x10
+#define SCEHD_SPU_CORE_1 0x20
 
-#define SCEHD_LFO_PITCH_KEYON   0x01
-#define SCEHD_LFO_PITCH_KEYOFF  0x02
-#define SCEHD_LFO_PITCH_BOTH    0x04
-#define SCEHD_LFO_AMP_KEYON     0x10
-#define SCEHD_LFO_AMP_KEYOFF    0x20
-#define SCEHD_LFO_AMP_BOTH      0x40
-
-#define SCEHD_SPU_DIRECTSEND_L  0x01
-#define SCEHD_SPU_DIRECTSEND_R  0x02
-#define SCEHD_SPU_EFFECTSEND_L  0x04
-#define SCEHD_SPU_EFFECTSEND_R  0x08
-#define SCEHD_SPU_CORE_0        0x10
-#define SCEHD_SPU_CORE_1        0x20
-
-#define SCEHD_VAG_1SHOT         0
-#define SCEHD_VAG_LOOP          1
-
+#define SCEHD_VAG_1SHOT 0
+#define SCEHD_VAG_LOOP 1
 
 // ************
 // SonyPS2Instr
 // ************
 
-class SonyPS2Instr
-    : public VGMInstr {
+class SonyPS2Instr : public VGMInstr {
   friend class SonyPS2InstrSet;
- public:
 
+ public:
   typedef struct _ProgParam {
     uint32_t splitBlockAddr;
     uint8_t nSplit;
@@ -97,7 +93,8 @@ class SonyPS2Instr
     int8_t splitDetune;
   } SplitBlock;
 
-  SonyPS2Instr(VGMInstrSet *instrSet, uint32_t offset, uint32_t length, uint32_t theBank, uint32_t theInstrNum);
+  SonyPS2Instr(VGMInstrSet *instrSet, uint32_t offset, uint32_t length,
+               uint32_t theBank, uint32_t theInstrNum);
   virtual ~SonyPS2Instr(void);
 
   virtual bool LoadInstr();
@@ -107,14 +104,11 @@ class SonyPS2Instr
   SplitBlock *splitBlocks;
 };
 
-
-
 // ***************
 // SonyPS2InstrSet
 // ***************
 
-class SonyPS2InstrSet
-    : public VGMInstrSet {
+class SonyPS2InstrSet : public VGMInstrSet {
   friend class SonyPS2SampColl;
   friend class SonyPS2Instr;
 
@@ -134,7 +128,7 @@ class SonyPS2InstrSet
   } HdrCk;
 
   typedef struct _ProgCk {
-    _ProgCk() : programOffsetAddr(0), progParamBlock(0) { }
+    _ProgCk() : programOffsetAddr(0), progParamBlock(0) {}
     ~_ProgCk() {
       if (programOffsetAddr) delete[] programOffsetAddr;
       if (progParamBlock) delete[] progParamBlock;
@@ -148,8 +142,10 @@ class SonyPS2InstrSet
   } ProgCk;
 
   typedef struct _SampSetParam {
-    _SampSetParam() : sampleIndex(0) { }
-    ~_SampSetParam() { if (sampleIndex) delete[] sampleIndex; }
+    _SampSetParam() : sampleIndex(0) {}
+    ~_SampSetParam() {
+      if (sampleIndex) delete[] sampleIndex;
+    }
     uint8_t velCurve;
     uint8_t velLimitLow;
     uint8_t velLimitHigh;
@@ -158,7 +154,7 @@ class SonyPS2InstrSet
   } SampSetParam;
 
   typedef struct _SampSetCk {
-    _SampSetCk() : sampleSetOffsetAddr(0), sampleSetParam(0) { }
+    _SampSetCk() : sampleSetOffsetAddr(0), sampleSetParam(0) {}
     ~_SampSetCk() {
       if (sampleSetOffsetAddr) delete[] sampleSetOffsetAddr;
       if (sampleSetParam) delete[] sampleSetParam;
@@ -210,7 +206,7 @@ class SonyPS2InstrSet
   } SampleParam;
 
   typedef struct _SampCk {
-    _SampCk() : sampleOffsetAddr(0), sampleParam(0) { }
+    _SampCk() : sampleOffsetAddr(0), sampleParam(0) {}
     ~_SampCk() {
       if (sampleOffsetAddr) delete[] sampleOffsetAddr;
       if (sampleParam) delete[] sampleParam;
@@ -231,7 +227,7 @@ class SonyPS2InstrSet
   } VAGInfoParam;
 
   typedef struct _VAGInfoCk {
-    _VAGInfoCk() : vagInfoOffsetAddr(0), vagInfoParam(0) { }
+    _VAGInfoCk() : vagInfoOffsetAddr(0), vagInfoParam(0) {}
     ~_VAGInfoCk() {
       if (vagInfoOffsetAddr) delete[] vagInfoOffsetAddr;
       if (vagInfoParam) delete[] vagInfoParam;
@@ -264,8 +260,7 @@ class SonyPS2InstrSet
 // SonyPS2SampColl
 // ***************
 
-class SonyPS2SampColl
-    : public VGMSampColl {
+class SonyPS2SampColl : public VGMSampColl {
  public:
   SonyPS2SampColl(RawFile *file, uint32_t offset, uint32_t length = 0);
 

@@ -5,16 +5,14 @@
 
 using namespace std;
 
-#define SNSF_VERSION    0x23
-#define SNSF_MAX_ROM_SIZE    0x600000
+#define SNSF_VERSION 0x23
+#define SNSF_MAX_ROM_SIZE 0x600000
 
 wchar_t *GetFileWithBase(const wchar_t *f, const wchar_t *newfile);
 
-SNSFLoader::SNSFLoader(void) {
-}
+SNSFLoader::SNSFLoader(void) {}
 
-SNSFLoader::~SNSFLoader(void) {
-}
+SNSFLoader::~SNSFLoader(void) {}
 
 PostLoadCommand SNSFLoader::Apply(RawFile *file) {
   uint8_t sig[4];
@@ -25,18 +23,20 @@ PostLoadCommand SNSFLoader::Apply(RawFile *file) {
       const wchar_t *complaint;
       size_t exebufsize = SNSF_MAX_ROM_SIZE;
       uint8_t *exebuf = NULL;
-      //memset(exebuf, 0, exebufsize);
+      // memset(exebuf, 0, exebufsize);
 
       complaint = psf_read_exe(file, exebuf, exebufsize);
       if (complaint) {
-        pRoot->AddLogItem(new LogItem(std::wstring(complaint), LOG_LEVEL_ERR, L"SNSFFile"));
+        pRoot->AddLogItem(
+            new LogItem(std::wstring(complaint), LOG_LEVEL_ERR, L"SNSFFile"));
         delete[] exebuf;
         return KEEP_IT;
       }
-      //pRoot->UI_WriteBufferToFile(L"uncomp.smc", exebuf, exebufsize);
+      // pRoot->UI_WriteBufferToFile(L"uncomp.smc", exebuf, exebufsize);
 
       wstring str = file->GetFileName();
-      pRoot->CreateVirtFile(exebuf, (uint32_t) exebufsize, str.data(), L"", file->tag);
+      pRoot->CreateVirtFile(exebuf, (uint32_t)exebufsize, str.data(), L"",
+                            file->tag);
       return DELETE_IT;
     }
   }
@@ -44,12 +44,8 @@ PostLoadCommand SNSFLoader::Apply(RawFile *file) {
   return KEEP_IT;
 }
 
-
-
-
 // The code below was written by Neill Corlett and adapted for VGMTrans.
 // Recursive psflib loading has been added.
-
 
 /***************************************************************************/
 /*
@@ -57,35 +53,30 @@ PostLoadCommand SNSFLoader::Apply(RawFile *file) {
 **
 ** Returns the error message, or NULL on success
 */
-const wchar_t *SNSFLoader::psf_read_exe(
-    RawFile *file,
-    unsigned char *&exebuffer,
-    size_t &exebuffersize
-) {
+const wchar_t *SNSFLoader::psf_read_exe(RawFile *file,
+                                        unsigned char *&exebuffer,
+                                        size_t &exebuffersize) {
   uint32_t base_offset = 0;
   bool base_set = false;
-  return psf_read_exe_sub(file, exebuffer, exebuffersize, base_offset, base_set);
+  return psf_read_exe_sub(file, exebuffer, exebuffersize, base_offset,
+                          base_set);
 }
 
-const wchar_t *SNSFLoader::psf_read_exe_sub(
-    RawFile *file,
-    unsigned char *&exebuffer,
-    size_t &exebuffersize,
-    uint32_t &base_offset,
-    bool &base_set
-) {
+const wchar_t *SNSFLoader::psf_read_exe_sub(RawFile *file,
+                                            unsigned char *&exebuffer,
+                                            size_t &exebuffersize,
+                                            uint32_t &base_offset,
+                                            bool &base_set) {
   PSFFile psf;
-  if (!psf.Load(file))
-    return psf.GetError();
+  if (!psf.Load(file)) return psf.GetError();
 
   // search exclusively for _lib tag, and if found, perform a recursive load
-  const wchar_t *psflibError = load_psf_libs(psf, file, exebuffer, exebuffersize, base_offset, base_set);
-  if (psflibError != NULL)
-    return psflibError;
+  const wchar_t *psflibError =
+      load_psf_libs(psf, file, exebuffer, exebuffersize, base_offset, base_set);
+  if (psflibError != NULL) return psflibError;
 
   DataSeg *snsfExeHeadSeg;
-  if (!psf.ReadExeDataSeg(snsfExeHeadSeg, 0x08, 0))
-    return psf.GetError();
+  if (!psf.ReadExeDataSeg(snsfExeHeadSeg, 0x08, 0)) return psf.GetError();
 
   uint32_t snsfRomStart = snsfExeHeadSeg->GetWord(0x00);
   uint32_t snsfRomSize = snsfExeHeadSeg->GetWord(0x04);
@@ -93,13 +84,13 @@ const wchar_t *SNSFLoader::psf_read_exe_sub(
 
   if (base_set) {
     snsfRomStart += base_offset;
-  }
-  else {
+  } else {
     base_offset = snsfRomStart;
     base_set = true;
   }
 
-  if (snsfRomStart + snsfRomSize > exebuffersize || (exebuffer == NULL && exebuffersize == 0))
+  if (snsfRomStart + snsfRomSize > exebuffersize ||
+      (exebuffer == NULL && exebuffersize == 0))
     return L"SNSF ROM section start and/or size values are likely corrupt.";
 
   if (exebuffer == NULL) {
@@ -131,8 +122,7 @@ const wchar_t *SNSFLoader::psf_read_exe_sub(
   return NULL;
 }
 
-const wchar_t *SNSFLoader::load_psf_libs(PSFFile &psf,
-                                         RawFile *file,
+const wchar_t *SNSFLoader::load_psf_libs(PSFFile &psf, RawFile *file,
                                          unsigned char *&exebuffer,
                                          size_t &exebuffersize,
                                          uint32_t &base_offset,
@@ -146,8 +136,7 @@ const wchar_t *SNSFLoader::load_psf_libs(PSFFile &psf,
       sprintf(libTagName, "_lib%d", libIndex);
 
     map<string, string>::iterator itLibTag = psf.tags.find(libTagName);
-    if (itLibTag == psf.tags.end())
-      break;
+    if (itLibTag == psf.tags.end()) break;
 
     wchar_t tempfn[PATH_MAX] = {0};
     mbstowcs(tempfn, itLibTag->second.c_str(), itLibTag->second.size());
@@ -159,14 +148,14 @@ const wchar_t *SNSFLoader::load_psf_libs(PSFFile &psf,
     RawFile *newRawFile = new RawFile(fullPath);
     const wchar_t *psflibError = NULL;
     if (newRawFile->open(fullPath))
-      psflibError = psf_read_exe_sub(newRawFile, exebuffer, exebuffersize, base_offset, base_set);
+      psflibError = psf_read_exe_sub(newRawFile, exebuffer, exebuffersize,
+                                     base_offset, base_set);
     else
       psflibError = L"Unable to open lib file.";
     delete fullPath;
     delete newRawFile;
 
-    if (psflibError != NULL)
-      return psflibError;
+    if (psflibError != NULL) return psflibError;
 
     libIndex++;
   }

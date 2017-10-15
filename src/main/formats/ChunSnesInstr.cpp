@@ -6,21 +6,19 @@
 // ChunSnesInstrSet
 // ****************
 
-ChunSnesInstrSet::ChunSnesInstrSet(RawFile *file,
-                                   ChunSnesVersion ver,
+ChunSnesInstrSet::ChunSnesInstrSet(RawFile *file, ChunSnesVersion ver,
                                    uint16_t addrInstrSet,
                                    uint16_t addrSampNumTable,
                                    uint16_t addrSampleTable,
                                    uint32_t spcDirAddr,
-                                   const std::wstring &name) :
-    VGMInstrSet(ChunSnesFormat::name, file, addrInstrSet, 0, name), version(ver),
-    addrSampNumTable(addrSampNumTable),
-    addrSampleTable(addrSampleTable),
-    spcDirAddr(spcDirAddr) {
-}
+                                   const std::wstring &name)
+    : VGMInstrSet(ChunSnesFormat::name, file, addrInstrSet, 0, name),
+      version(ver),
+      addrSampNumTable(addrSampNumTable),
+      addrSampleTable(addrSampleTable),
+      spcDirAddr(spcDirAddr) {}
 
-ChunSnesInstrSet::~ChunSnesInstrSet() {
-}
+ChunSnesInstrSet::~ChunSnesInstrSet() {}
 
 bool ChunSnesInstrSet::GetHeaderInfo() {
   uint32_t curOffset = dwOffset;
@@ -32,7 +30,7 @@ bool ChunSnesInstrSet::GetHeaderInfo() {
   AddSimpleItem(curOffset, 1, L"Number of Instruments");
   curOffset++;
 
-  if (version != CHUNSNES_SUMMER) { // CHUNSNES_WINTER
+  if (version != CHUNSNES_SUMMER) {  // CHUNSNES_WINTER
     AddUnknownItem(curOffset, 1);
     curOffset++;
   }
@@ -51,8 +49,7 @@ bool ChunSnesInstrSet::GetInstrPointers() {
   unsigned int nNumInstrs = GetByte(curOffset);
   if (version == CHUNSNES_SUMMER) {
     curOffset += 1;
-  }
-  else { // CHUNSNES_WINTER
+  } else {  // CHUNSNES_WINTER
     curOffset += 2;
   }
 
@@ -71,7 +68,8 @@ bool ChunSnesInstrSet::GetInstrPointers() {
 
     uint8_t srcn = GetByte(addrInstr);
     if (srcn != 0xff) {
-      std::vector<uint8_t>::iterator itrSRCN = find(usedSRCNs.begin(), usedSRCNs.end(), srcn);
+      std::vector<uint8_t>::iterator itrSRCN =
+          find(usedSRCNs.begin(), usedSRCNs.end(), srcn);
       if (itrSRCN == usedSRCNs.end()) {
         usedSRCNs.push_back(srcn);
       }
@@ -80,7 +78,9 @@ bool ChunSnesInstrSet::GetInstrPointers() {
         dwOffset = addrInstr;
       }
 
-      ChunSnesInstr *newInstr = new ChunSnesInstr(this, version, instrNum, addrInstr, addrSampleTable, spcDirAddr, instrName.str());
+      ChunSnesInstr *newInstr =
+          new ChunSnesInstr(this, version, instrNum, addrInstr, addrSampleTable,
+                            spcDirAddr, instrName.str());
       aInstrs.push_back(newInstr);
     }
   }
@@ -90,7 +90,8 @@ bool ChunSnesInstrSet::GetInstrPointers() {
   }
 
   std::sort(usedSRCNs.begin(), usedSRCNs.end());
-  SNESSampColl *newSampColl = new SNESSampColl(ChunSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
+  SNESSampColl *newSampColl = new SNESSampColl(
+      ChunSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
   if (!newSampColl->LoadVGMFile()) {
     delete newSampColl;
     return false;
@@ -103,20 +104,16 @@ bool ChunSnesInstrSet::GetInstrPointers() {
 // ChunSnesInstr
 // *************
 
-ChunSnesInstr::ChunSnesInstr(VGMInstrSet *instrSet,
-                             ChunSnesVersion ver,
-                             uint8_t theInstrNum,
-                             uint16_t addrInstr,
-                             uint16_t addrSampleTable,
-                             uint32_t spcDirAddr,
-                             const std::wstring &name) :
-    VGMInstr(instrSet, addrInstr, 0, 0, theInstrNum, name), version(ver),
-    addrSampleTable(addrSampleTable),
-    spcDirAddr(spcDirAddr) {
-}
+ChunSnesInstr::ChunSnesInstr(VGMInstrSet *instrSet, ChunSnesVersion ver,
+                             uint8_t theInstrNum, uint16_t addrInstr,
+                             uint16_t addrSampleTable, uint32_t spcDirAddr,
+                             const std::wstring &name)
+    : VGMInstr(instrSet, addrInstr, 0, 0, theInstrNum, name),
+      version(ver),
+      addrSampleTable(addrSampleTable),
+      spcDirAddr(spcDirAddr) {}
 
-ChunSnesInstr::~ChunSnesInstr() {
-}
+ChunSnesInstr::~ChunSnesInstr() {}
 
 bool ChunSnesInstr::LoadInstr() {
   uint8_t srcn = GetByte(dwOffset);
@@ -149,9 +146,9 @@ bool ChunSnesInstr::LoadInstr() {
 // ChunSnesRgn
 // ***********
 
-ChunSnesRgn::ChunSnesRgn(ChunSnesInstr *instr, ChunSnesVersion ver, uint8_t srcn, uint16_t addrRgn, uint32_t spcDirAddr) :
-    VGMRgn(instr, addrRgn, 8),
-    version(ver) {
+ChunSnesRgn::ChunSnesRgn(ChunSnesInstr *instr, ChunSnesVersion ver,
+                         uint8_t srcn, uint16_t addrRgn, uint32_t spcDirAddr)
+    : VGMRgn(instr, addrRgn, 8), version(ver) {
   AddUnknown(dwOffset, 2);
   AddSimpleItem(dwOffset + 2, 1, L"ADSR(1)");
   AddSimpleItem(dwOffset + 3, 1, L"ADSR(2)");
@@ -164,39 +161,37 @@ ChunSnesRgn::ChunSnesRgn(ChunSnesInstr *instr, ChunSnesVersion ver, uint8_t srcn
   uint8_t gain = GetByte(dwOffset + 4);
   int16_t pitch_scale = GetShortBE(dwOffset + 5);
 
-  const double pitch_fixer = (version == CHUNSNES_SUMMER) ? (4096.0 / 4208.0) : (8192.0 / 8410.0);
+  const double pitch_fixer =
+      (version == CHUNSNES_SUMMER) ? (4096.0 / 4208.0) : (8192.0 / 8410.0);
   double fine_tuning;
   double coarse_tuning;
-  fine_tuning = modf((log(pitch_scale * pitch_fixer / 256.0) / log(2.0)) * 12.0, &coarse_tuning);
+  fine_tuning = modf((log(pitch_scale * pitch_fixer / 256.0) / log(2.0)) * 12.0,
+                     &coarse_tuning);
 
   // normalize
   if (fine_tuning >= 0.5) {
     coarse_tuning += 1.0;
     fine_tuning -= 1.0;
-  }
-  else if (fine_tuning <= -0.5) {
+  } else if (fine_tuning <= -0.5) {
     coarse_tuning -= 1.0;
     fine_tuning += 1.0;
   }
 
   sampNum = srcn;
   if (version == CHUNSNES_SUMMER) {
-    unityKey = 95 - (int) coarse_tuning;
+    unityKey = 95 - (int)coarse_tuning;
+  } else {
+    unityKey = 119 - (int)coarse_tuning;
   }
-  else {
-    unityKey = 119 - (int) coarse_tuning;
-  }
-  fineTune = (int16_t) (fine_tuning * 100.0);
+  fineTune = (int16_t)(fine_tuning * 100.0);
   SNESConvADSR<VGMRgn>(this, adsr1, adsr2, gain);
 
   // use ADSR sustain for release rate
-  uint8_t sr_release = 0x19; // default release rate
-  ConvertSNESADSR(adsr1, (adsr2 & 0xe0) | sr_release, gain, 0x7ff, NULL, NULL, NULL, &this->release_time, NULL);
+  uint8_t sr_release = 0x19;  // default release rate
+  ConvertSNESADSR(adsr1, (adsr2 & 0xe0) | sr_release, gain, 0x7ff, NULL, NULL,
+                  NULL, &this->release_time, NULL);
 }
 
-ChunSnesRgn::~ChunSnesRgn() {
-}
+ChunSnesRgn::~ChunSnesRgn() {}
 
-bool ChunSnesRgn::LoadRgn() {
-  return true;
-}
+bool ChunSnesRgn::LoadRgn() { return true; }

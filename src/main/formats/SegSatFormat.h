@@ -3,11 +3,10 @@
 #include "Root.h"
 #include "SegSatScanner.h"
 
-
 // ************
 // SegSatFormat
 // ************
 
 BEGIN_FORMAT(SegSat)
-  USING_SCANNER(SegSatScanner)
+USING_SCANNER(SegSatScanner)
 END_FORMAT()

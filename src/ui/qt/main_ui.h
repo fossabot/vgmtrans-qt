@@ -1,6 +1,6 @@
 #ifndef VGMTRANS_UI_MAIN_H
 #define VGMTRANS_UI_MAIN_H
 
-//int main_ui(int argc, char *argv[]);
+// int main_ui(int argc, char *argv[]);
 
-#endif //VGMTRANS_UI_MAIN_H
+#endif  // VGMTRANS_UI_MAIN_H

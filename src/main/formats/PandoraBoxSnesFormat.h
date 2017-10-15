@@ -4,16 +4,14 @@
 #include "Root.h"
 #include "PandoraBoxSnesScanner.h"
 
-
 // ***************
 // PandoraBoxSnesFormat
 // ***************
 
 BEGIN_FORMAT(PandoraBoxSnes)
-  USING_SCANNER(PandoraBoxSnesScanner)
-  USING_MATCHER(FilegroupMatcher)
+USING_SCANNER(PandoraBoxSnesScanner)
+USING_MATCHER(FilegroupMatcher)
 END_FORMAT()
-
 
 enum PandoraBoxSnesVersion {
   PANDORABOXSNES_NONE = 0,  // Unknown Version

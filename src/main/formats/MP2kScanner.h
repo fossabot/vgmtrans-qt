@@ -1,10 +1,10 @@
 #pragma once
 #include "Scanner.h"
 
-class MP2kScanner:
-    public VGMScanner {
+class MP2kScanner : public VGMScanner {
  public:
   MP2kScanner(void);
+
  public:
   virtual ~MP2kScanner(void);
 
@@ -17,6 +17,7 @@ class MP2kScanner:
   static bool IsValidOffset(uint32_t offset, uint32_t romsize);
   static bool IsGBAROMAddress(uint32_t address);
   static uint32_t GBAAddressToOffset(uint32_t address);
-  static off_t LooseSearch
-      (RawFile *file, const uint8_t *src, size_t srcsize, off_t file_offset, size_t alignment, int diff_threshold);
+  static off_t LooseSearch(RawFile *file, const uint8_t *src, size_t srcsize,
+                           off_t file_offset, size_t alignment,
+                           int diff_threshold);
 };

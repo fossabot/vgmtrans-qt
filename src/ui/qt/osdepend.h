@@ -4,4 +4,4 @@
 void Alert(const wchar_t *fmt, ...);
 void LogDebug(const wchar_t *fmt, ...);
 
-#endif // OSDEPEND_H
+#endif  // OSDEPEND_H

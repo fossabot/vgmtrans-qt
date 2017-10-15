@@ -11,13 +11,12 @@ class DLSFile;
 class SF2File;
 class SynthFile;
 
-class VGMColl
-    : public VGMItem {
+class VGMColl : public VGMItem {
  public:
   BEGIN_MENU(VGMColl)
-      MENU_ITEM(VGMColl, OnSaveAllDLS, L"Save as MIDI and DLS.")
-      MENU_ITEM(VGMColl, OnSaveAllSF2, L"Save as MIDI and SoundFont 2.")
-      //MENU_ITEM(VGMFile, OnSaveAllAsRaw, L"Save all as original format")
+  MENU_ITEM(VGMColl, OnSaveAllDLS, L"Save as MIDI and DLS.")
+  MENU_ITEM(VGMColl, OnSaveAllSF2, L"Save as MIDI and SoundFont 2.")
+  // MENU_ITEM(VGMFile, OnSaveAllAsRaw, L"Save all as original format")
   END_MENU()
 
   VGMColl(std::wstring name = L"Unnamed Collection");
@@ -49,8 +48,10 @@ class VGMColl
   std::vector<VGMFile *> miscfiles;
 
  protected:
-  void UnpackSampColl(DLSFile &dls, VGMSampColl *sampColl, std::vector<VGMSamp *> &finalSamps);
-  void UnpackSampColl(SynthFile &synthfile, VGMSampColl *sampColl, std::vector<VGMSamp *> &finalSamps);
+  void UnpackSampColl(DLSFile &dls, VGMSampColl *sampColl,
+                      std::vector<VGMSamp *> &finalSamps);
+  void UnpackSampColl(SynthFile &synthfile, VGMSampColl *sampColl,
+                      std::vector<VGMSamp *> &finalSamps);
 
  protected:
   std::wstring name;

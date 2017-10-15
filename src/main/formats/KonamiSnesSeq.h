@@ -5,7 +5,8 @@
 #include "KonamiSnesFormat.h"
 
 enum KonamiSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -54,11 +55,10 @@ enum KonamiSnesSeqEventType {
   EVENT_END,
 };
 
-class KonamiSnesSeq
-    : public VGMSeq {
+class KonamiSnesSeq : public VGMSeq {
  public:
-  KonamiSnesSeq
-      (RawFile *file, KonamiSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"Konami SNES Seq");
+  KonamiSnesSeq(RawFile *file, KonamiSnesVersion ver, uint32_t seqdataOffset,
+                std::wstring newName = L"Konami SNES Seq");
   virtual ~KonamiSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -85,9 +85,7 @@ class KonamiSnesSeq
   void LoadEventMap(void);
 };
 
-
-class KonamiSnesTrack
-    : public SeqTrack {
+class KonamiSnesTrack : public SeqTrack {
  public:
   KonamiSnesTrack(KonamiSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);

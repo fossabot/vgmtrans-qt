@@ -4,41 +4,45 @@
 #include "RawFile.h"
 #include "Menu.h"
 
-enum FmtID: unsigned int;
+enum FmtID : unsigned int;
 class VGMColl;
 class Format;
 
-enum FileType { FILETYPE_UNDEFINED, FILETYPE_SEQ, FILETYPE_INSTRSET, FILETYPE_SAMPCOLL, FILETYPE_MISC };
-
+enum FileType {
+  FILETYPE_UNDEFINED,
+  FILETYPE_SEQ,
+  FILETYPE_INSTRSET,
+  FILETYPE_SAMPCOLL,
+  FILETYPE_MISC
+};
 
 // MACROS
 
-/*#define USING_FORMAT(fmt_id)									\
-	public:														\
-	virtual Format* GetFormat()									\
-	{															\
-		return pRoot->GetFormat(fmt_id);						\
-	}
+/*#define USING_FORMAT(fmt_id)
+   \
+        public:
+   \
+        virtual Format* GetFormat()
+   \
+        {
+   \
+                return pRoot->GetFormat(fmt_id);
+   \
+        }
 */
 
-
-
-class VGMFile:
-    public VGMContainerItem {
+class VGMFile : public VGMContainerItem {
  public:
   BEGIN_MENU(VGMFile)
-      MENU_ITEM(VGMFile, OnClose, L"Close")
-      MENU_ITEM(VGMFile, OnSaveAsRaw, L"Save as original format")
-      //MENU_ITEM(VGMFile, OnSaveAllAsRaw, L"Save all as original format")
+  MENU_ITEM(VGMFile, OnClose, L"Close")
+  MENU_ITEM(VGMFile, OnSaveAsRaw, L"Save as original format")
+  // MENU_ITEM(VGMFile, OnSaveAllAsRaw, L"Save all as original format")
   END_MENU()
 
  public:
   VGMFile(FileType fileType, /*FmtID fmtID,*/
-          const std::string &format,
-          RawFile *theRawFile,
-          uint32_t offset,
-          uint32_t length = 0,
-          std::wstring theName = L"VGM File");
+          const std::string &format, RawFile *theRawFile, uint32_t offset,
+          uint32_t length = 0, std::wstring theName = L"VGM File");
   virtual ~VGMFile(void);
 
   virtual ItemType GetType() const { return ITEMTYPE_VGMFILE; }
@@ -90,7 +94,7 @@ class VGMFile:
       return data.GetWord(offset);
   }
 
-  //GetShort Big Endian
+  // GetShort Big Endian
   inline uint16_t GetShortBE(uint32_t offset) {
     if (bUsingRawFile)
       return rawfile->GetShortBE(offset);
@@ -98,7 +102,7 @@ class VGMFile:
       return data.GetShortBE(offset);
   }
 
-  //GetWord Big Endian
+  // GetWord Big Endian
   inline uint32_t GetWordBE(uint32_t offset) {
     if (bUsingRawFile)
       return rawfile->GetWordBE(offset);
@@ -140,6 +144,7 @@ class VGMFile:
   const std::string &format;
   uint32_t id;
   std::wstring name;
+
  public:
   RawFile *rawfile;
   std::list<VGMColl *> assocColls;
@@ -147,36 +152,44 @@ class VGMFile:
   bool bUsingCompressedLocalData;
 };
 
-
 // *********
 // VGMHeader
 // *********
 
-class VGMHeader:
-    public VGMContainerItem {
+class VGMHeader : public VGMContainerItem {
  public:
-  VGMHeader(VGMItem *parItem, uint32_t offset = 0, uint32_t length = 0, const std::wstring &name = L"Header");
+  VGMHeader(VGMItem *parItem, uint32_t offset = 0, uint32_t length = 0,
+            const std::wstring &name = L"Header");
   virtual ~VGMHeader();
 
   virtual Icon GetIcon() { return ICON_BINARY; };
 
-  void AddPointer(uint32_t offset, uint32_t length, uint32_t destAddress, bool notNull, const std::wstring &name = L"Pointer");
-  void AddTempo(uint32_t offset, uint32_t length, const std::wstring &name = L"Tempo");
-  void AddSig(uint32_t offset, uint32_t length, const std::wstring &name = L"Signature");
+  void AddPointer(uint32_t offset, uint32_t length, uint32_t destAddress,
+                  bool notNull, const std::wstring &name = L"Pointer");
+  void AddTempo(uint32_t offset, uint32_t length,
+                const std::wstring &name = L"Tempo");
+  void AddSig(uint32_t offset, uint32_t length,
+              const std::wstring &name = L"Signature");
 
-  //vector<VGMItem*> items;
+  // vector<VGMItem*> items;
 };
 
 // *************
 // VGMHeaderItem
 // *************
 
-class VGMHeaderItem:
-    public VGMItem {
+class VGMHeaderItem : public VGMItem {
  public:
-  enum HdrItemType { HIT_POINTER, HIT_TEMPO, HIT_SIG, HIT_GENERIC, HIT_UNKNOWN };        //HIT = Header Item Type
+  enum HdrItemType {
+    HIT_POINTER,
+    HIT_TEMPO,
+    HIT_SIG,
+    HIT_GENERIC,
+    HIT_UNKNOWN
+  };  // HIT = Header Item Type
 
-  VGMHeaderItem(VGMHeader *hdr, HdrItemType theType, uint32_t offset, uint32_t length, const std::wstring &name);
+  VGMHeaderItem(VGMHeader *hdr, HdrItemType theType, uint32_t offset,
+                uint32_t length, const std::wstring &name);
   virtual Icon GetIcon();
 
  public:

@@ -4,19 +4,17 @@
 #include "Options.h"
 #include "VGMMultiSectionSeq.h"
 
-VGMMultiSectionSeq::VGMMultiSectionSeq(const std::string &format,
-                                       RawFile *file,
-                                       uint32_t offset,
-                                       uint32_t length,
+VGMMultiSectionSeq::VGMMultiSectionSeq(const std::string &format, RawFile *file,
+                                       uint32_t offset, uint32_t length,
                                        std::wstring name)
-    : VGMSeq(format, file, offset, length, name),
-      dwStartOffset(offset) {
+    : VGMSeq(format, file, offset, length, name), dwStartOffset(offset) {
   AddContainer<VGMSeqSection>(aSections);
   RemoveContainer<SeqTrack>(aTracks);
 }
 
 VGMMultiSectionSeq::~VGMMultiSectionSeq() {
-  // Clear all track pointers to prevent delete, they must be aliases of section tracks
+  // Clear all track pointers to prevent delete, they must be aliases of section
+  // tracks
   aTracks.clear();
 
   DeleteVect<VGMSeqSection>(aSections);
@@ -31,11 +29,9 @@ void VGMMultiSectionSeq::ResetVars() {
 bool VGMMultiSectionSeq::LoadMain() {
   readMode = READMODE_ADD_TO_UI;
 
-  if (!GetHeaderInfo())
-    return false;
+  if (!GetHeaderInfo()) return false;
 
-  if (!LoadTracks(readMode))
-    return false;
+  if (!LoadTracks(readMode)) return false;
 
   return true;
 }
@@ -45,7 +41,8 @@ bool VGMMultiSectionSeq::LoadTracks(ReadMode readMode, long stopTime) {
 
   curOffset = dwStartOffset;
 
-  // Clear all track pointers to prevent delete, they must be aliases of section tracks
+  // Clear all track pointers to prevent delete, they must be aliases of section
+  // tracks
   aTracks.clear();
 
   // reset variables
@@ -84,7 +81,8 @@ bool VGMMultiSectionSeq::LoadSection(VGMSeqSection *section, long stopTime) {
     }
 
     section->aTracks[trackNum]->readMode = readMode;
-    if (!section->aTracks[trackNum]->LoadTrackInit(trackNum, previousMidiTrack)) {
+    if (!section->aTracks[trackNum]->LoadTrackInit(trackNum,
+                                                   previousMidiTrack)) {
       return false;
     }
   }
@@ -106,7 +104,7 @@ bool VGMMultiSectionSeq::IsOffsetUsed(uint32_t offset) {
 }
 
 bool VGMMultiSectionSeq::ReadEvent(long stopTime) {
-  return false;        //by default, don't add any events, just stop immediately.
+  return false;  // by default, don't add any events, just stop immediately.
 }
 
 void VGMMultiSectionSeq::AddSection(VGMSeqSection *section) {
@@ -124,15 +122,15 @@ bool VGMMultiSectionSeq::AddLoopForeverNoItem() {
   foreverLoops++;
   if (readMode == READMODE_ADD_TO_UI) {
     return false;
-  }
-  else if (readMode == READMODE_FIND_DELTA_LENGTH) {
+  } else if (readMode == READMODE_FIND_DELTA_LENGTH) {
     return (foreverLoops < ConversionOptions::GetNumSequenceLoops());
   }
   return true;
 }
 
 VGMSeqSection *VGMMultiSectionSeq::GetSectionFromOffset(uint32_t offset) {
-  for (size_t sectionIndex = 0; sectionIndex < aSections.size(); sectionIndex++) {
+  for (size_t sectionIndex = 0; sectionIndex < aSections.size();
+       sectionIndex++) {
     VGMSeqSection *section = aSections[sectionIndex];
     if (section->dwOffset == offset) {
       return section;

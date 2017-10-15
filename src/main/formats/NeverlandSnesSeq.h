@@ -5,7 +5,8 @@
 #include "NeverlandSnesFormat.h"
 
 enum NeverlandSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -13,10 +14,10 @@ enum NeverlandSnesSeqEventType {
   EVENT_UNKNOWN4,
 };
 
-class NeverlandSnesSeq
-    : public VGMSeq {
+class NeverlandSnesSeq : public VGMSeq {
  public:
-  NeverlandSnesSeq(RawFile *file, NeverlandSnesVersion ver, uint32_t seqdataOffset);
+  NeverlandSnesSeq(RawFile *file, NeverlandSnesVersion ver,
+                   uint32_t seqdataOffset);
   virtual ~NeverlandSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -33,11 +34,10 @@ class NeverlandSnesSeq
   void LoadEventMap(void);
 };
 
-
-class NeverlandSnesTrack
-    : public SeqTrack {
+class NeverlandSnesTrack : public SeqTrack {
  public:
-  NeverlandSnesTrack(NeverlandSnesSeq *parentFile, long offset = 0, long length = 0);
+  NeverlandSnesTrack(NeverlandSnesSeq *parentFile, long offset = 0,
+                     long length = 0);
   virtual void ResetVars(void);
   virtual bool ReadEvent(void);
 

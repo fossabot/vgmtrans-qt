@@ -6,25 +6,19 @@
 // FalcomSnesInstrSet
 // ******************
 
-FalcomSnesInstrSet::FalcomSnesInstrSet(RawFile *file,
-                                       FalcomSnesVersion ver,
-                                       uint32_t offset,
-                                       uint32_t addrSampToInstrTable,
-                                       uint32_t spcDirAddr,
-                                       const std::map<uint8_t, uint16_t> &instrADSRHints,
-                                       const std::wstring &name) :
-    VGMInstrSet(FalcomSnesFormat::name, file, offset, 0, name), version(ver),
-    spcDirAddr(spcDirAddr),
-    addrSampToInstrTable(addrSampToInstrTable),
-    instrADSRHints(instrADSRHints) {
-}
+FalcomSnesInstrSet::FalcomSnesInstrSet(
+    RawFile *file, FalcomSnesVersion ver, uint32_t offset,
+    uint32_t addrSampToInstrTable, uint32_t spcDirAddr,
+    const std::map<uint8_t, uint16_t> &instrADSRHints, const std::wstring &name)
+    : VGMInstrSet(FalcomSnesFormat::name, file, offset, 0, name),
+      version(ver),
+      spcDirAddr(spcDirAddr),
+      addrSampToInstrTable(addrSampToInstrTable),
+      instrADSRHints(instrADSRHints) {}
 
-FalcomSnesInstrSet::~FalcomSnesInstrSet() {
-}
+FalcomSnesInstrSet::~FalcomSnesInstrSet() {}
 
-bool FalcomSnesInstrSet::GetHeaderInfo() {
-  return true;
-}
+bool FalcomSnesInstrSet::GetHeaderInfo() { return true; }
 
 bool FalcomSnesInstrSet::GetInstrPointers() {
   const uint16_t kInstrItemSize = 5;
@@ -69,7 +63,8 @@ bool FalcomSnesInstrSet::GetInstrPointers() {
       continue;
     }
 
-    std::vector<uint8_t>::iterator itrSRCN = find(usedSRCNs.begin(), usedSRCNs.end(), srcn);
+    std::vector<uint8_t>::iterator itrSRCN =
+        find(usedSRCNs.begin(), usedSRCNs.end(), srcn);
     if (itrSRCN == usedSRCNs.end()) {
       usedSRCNs.push_back(srcn);
     }
@@ -77,7 +72,8 @@ bool FalcomSnesInstrSet::GetInstrPointers() {
     std::wostringstream instrName;
     instrName << L"Instrument " << instr;
     FalcomSnesInstr *newInstr =
-        new FalcomSnesInstr(this, version, addrInstrHeader, instr >> 7, instr & 0x7f, srcn, spcDirAddr, instrName.str());
+        new FalcomSnesInstr(this, version, addrInstrHeader, instr >> 7,
+                            instr & 0x7f, srcn, spcDirAddr, instrName.str());
     aInstrs.push_back(newInstr);
   }
   if (aInstrs.size() == 0) {
@@ -85,7 +81,8 @@ bool FalcomSnesInstrSet::GetInstrPointers() {
   }
 
   std::sort(usedSRCNs.begin(), usedSRCNs.end());
-  SNESSampColl *newSampColl = new SNESSampColl(FalcomSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
+  SNESSampColl *newSampColl = new SNESSampColl(
+      FalcomSnesFormat::name, this->rawfile, spcDirAddr, usedSRCNs);
   if (!newSampColl->LoadVGMFile()) {
     delete newSampColl;
     return false;
@@ -98,21 +95,16 @@ bool FalcomSnesInstrSet::GetInstrPointers() {
 // FalcomSnesInstr
 // ***************
 
-FalcomSnesInstr::FalcomSnesInstr(VGMInstrSet *instrSet,
-                                 FalcomSnesVersion ver,
-                                 uint32_t offset,
-                                 uint32_t theBank,
-                                 uint32_t theInstrNum,
-                                 uint8_t srcn,
-                                 uint32_t spcDirAddr,
-                                 const std::wstring &name) :
-    VGMInstr(instrSet, offset, 5, theBank, theInstrNum, name), version(ver),
-    srcn(srcn),
-    spcDirAddr(spcDirAddr) {
-}
+FalcomSnesInstr::FalcomSnesInstr(VGMInstrSet *instrSet, FalcomSnesVersion ver,
+                                 uint32_t offset, uint32_t theBank,
+                                 uint32_t theInstrNum, uint8_t srcn,
+                                 uint32_t spcDirAddr, const std::wstring &name)
+    : VGMInstr(instrSet, offset, 5, theBank, theInstrNum, name),
+      version(ver),
+      srcn(srcn),
+      spcDirAddr(spcDirAddr) {}
 
-FalcomSnesInstr::~FalcomSnesInstr() {
-}
+FalcomSnesInstr::~FalcomSnesInstr() {}
 
 bool FalcomSnesInstr::LoadInstr() {
   uint32_t offDirEnt = spcDirAddr + (srcn * 4);
@@ -133,11 +125,9 @@ bool FalcomSnesInstr::LoadInstr() {
 // FalcomSnesRgn
 // *************
 
-FalcomSnesRgn::FalcomSnesRgn(FalcomSnesInstr *instr,
-                             FalcomSnesVersion ver,
-                             uint32_t offset,
-                             uint8_t srcn) :
-    VGMRgn(instr, offset, 5), version(ver) {
+FalcomSnesRgn::FalcomSnesRgn(FalcomSnesInstr *instr, FalcomSnesVersion ver,
+                             uint32_t offset, uint8_t srcn)
+    : VGMRgn(instr, offset, 5), version(ver) {
   FalcomSnesInstrSet *parInstrSet = (FalcomSnesInstrSet *)instr->parInstrSet;
 
   uint8_t adsr1 = GetByte(offset);
@@ -145,7 +135,7 @@ FalcomSnesRgn::FalcomSnesRgn(FalcomSnesInstr *instr,
   int16_t pitch_scale = GetShortBE(offset + 3);
 
   // override ADSR
-  //if (parInstrSet->instrADSRHints.count(instr->instrNum) != 0) {
+  // if (parInstrSet->instrADSRHints.count(instr->instrNum) != 0) {
   //  uint16_t adsr = parInstrSet->instrADSRHints[instr->instrNum];
   //  if (adsr != 0) {
   //    adsr1 = adsr & 0xff;
@@ -156,14 +146,14 @@ FalcomSnesRgn::FalcomSnesRgn(FalcomSnesInstr *instr,
   const double pitch_fixer = 4286.0 / 4096.0;
   double fine_tuning;
   double coarse_tuning;
-  fine_tuning = modf((log(pitch_scale * pitch_fixer / 256.0) / log(2.0)) * 12.0, &coarse_tuning);
+  fine_tuning = modf((log(pitch_scale * pitch_fixer / 256.0) / log(2.0)) * 12.0,
+                     &coarse_tuning);
 
   // normalize
   if (fine_tuning >= 0.5) {
     coarse_tuning += 1.0;
     fine_tuning -= 1.0;
-  }
-  else if (fine_tuning <= -0.5) {
+  } else if (fine_tuning <= -0.5) {
     coarse_tuning -= 1.0;
     fine_tuning += 1.0;
   }
@@ -171,14 +161,11 @@ FalcomSnesRgn::FalcomSnesRgn(FalcomSnesInstr *instr,
   sampNum = srcn;
   AddSimpleItem(offset, 1, L"ADSR1");
   AddSimpleItem(offset + 1, 1, L"ADSR2");
-  AddUnityKey(96 - (int) (coarse_tuning), offset + 3, 1);
-  AddFineTune((int16_t) (fine_tuning * 100.0), offset + 4, 1);
+  AddUnityKey(96 - (int)(coarse_tuning), offset + 3, 1);
+  AddFineTune((int16_t)(fine_tuning * 100.0), offset + 4, 1);
   SNESConvADSR<VGMRgn>(this, adsr1, adsr2, 0);
 }
 
-FalcomSnesRgn::~FalcomSnesRgn() {
-}
+FalcomSnesRgn::~FalcomSnesRgn() {}
 
-bool FalcomSnesRgn::LoadRgn() {
-  return true;
-}
+bool FalcomSnesRgn::LoadRgn() { return true; }

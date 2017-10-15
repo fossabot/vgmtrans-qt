@@ -10,25 +10,21 @@ class VGMInstr;
 class VGMRgn;
 class VGMSamp;
 class VGMRgnItem;
-//class VGMArt;
+// class VGMArt;
 
 // ***********
 // VGMInstrSet
 // ***********
 
-class VGMInstrSet:
-    public VGMFile {
+class VGMInstrSet : public VGMFile {
  public:
   BEGIN_MENU_SUB(VGMInstrSet, VGMFile)
-      MENU_ITEM(VGMInstrSet, OnSaveAsDLS, L"Convert to DLS")
-      MENU_ITEM(VGMInstrSet, OnSaveAsSF2, L"Convert to SoundFont 2")
+  MENU_ITEM(VGMInstrSet, OnSaveAsDLS, L"Convert to DLS")
+  MENU_ITEM(VGMInstrSet, OnSaveAsSF2, L"Convert to SoundFont 2")
   END_MENU()
 
-  VGMInstrSet(const std::string &format,
-              RawFile *file,
-              uint32_t offset,
-              uint32_t length = 0,
-              std::wstring name = L"VGMInstrSet",
+  VGMInstrSet(const std::string &format, RawFile *file, uint32_t offset,
+              uint32_t length = 0, std::wstring name = L"VGMInstrSet",
               VGMSampColl *theSampColl = NULL);
   virtual ~VGMInstrSet(void);
 
@@ -37,14 +33,11 @@ class VGMInstrSet:
   virtual bool GetInstrPointers();
   virtual bool LoadInstrs();
 
-  VGMInstr *AddInstr(uint32_t offset,
-                     uint32_t length,
-                     unsigned long bank,
+  VGMInstr *AddInstr(uint32_t offset, uint32_t length, unsigned long bank,
                      unsigned long instrNum,
                      const std::wstring &instrName = L"");
 
   virtual FileType GetFileType() { return FILETYPE_INSTRSET; }
-
 
   bool OnSaveAsDLS(void);
   bool OnSaveAsSF2(void);
@@ -56,19 +49,15 @@ class VGMInstrSet:
   VGMSampColl *sampColl;
 };
 
-
-
-
-
 // ********
 // VGMInstr
 // ********
 
-class VGMInstr:
-    public VGMContainerItem {
+class VGMInstr : public VGMContainerItem {
  public:
-  VGMInstr(VGMInstrSet *parInstrSet, uint32_t offset, uint32_t length, uint32_t bank,
-           uint32_t instrNum, const std::wstring &name = L"Instrument");
+  VGMInstr(VGMInstrSet *parInstrSet, uint32_t offset, uint32_t length,
+           uint32_t bank, uint32_t instrNum,
+           const std::wstring &name = L"Instrument");
   virtual ~VGMInstr(void);
 
   virtual Icon GetIcon() { return ICON_INSTR; };
@@ -77,8 +66,9 @@ class VGMInstr:
   inline void SetInstrNum(uint32_t theInstrNum);
 
   VGMRgn *AddRgn(VGMRgn *rgn);
-  VGMRgn *AddRgn(uint32_t offset, uint32_t length, int sampNum, uint8_t keyLow = 0,
-                 uint8_t keyHigh = 0x7F, uint8_t velLow = 0, uint8_t velHigh = 0x7F);
+  VGMRgn *AddRgn(uint32_t offset, uint32_t length, int sampNum,
+                 uint8_t keyLow = 0, uint8_t keyHigh = 0x7F, uint8_t velLow = 0,
+                 uint8_t velHigh = 0x7F);
 
   virtual bool LoadInstr();
 

@@ -6,17 +6,16 @@
 
 class AkaoInstrSet;
 
-//const THIS_FORMAT FMT_AKAO;
+// const THIS_FORMAT FMT_AKAO;
 
 // ********
 // AkaoColl
 // ********
 
-class AkaoColl:
-    public VGMColl {
+class AkaoColl : public VGMColl {
  public:
-  AkaoColl(std::wstring name = L"Unnamed Collection") : VGMColl(name) { }
-  virtual ~AkaoColl() { }
+  AkaoColl(std::wstring name = L"Unnamed Collection") : VGMColl(name) {}
+  virtual ~AkaoColl() {}
 
   virtual bool LoadMain();
   virtual bool PreDLSMainCreation();
@@ -31,27 +30,26 @@ class AkaoColl:
 // AkaoMatcher
 // ***********
 
-//class AkaoMatcher : public SimpleMatcher
+// class AkaoMatcher : public SimpleMatcher
 //{
-//public:
+// public:
 //	AkaoMatcher(Format* format);
 //	~AkaoMatcher(void) {}
 //};
-
 
 // **********
 // AkaoFormat
 // **********
 
-//class AkaoFormat : public Format
+// class AkaoFormat : public Format
 //{
-//public:
+// public:
 //	AkaoFormat(void) {}
 //	virtual ~AkaoFormat(void) {}
 BEGIN_FORMAT(Akao)
-  USING_SCANNER(AkaoScanner)
-  //USING_MATCHER_WITH_ARG(SimpleMatcher, true)
-  USING_MATCHER_WITH_ARG(GetIdMatcher, true)
-  USING_COLL(AkaoColl)
+USING_SCANNER(AkaoScanner)
+// USING_MATCHER_WITH_ARG(SimpleMatcher, true)
+USING_MATCHER_WITH_ARG(GetIdMatcher, true)
+USING_COLL(AkaoColl)
 END_FORMAT()
 //};

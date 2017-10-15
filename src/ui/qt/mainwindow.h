@@ -8,34 +8,31 @@
 #include <QMdiArea>
 #include "VGMFileView.h"
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+  Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+ public:
+  MainWindow(QWidget *parent = 0);
+  ~MainWindow();
 
-    static MainWindow& getInstance() {
-        static MainWindow instance;
-        return instance;
-    }
+  static MainWindow &getInstance() {
+    static MainWindow instance;
+    return instance;
+  }
 
-protected:
-    QSplitter *vertSplitter;
-    QSplitter *horzSplitter;
-    QSplitter *vertSplitterLeft;
-    QListView *rawFileListView;
-    QListView *vgmFileListView;
-    QListView *vgmCollListView;
-    QListView *collListView;
+ protected:
+  QSplitter *vertSplitter;
+  QSplitter *horzSplitter;
+  QSplitter *vertSplitterLeft;
+  QListView *rawFileListView;
+  QListView *vgmFileListView;
+  QListView *vgmCollListView;
+  QListView *collListView;
 
-protected:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent* event);
-    void dropEvent(QDropEvent *event);
+ protected:
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dragMoveEvent(QDragMoveEvent *event);
+  void dropEvent(QDropEvent *event);
 };
 
-#endif // MAINWINDOW_H
-
-
+#endif  // MAINWINDOW_H

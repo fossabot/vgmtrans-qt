@@ -9,15 +9,14 @@
 // AkaoInstrSet
 // ************
 
-class AkaoInstrSet: public VGMInstrSet {
+class AkaoInstrSet : public VGMInstrSet {
  public:
-  AkaoInstrSet(RawFile *file,
-               uint32_t length,
-               uint32_t instrOff,
-               uint32_t dkitOff,
-               uint32_t id,
-               std::wstring name = L"Akao Instrument Bank"/*, VGMSampColl* sampColl = NULL*/);
+  AkaoInstrSet(RawFile *file, uint32_t length, uint32_t instrOff,
+               uint32_t dkitOff, uint32_t id,
+               std::wstring name =
+                   L"Akao Instrument Bank" /*, VGMSampColl* sampColl = NULL*/);
   virtual bool GetInstrPointers();
+
  public:
   bool bMelInstrs, bDrumKit;
   uint32_t drumkitOff;
@@ -27,14 +26,10 @@ class AkaoInstrSet: public VGMInstrSet {
 // AkaoInstr
 // *********
 
-
-class AkaoInstr: public VGMInstr {
+class AkaoInstr : public VGMInstr {
  public:
-  AkaoInstr(AkaoInstrSet *instrSet,
-            uint32_t offset,
-            uint32_t length,
-            uint32_t bank,
-            uint32_t instrNum,
+  AkaoInstr(AkaoInstrSet *instrSet, uint32_t offset, uint32_t length,
+            uint32_t bank, uint32_t instrNum,
             const std::wstring &name = L"Instrument");
   virtual bool LoadInstr();
 
@@ -47,34 +42,33 @@ class AkaoInstr: public VGMInstr {
 // AkaoDrumKit
 // ***********
 
-
-class AkaoDrumKit: public AkaoInstr {
+class AkaoDrumKit : public AkaoInstr {
  public:
-  AkaoDrumKit(AkaoInstrSet *instrSet, uint32_t offset, uint32_t length, uint32_t bank, uint32_t instrNum);
+  AkaoDrumKit(AkaoInstrSet *instrSet, uint32_t offset, uint32_t length,
+              uint32_t bank, uint32_t instrNum);
   virtual bool LoadInstr();
 };
-
 
 // *******
 // AkaoRgn
 // *******
 
-class AkaoRgn:
-    public VGMRgn {
+class AkaoRgn : public VGMRgn {
  public:
-  AkaoRgn(VGMInstr *instr, uint32_t offset, uint32_t length = 0, const std::wstring &name = L"Region");
-  AkaoRgn(VGMInstr *instr, uint32_t offset, uint32_t length, uint8_t keyLow, uint8_t keyHigh,
-          uint8_t artIDNum, const std::wstring &name = L"Region");
+  AkaoRgn(VGMInstr *instr, uint32_t offset, uint32_t length = 0,
+          const std::wstring &name = L"Region");
+  AkaoRgn(VGMInstr *instr, uint32_t offset, uint32_t length, uint8_t keyLow,
+          uint8_t keyHigh, uint8_t artIDNum,
+          const std::wstring &name = L"Region");
 
   virtual bool LoadRgn();
 
  public:
-  unsigned short ADSR1;                //raw psx ADSR1 value (articulation data)
-  unsigned short ADSR2;                //raw psx ADSR2 value (articulation data)
+  unsigned short ADSR1;  // raw psx ADSR1 value (articulation data)
+  unsigned short ADSR2;  // raw psx ADSR2 value (articulation data)
   uint8_t artNum;
   uint8_t drumRelUnityKey;
 };
-
 
 // ***********
 // AkaoSampColl
@@ -91,11 +85,10 @@ typedef struct _AkaoArt {
   int sample_num;
 } AkaoArt;
 
-
-class AkaoSampColl:
-    public VGMSampColl {
+class AkaoSampColl : public VGMSampColl {
  public:
-  AkaoSampColl(RawFile *file, uint32_t offset, uint32_t length, std::wstring name = L"Akao Sample Collection");
+  AkaoSampColl(RawFile *file, uint32_t offset, uint32_t length,
+               std::wstring name = L"Akao Sample Collection");
   virtual ~AkaoSampColl();
 
   virtual bool GetHeaderInfo();
@@ -112,4 +105,3 @@ class AkaoSampColl:
   uint32_t arts_offset;
   uint32_t sample_section_offset;
 };
-

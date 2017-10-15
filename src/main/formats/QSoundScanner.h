@@ -6,7 +6,7 @@ class QSoundSampColl;
 class QSoundSampleInfoTable;
 class QSoundArticTable;
 
-enum QSoundVer: uint8_t {
+enum QSoundVer : uint8_t {
   VER_UNDEFINED,
   VER_100,
   VER_101,
@@ -28,8 +28,7 @@ enum QSoundVer: uint8_t {
   VER_180,
 };
 
-class QSoundScanner:
-    public VGMScanner {
+class QSoundScanner : public VGMScanner {
  public:
   virtual void Scan(RawFile *file, void *info = 0);
   QSoundVer GetVersionEnum(std::string &versionStr);

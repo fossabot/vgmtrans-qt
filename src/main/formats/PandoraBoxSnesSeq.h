@@ -4,10 +4,11 @@
 #include "SeqEvent.h"
 #include "PandoraBoxSnesFormat.h"
 
-#define PANDORABOXSNES_CALLSTACK_SIZE   40
+#define PANDORABOXSNES_CALLSTACK_SIZE 40
 
 enum PandoraBoxSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -41,11 +42,9 @@ enum PandoraBoxSnesSeqEventType {
   EVENT_VOLUME,
 };
 
-class PandoraBoxSnesSeq
-    : public VGMSeq {
+class PandoraBoxSnesSeq : public VGMSeq {
  public:
-  PandoraBoxSnesSeq(RawFile *file,
-                    PandoraBoxSnesVersion ver,
+  PandoraBoxSnesSeq(RawFile *file, PandoraBoxSnesVersion ver,
                     uint32_t seqdata_offset,
                     std::wstring newName = L"PandoraBox SNES Seq");
   virtual ~PandoraBoxSnesSeq(void);
@@ -65,11 +64,10 @@ class PandoraBoxSnesSeq
   void LoadEventMap(void);
 };
 
-
-class PandoraBoxSnesTrack
-    : public SeqTrack {
+class PandoraBoxSnesTrack : public SeqTrack {
  public:
-  PandoraBoxSnesTrack(PandoraBoxSnesSeq *parentFile, long offset = 0, long length = 0);
+  PandoraBoxSnesTrack(PandoraBoxSnesSeq *parentFile, long offset = 0,
+                      long length = 0);
   virtual void ResetVars(void);
   virtual bool ReadEvent(void);
 

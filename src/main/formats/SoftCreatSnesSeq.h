@@ -5,7 +5,8 @@
 #include "SoftCreatSnesFormat.h"
 
 enum SoftCreatSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -13,13 +14,10 @@ enum SoftCreatSnesSeqEventType {
   EVENT_UNKNOWN4,
 };
 
-class SoftCreatSnesSeq
-    : public VGMSeq {
+class SoftCreatSnesSeq : public VGMSeq {
  public:
-  SoftCreatSnesSeq(RawFile *file,
-                   SoftCreatSnesVersion ver,
-                   uint32_t seqdata_offset,
-                   uint8_t headerAlignSize,
+  SoftCreatSnesSeq(RawFile *file, SoftCreatSnesVersion ver,
+                   uint32_t seqdata_offset, uint8_t headerAlignSize,
                    std::wstring newName = L"SoftCreat SNES Seq");
   virtual ~SoftCreatSnesSeq(void);
 
@@ -36,11 +34,10 @@ class SoftCreatSnesSeq
   uint8_t headerAlignSize;
 };
 
-
-class SoftCreatSnesTrack
-    : public SeqTrack {
+class SoftCreatSnesTrack : public SeqTrack {
  public:
-  SoftCreatSnesTrack(SoftCreatSnesSeq *parentFile, long offset = 0, long length = 0);
+  SoftCreatSnesTrack(SoftCreatSnesSeq *parentFile, long offset = 0,
+                     long length = 0);
   virtual void ResetVars(void);
   virtual bool ReadEvent(void);
 };

@@ -2,16 +2,12 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-enum KonamiSnesVersion: uint8_t; // see KonamiSnesFormat.h
+enum KonamiSnesVersion : uint8_t;  // see KonamiSnesFormat.h
 
-class KonamiSnesScanner:
-    public VGMScanner {
+class KonamiSnesScanner : public VGMScanner {
  public:
-  KonamiSnesScanner(void) {
-    USE_EXTENSION(L"spc");
-  }
-  virtual ~KonamiSnesScanner(void) {
-  }
+  KonamiSnesScanner(void) { USE_EXTENSION(L"spc"); }
+  virtual ~KonamiSnesScanner(void) {}
 
   virtual void Scan(RawFile *file, void *info = 0);
   void SearchForKonamiSnesFromARAM(RawFile *file);

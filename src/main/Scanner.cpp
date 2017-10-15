@@ -3,14 +3,12 @@
 #include "Scanner.h"
 #include "Root.h"
 
-VGMScanner::VGMScanner() {
-}
+VGMScanner::VGMScanner() {}
 
-VGMScanner::~VGMScanner(void) {
-}
+VGMScanner::~VGMScanner(void) {}
 
 bool VGMScanner::Init() {
-  //if (!UseExtension())
+  // if (!UseExtension())
   //	return false;
   return true;
 }
@@ -20,8 +18,7 @@ void VGMScanner::InitiateScan(RawFile *file, void *offset) {
   this->Scan(file, offset);
 }
 
-
-//void VGMScanner::Scan(RawFile* file)
+// void VGMScanner::Scan(RawFile* file)
 //{
 //	return;
 //}

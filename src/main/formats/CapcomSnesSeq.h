@@ -6,14 +6,15 @@
 
 #define CAPCOM_SNES_REPEAT_SLOT_MAX 4
 
-#define CAPCOM_SNES_MASK_NOTE_OCTAVE    0x07
+#define CAPCOM_SNES_MASK_NOTE_OCTAVE 0x07
 #define CAPCOM_SNES_MASK_NOTE_OCTAVE_UP 0x08
-#define CAPCOM_SNES_MASK_NOTE_DOTTED    0x10
-#define CAPCOM_SNES_MASK_NOTE_TRIPLET   0x20
-#define CAPCOM_SNES_MASK_NOTE_SLURRED   0x40
+#define CAPCOM_SNES_MASK_NOTE_DOTTED 0x10
+#define CAPCOM_SNES_MASK_NOTE_TRIPLET 0x20
+#define CAPCOM_SNES_MASK_NOTE_SLURRED 0x40
 
 enum CapcomSnesSeqEventType {
-  //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  // start enum at 1 because if map[] look up fails, it returns 0, and we don't
+  // want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
@@ -52,12 +53,9 @@ enum CapcomSnesSeqEventType {
   EVENT_NOP,
 };
 
-class CapcomSnesSeq
-    : public VGMSeq {
+class CapcomSnesSeq : public VGMSeq {
  public:
-  CapcomSnesSeq(RawFile *file,
-                CapcomSnesVersion ver,
-                uint32_t seqdata_offset,
+  CapcomSnesSeq(RawFile *file, CapcomSnesVersion ver, uint32_t seqdata_offset,
                 bool priorityInHeader,
                 std::wstring newName = L"Capcom SNES Seq");
   virtual ~CapcomSnesSeq(void);
@@ -84,9 +82,7 @@ class CapcomSnesSeq
   void LoadEventMap(void);
 };
 
-
-class CapcomSnesTrack
-    : public SeqTrack {
+class CapcomSnesTrack : public SeqTrack {
  public:
   CapcomSnesTrack(CapcomSnesSeq *parentFile, long offset = 0, long length = 0);
   virtual void ResetVars(void);
@@ -106,10 +102,11 @@ class CapcomSnesTrack
   void setNoteSlurred(bool slurred);
 
  private:
-  uint8_t repeatCount[CAPCOM_SNES_REPEAT_SLOT_MAX];      // repeat count for repeat command
+  uint8_t repeatCount[CAPCOM_SNES_REPEAT_SLOT_MAX];  // repeat count for repeat
+                                                     // command
   uint8_t noteAttributes;
   uint8_t durationRate;
-  //int8_t transpose;
+  // int8_t transpose;
 
   bool lastNoteSlurred;
   int8_t lastKey;

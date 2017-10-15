@@ -8,15 +8,11 @@
 // HeartBeatSnesInstrSet
 // *********************
 
-class HeartBeatSnesInstrSet:
-    public VGMInstrSet {
+class HeartBeatSnesInstrSet : public VGMInstrSet {
  public:
-  HeartBeatSnesInstrSet(RawFile *file,
-                        HeartBeatSnesVersion ver,
-                        uint32_t offset,
-                        uint32_t length,
-                        uint16_t addrSRCNTable,
-                        uint8_t songIndex,
+  HeartBeatSnesInstrSet(RawFile *file, HeartBeatSnesVersion ver,
+                        uint32_t offset, uint32_t length,
+                        uint16_t addrSRCNTable, uint8_t songIndex,
                         uint32_t spcDirAddr,
                         const std::wstring &name = L"HeartBeatSnesInstrSet");
   virtual ~HeartBeatSnesInstrSet(void);
@@ -37,16 +33,11 @@ class HeartBeatSnesInstrSet:
 // HeartBeatSnesInstr
 // ******************
 
-class HeartBeatSnesInstr
-    : public VGMInstr {
+class HeartBeatSnesInstr : public VGMInstr {
  public:
-  HeartBeatSnesInstr(VGMInstrSet *instrSet,
-                     HeartBeatSnesVersion ver,
-                     uint32_t offset,
-                     uint32_t theBank,
-                     uint32_t theInstrNum,
-                     uint16_t addrSRCNTable,
-                     uint8_t songIndex,
+  HeartBeatSnesInstr(VGMInstrSet *instrSet, HeartBeatSnesVersion ver,
+                     uint32_t offset, uint32_t theBank, uint32_t theInstrNum,
+                     uint16_t addrSRCNTable, uint8_t songIndex,
                      uint32_t spcDirAddr,
                      const std::wstring &name = L"HeartBeatSnesInstr");
   virtual ~HeartBeatSnesInstr(void);
@@ -65,10 +56,10 @@ class HeartBeatSnesInstr
 // HeartBeatSnesRgn
 // ****************
 
-class HeartBeatSnesRgn
-    : public VGMRgn {
+class HeartBeatSnesRgn : public VGMRgn {
  public:
-  HeartBeatSnesRgn(HeartBeatSnesInstr *instr, HeartBeatSnesVersion ver, uint32_t offset);
+  HeartBeatSnesRgn(HeartBeatSnesInstr *instr, HeartBeatSnesVersion ver,
+                   uint32_t offset);
   virtual ~HeartBeatSnesRgn(void);
 
   virtual bool LoadRgn();

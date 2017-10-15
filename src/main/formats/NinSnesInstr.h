@@ -8,12 +8,9 @@
 // NinSnesInstrSet
 // ****************
 
-class NinSnesInstrSet:
-    public VGMInstrSet {
+class NinSnesInstrSet : public VGMInstrSet {
  public:
-  NinSnesInstrSet(RawFile *file,
-                  NinSnesVersion ver,
-                  uint32_t offset,
+  NinSnesInstrSet(RawFile *file, NinSnesVersion ver, uint32_t offset,
                   uint32_t spcDirAddr,
                   const std::wstring &name = L"NinSnesInstrSet");
   virtual ~NinSnesInstrSet(void);
@@ -35,22 +32,18 @@ class NinSnesInstrSet:
 // NinSnesInstr
 // *************
 
-class NinSnesInstr
-    : public VGMInstr {
+class NinSnesInstr : public VGMInstr {
  public:
-  NinSnesInstr(VGMInstrSet *instrSet,
-               NinSnesVersion ver,
-               uint32_t offset,
-               uint32_t theBank,
-               uint32_t theInstrNum,
-               uint32_t spcDirAddr,
+  NinSnesInstr(VGMInstrSet *instrSet, NinSnesVersion ver, uint32_t offset,
+               uint32_t theBank, uint32_t theInstrNum, uint32_t spcDirAddr,
                const std::wstring &name = L"NinSnesInstr");
   virtual ~NinSnesInstr(void);
 
   virtual bool LoadInstr();
 
-  static bool IsValidHeader
-      (RawFile *file, NinSnesVersion version, uint32_t addrInstrHeader, uint32_t spcDirAddr, bool validateSample);
+  static bool IsValidHeader(RawFile *file, NinSnesVersion version,
+                            uint32_t addrInstrHeader, uint32_t spcDirAddr,
+                            bool validateSample);
   static uint32_t ExpectedSize(NinSnesVersion version);
 
   NinSnesVersion version;
@@ -66,12 +59,9 @@ class NinSnesInstr
 // NinSnesRgn
 // ***********
 
-class NinSnesRgn
-    : public VGMRgn {
+class NinSnesRgn : public VGMRgn {
  public:
-  NinSnesRgn(NinSnesInstr *instr,
-             NinSnesVersion ver,
-             uint32_t offset,
+  NinSnesRgn(NinSnesInstr *instr, NinSnesVersion ver, uint32_t offset,
              uint16_t konamiTuningTableAddress = 0,
              uint8_t konamiTuningTableSize = 0);
   virtual ~NinSnesRgn(void);

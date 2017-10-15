@@ -4,7 +4,6 @@
 
 DECLARE_FORMAT(HOSA);
 
-
 //**************************************************************
 //		HOSASeq
 //**************************************************************
@@ -20,14 +19,13 @@ HOSASeq::HOSASeq(RawFile *file, uint32_t offset, const std::wstring &name)
 //==============================================================
 //		Destructor
 //==============================================================
-HOSASeq::~HOSASeq(void) {
-}
+HOSASeq::~HOSASeq(void) {}
 
 //==============================================================
-//		Get the information of HOSA header 
+//		Get the information of HOSA header
 //--------------------------------------------------------------
 //	Input
-//		Nothing		
+//		Nothing
 //	Output
 //		flag		true	=	successful
 //					false	=	error
@@ -35,20 +33,22 @@ HOSASeq::~HOSASeq(void) {
 //		VGMSeq::LoadMain() から call される。
 //==============================================================
 bool HOSASeq::GetHeaderInfo(void) {
-//	About the unLength, if (unLength==0), 
-//	"VGMSeq::LoadMain()" will calculate the unLength after "SeqTrack::LoadTrack()".
-  nNumTracks = GetByte(dwOffset + 0x06);    //uint8_t (8bit)
+  //	About the unLength, if (unLength==0),
+  //	"VGMSeq::LoadMain()" will calculate the unLength after
+  //"SeqTrack::LoadTrack()".
+  nNumTracks = GetByte(dwOffset + 0x06);  // uint8_t (8bit)
   assocHOSA_ID = 0x00;
 
-//	Add the new object "VGMHeader" in this object "HOSASeq"（Super class："VGMContainerItem")
-//	Delect object is in "VGMContainerItem::~VGMContainerItem()"
+  //	Add the new object "VGMHeader" in this object "HOSASeq"（Super
+  //class："VGMContainerItem") 	Delect object is in
+  //"VGMContainerItem::~VGMContainerItem()"
   VGMHeader *hdr = AddHeader(dwOffset, 0x0050);
   hdr->AddSig(dwOffset, 4);
   hdr->AddSimpleItem(dwOffset + 0x06, 1, L"Quantity of Tracks");
 
-  SetPPQN(0x30);                                //Timebase
+  SetPPQN(0x30);  // Timebase
 
-  return true;                                //successful
+  return true;  // successful
 }
 //==============================================================
 //		Get the pointer of Music Track
@@ -57,17 +57,17 @@ bool HOSASeq::GetHeaderInfo(void) {
 //		Nothing
 //	Output
 //		flag		true	=	successful
-//					false	=	
+//					false	=
 //	Memo
 //		VGMSeq::LoadMain() から call される。
 //==============================================================
 bool HOSASeq::GetTrackPointers(void) {
   for (unsigned int i = 0; i < nNumTracks; i++)
-    aTracks.push_back(new HOSATrack(this, GetShort(dwOffset + 0x50 + (i * 2)) + dwOffset));
-  //delect object is in "VGMSeq::~VGMSeq()"
+    aTracks.push_back(
+        new HOSATrack(this, GetShort(dwOffset + 0x50 + (i * 2)) + dwOffset));
+  // delect object is in "VGMSeq::~VGMSeq()"
   return true;
 }
-
 
 //**************************************************************
 //		HOSATrack
@@ -80,16 +80,15 @@ bool HOSASeq::GetTrackPointers(void) {
 //	Output
 //		Nothing
 //==============================================================
-HOSATrack::HOSATrack(HOSASeq *parentFile, long offset, long length) :
-    SeqTrack(parentFile, offset, length),
-    iDeltaTimeCom(0),         //Default delta time for Command
-    iDeltaTimeNote(0),        //Default delta time for Note
-    iLengthTimeNote(0),       //Default length for Note
-//	iDeltaTimeCounter(0),	//Delta time counter
-    cVelocity(127),           //Default velocity
-    cNoteNum(60)              //Default Note Number
-{
-}
+HOSATrack::HOSATrack(HOSASeq *parentFile, long offset, long length)
+    : SeqTrack(parentFile, offset, length),
+      iDeltaTimeCom(0),    // Default delta time for Command
+      iDeltaTimeNote(0),   // Default delta time for Note
+      iLengthTimeNote(0),  // Default length for Note
+      //	iDeltaTimeCounter(0),	//Delta time counter
+      cVelocity(127),  // Default velocity
+      cNoteNum(60)     // Default Note Number
+{}
 
 //==============================================================
 //		Process of 1 Event
@@ -102,29 +101,26 @@ HOSATrack::HOSATrack(HOSASeq *parentFile, long offset, long length) :
 //		SeqTrack::LoadTrack() から call される。
 //==============================================================
 bool HOSATrack::ReadEvent(void) {
-
   //==================================
   //	[ Local 変数 ]
   //----------------------------------
-  const uint32_t beginOffset = curOffset;           //start offset point
+  const uint32_t beginOffset = curOffset;  // start offset point
 
-  const uint8_t cCommand = GetByte(curOffset++);    //command (op-code)
-  const uint8_t cCom_bit0 = (cCommand & 0x1F);      //length / contents
-  const uint8_t cCom_bit5 = (cCommand & 0x60) >> 5; //Delta times
-  const uint8_t cCom_bit7 = (cCommand & 0x80) >> 7; //0=Notes / 1=Controls
+  const uint8_t cCommand = GetByte(curOffset++);     // command (op-code)
+  const uint8_t cCom_bit0 = (cCommand & 0x1F);       // length / contents
+  const uint8_t cCom_bit5 = (cCommand & 0x60) >> 5;  // Delta times
+  const uint8_t cCom_bit7 = (cCommand & 0x80) >> 7;  // 0=Notes / 1=Controls
 
-//	unsigned 	int					iMinLengthCounter;				//デルタタイム最小値
-//				int					i;		//general
-//	vector<char>::iterator			it_note;
-//	vector<int unsigned >::iterator	it_Length;
-
-
+  //	unsigned 	int					iMinLengthCounter;
+  ////デルタタイム最小値 				int
+  //i;		//general 	vector<char>::iterator			it_note;
+  //	vector<int unsigned >::iterator	it_Length;
 
   //==================================
   //	[ Process of "Delta time" and "Note off Event" ]
   //----------------------------------
-  //Command用の(DeltaCounter==0)まで繰り返し。
-  //while(iDeltaTimeCounter!=0){
+  // Command用の(DeltaCounter==0)まで繰り返し。
+  // while(iDeltaTimeCounter!=0){
 
   //	//Search the minimum length time [ticks]
   //	iMinLengthCounter	=	iDeltaTimeCounter;
@@ -160,8 +156,6 @@ bool HOSATrack::ReadEvent(void) {
   //	}
   //}
 
-
-
   //==================================
   //	[ Process of command (note / control) ]
   //----------------------------------
@@ -169,7 +163,6 @@ bool HOSATrack::ReadEvent(void) {
   //----------------------------------
   //	Command: Notes  (cCommand == 0x00 - 0x7F)
   if (cCom_bit7 == 0) {
-
     //--------
     //[2]Update the default Note Number
     cNoteNum = GetByte(curOffset++);
@@ -182,7 +175,8 @@ bool HOSATrack::ReadEvent(void) {
     //[4]Update the default Length
     iLengthTimeNote = GetShort(parentSeq->dwOffset + 0x10 + cCom_bit0 * 2);
     if (iLengthTimeNote == 0) {
-//      iLengthTimeNote = ReadVarLen(curOffset);		//No count curOffset
+      //      iLengthTimeNote = ReadVarLen(curOffset);		//No count
+      //      curOffset
       iLengthTimeNote = DecodeVariable();
     };
 
@@ -196,14 +190,15 @@ bool HOSATrack::ReadEvent(void) {
     //--------
     //[3]Update the default Delta time (continuation)
     if (cCom_bit5 == 1) {
-      iDeltaTimeCom = iLengthTimeNote;    //Delta time is the same as note length.
+      iDeltaTimeCom = iLengthTimeNote;  // Delta time is the same as note
+                                        // length.
     };
-    iDeltaTimeNote = iDeltaTimeCom;       //Default delta time for Note.
+    iDeltaTimeNote = iDeltaTimeCom;  // Default delta time for Note.
 
     //--------
-    //Write Note-On Event
-    AddNoteByDur(beginOffset, curOffset - beginOffset, cNoteNum, cVelocity, iLengthTimeNote);
-
+    // Write Note-On Event
+    AddNoteByDur(beginOffset, curOffset - beginOffset, cNoteNum, cVelocity,
+                 iLengthTimeNote);
 
     //----------------------------------
     //	Command: Controls  (cCommand == 0x80 - 0x9F, 0xC0 - 0xFF)
@@ -211,67 +206,69 @@ bool HOSATrack::ReadEvent(void) {
     if (cCom_bit5 != 1) {
       switch (cCom_bit0) {
         //------------
-        //End of Track
+        // End of Track
         case (0x00):
           AddEndOfTrack(beginOffset, curOffset - beginOffset);
           return false;
           break;
           //------------
-          //Tempo
+          // Tempo
         case (0x01):
           cTempo = GetByte(curOffset++);
           AddTempoBPM(beginOffset, curOffset - beginOffset, cTempo);
           break;
           //------------
-          //Reverb
+          // Reverb
         case (0x02):
           curOffset++;
-          AddGenericEvent(beginOffset, curOffset - beginOffset, L"Reverb Depth", L"", CLR_REVERB);
+          AddGenericEvent(beginOffset, curOffset - beginOffset, L"Reverb Depth",
+                          L"", CLR_REVERB);
           break;
           //------------
-          //Instrument
+          // Instrument
         case (0x03):
           cInstrument = GetByte(curOffset++);
           AddProgramChange(beginOffset, curOffset - beginOffset, cInstrument);
           break;
           //------------
-          //Volume
+          // Volume
         case (0x04):
           cVolume = GetByte(curOffset++);
           AddVol(beginOffset, curOffset - beginOffset, cVolume);
           break;
           //------------
-          //Panpot
+          // Panpot
         case (0x05):
           cPanpot = GetByte(curOffset++);
           AddPan(beginOffset, curOffset - beginOffset, cPanpot);
           break;
           //------------
-          //Expression
+          // Expression
         case (0x06):
           cExpression = GetByte(curOffset++);
           AddExpression(beginOffset, curOffset - beginOffset, cExpression);
           break;
           //------------
-          //Unknown
+          // Unknown
         case (0x07):
           curOffset++;
           curOffset++;
           AddUnknown(beginOffset, curOffset - beginOffset);
           break;
           //------------
-          //Dal Segno. (Loop)
+          // Dal Segno. (Loop)
         case (0x09):
           curOffset++;
-          AddGenericEvent(beginOffset, curOffset - beginOffset, L"Dal Segno.(Loop)", L"", CLR_LOOP);
+          AddGenericEvent(beginOffset, curOffset - beginOffset,
+                          L"Dal Segno.(Loop)", L"", CLR_LOOP);
           break;
           //------------
-          //Unknown
+          // Unknown
         case (0x0F):
           AddUnknown(beginOffset, curOffset - beginOffset);
           break;
           //------------
-          //Unknowns
+          // Unknowns
         default:
           curOffset++;
           AddUnknown(beginOffset, curOffset - beginOffset);
@@ -283,22 +280,24 @@ bool HOSATrack::ReadEvent(void) {
       uint32_t beginOffset2 = curOffset;
       ReadDeltaTime(cCom_bit5, &iDeltaTimeCom);
       if (curOffset != beginOffset2) {
-        AddGenericEvent(beginOffset2, curOffset - beginOffset2, L"Delta time", L"", CLR_CHANGESTATE);
+        AddGenericEvent(beginOffset2, curOffset - beginOffset2, L"Delta time",
+                        L"", CLR_CHANGESTATE);
       };
 
       //----------------------------------
       //	Command: Notes  (cCommand == 0xA0 - 0xBF)
     } else {
       if (cCom_bit0 & 0x10) {
-        //Add (Command = 0xB0 - 0xBF)
+        // Add (Command = 0xB0 - 0xBF)
         cNoteNum += (cCom_bit0 & 0x0F);
       } else {
-        //Sub (Command = 0xA0 - 0xAF)
+        // Sub (Command = 0xA0 - 0xAF)
         cNoteNum -= (cCom_bit0 & 0x0F);
       };
       //--------
-      //Write Note-On Event
-      AddNoteByDur(beginOffset, curOffset - beginOffset, cNoteNum, cVelocity, iLengthTimeNote);
+      // Write Note-On Event
+      AddNoteByDur(beginOffset, curOffset - beginOffset, cNoteNum, cVelocity,
+                   iLengthTimeNote);
       iDeltaTimeCom = iDeltaTimeNote;
     }
   }
@@ -306,7 +305,7 @@ bool HOSATrack::ReadEvent(void) {
   //==================================
   //	[ Process of "Note" with note length ]
   //----------------------------------
-  //if(fNoteOutput!=0){
+  // if(fNoteOutput!=0){
   //	//Write "Note-on Event"
   //	AddNoteOn(beginOffset, curOffset-beginOffset, fNoteOutput, cVelocity);
   //	//Add note-information to vector.
@@ -316,38 +315,38 @@ bool HOSATrack::ReadEvent(void) {
   //	iDeltaTimeCom		= iDeltaTimeNote;
   //}
 
-
-
   //==================================
   //	[ Process of "Setting Delta time" ]
   //----------------------------------
-  //iDeltaTimeCounter = iDeltaTimeCom;
+  // iDeltaTimeCounter = iDeltaTimeCom;
   AddTime(iDeltaTimeCom);
 
-
   return true;
-
 }
 //==============================================================
 //		Read delta time
 //--------------------------------------------------------------
 //	Input
-//		unsigned	char	cCom_bit5		bit5-6 of command(op-code)
-//					int		*iVariable		Pointer of Variable
-//	Output
-//					int		*iVariable		Result of read variable
+//		unsigned	char	cCom_bit5		bit5-6 of
+//command(op-code)
+//					int		*iVariable		Pointer of
+//Variable 	Output
+//					int		*iVariable		Result of
+//read variable
 //==============================================================
-void    HOSATrack::ReadDeltaTime(unsigned char cCom_bit5, unsigned int *iVariable) {
-
+void HOSATrack::ReadDeltaTime(unsigned char cCom_bit5,
+                              unsigned int *iVariable) {
   switch (cCom_bit5) {
     //----
-    case (2):    //	2 : 可変長
-//			*iVariable = ReadVarLen(curOffset);		//No count curOffset
+    case (2):  //	2 : 可変長
+               //			*iVariable = ReadVarLen(curOffset);
+               ////No count curOffset
       *iVariable = DecodeVariable();
       break;
       //----
-    case (3):    //	3 : From header
-      *iVariable = GetShort(parentSeq->dwOffset + 0x10 + (GetByte(curOffset++) & 0x1f) * 2);
+    case (3):  //	3 : From header
+      *iVariable = GetShort(parentSeq->dwOffset + 0x10 +
+                            (GetByte(curOffset++) & 0x1f) * 2);
       break;
       //----
     default:
@@ -355,7 +354,6 @@ void    HOSATrack::ReadDeltaTime(unsigned char cCom_bit5, unsigned int *iVariabl
       // 1 : No update
       break;
   };
-
 };
 //==============================================================
 //		Decode of Variable
@@ -363,26 +361,24 @@ void    HOSATrack::ReadDeltaTime(unsigned char cCom_bit5, unsigned int *iVariabl
 //	Input
 //		Nothing
 //	Output
-//		int		iVariable		Result of decode 
+//		int		iVariable		Result of decode
 //==============================================================
-unsigned int        HOSATrack::DecodeVariable() {
-
+unsigned int HOSATrack::DecodeVariable() {
   //==================================
   //	[ Local 変数 ]
   //----------------------------------
-  uint32_t iVariable = 0;    // Result of decode
-  uint32_t count = 4;        // for counter
-  uint8_t cFread;            // for reading
+  uint32_t iVariable = 0;  // Result of decode
+  uint32_t count = 4;      // for counter
+  uint8_t cFread;          // for reading
 
   //==================================
   //	[ Read Variable ]
   //----------------------------------
   do {
-    cFread = GetByte(curOffset++);        //1 Byte Read
-    iVariable = (iVariable << 7) + ((unsigned int) cFread & 0x7F);
+    cFread = GetByte(curOffset++);  // 1 Byte Read
+    iVariable = (iVariable << 7) + ((unsigned int)cFread & 0x7F);
     count--;
   } while ((count > 0) && (cFread & 0x80));
 
   return (iVariable);
-
 };

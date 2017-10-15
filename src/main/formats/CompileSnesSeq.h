@@ -5,8 +5,9 @@
 #include "CompileSnesFormat.h"
 
 enum CompileSnesSeqEventType {
-  EVENT_UNKNOWN0 =
-  1, //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
+  EVENT_UNKNOWN0 = 1,  // start enum at 1 because if map[] look up fails, it
+                       // returns 0, and we don't want that to get confused with
+                       // a legit event
   EVENT_UNKNOWN1,
   EVENT_UNKNOWN2,
   EVENT_UNKNOWN3,
@@ -40,11 +41,10 @@ enum CompileSnesSeqEventType {
   EVENT_DURATION,
 };
 
-class CompileSnesSeq
-    : public VGMSeq {
+class CompileSnesSeq : public VGMSeq {
  public:
-  CompileSnesSeq
-      (RawFile *file, CompileSnesVersion ver, uint32_t seqdataOffset, std::wstring newName = L"Compile SNES Seq");
+  CompileSnesSeq(RawFile *file, CompileSnesVersion ver, uint32_t seqdataOffset,
+                 std::wstring newName = L"Compile SNES Seq");
   virtual ~CompileSnesSeq(void);
 
   virtual bool GetHeaderInfo(void);
@@ -68,11 +68,10 @@ class CompileSnesSeq
   void LoadEventMap(void);
 };
 
-
-class CompileSnesTrack
-    : public SeqTrack {
+class CompileSnesTrack : public SeqTrack {
  public:
-  CompileSnesTrack(CompileSnesSeq *parentFile, long offset = 0, long length = 0);
+  CompileSnesTrack(CompileSnesSeq *parentFile, long offset = 0,
+                   long length = 0);
   virtual void ResetVars(void);
   virtual void AddInitialMidiEvents(int trackNum);
   virtual bool ReadEvent(void);
