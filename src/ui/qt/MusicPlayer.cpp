@@ -80,13 +80,15 @@ int midi_event_callback(void* data, fluid_midi_event_t* event)
 }
 
 void MusicPlayer::StopMidi() {
-    
+
     if (this->player) {
         fluid_player_stop(this->player);
         delete_fluid_player(this->player);
+        this->player = nullptr;
     }
     if (this->adriver) {
         delete_fluid_audio_driver(this->adriver);
+        this->adriver = nullptr;
     }
 }
 

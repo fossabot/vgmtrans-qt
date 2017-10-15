@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent)
     vertSplitter->setStretchFactor(0, 1);
     vertSplitter->setSizes(sizes);
     vertSplitter->setHandleWidth(splitterHandleWidth);
-//    vertSplitter->setOpaqueResize(false);
 
     sizes = QList<int>({defaultFileListWidth, defaultWindowWidth - defaultFileListWidth});
     horzSplitter->addWidget(vertSplitterLeft);
@@ -70,7 +69,6 @@ void MainWindow::dragMoveEvent(QDragMoveEvent* event)
 }
 
 wchar_t* qstringTowchar_t(QString text){
-//    qDebug()<<text.length();
     wchar_t* c_Text = new wchar_t[text.length() + 1];
     text.toWCharArray(c_Text);
 
@@ -82,18 +80,9 @@ void MainWindow::dropEvent(QDropEvent *event)
 {
 
     const QMimeData *mimeData = event->mimeData();
-
-//    if (mimeData->hasImage()) {
-//        setPixmap(qvariant_cast<QPixmap>(mimeData->imageData()));
-//    } else if (mimeData->hasHtml()) {
-//        setText(mimeData->html());
-//        setTextFormat(Qt::RichText);
-//    } else
     if (mimeData->hasText()) {
         std::string utf8_text = mimeData->text().toUtf8().constData();
         printf(utf8_text.c_str());
-//        setText(mimeData->text());
-//        setTextFormat(Qt::PlainText);
     }
     if (mimeData->hasUrls()) {
         QList<QUrl> urlList = mimeData->urls();
@@ -103,19 +92,10 @@ void MainWindow::dropEvent(QDropEvent *event)
         for (int i = 0; i < urlList.size() && i < 32; ++i) {
             QString url = urlList.at(i).toLocalFile();
             wchar_t *str = qstringTowchar_t(url);
-//            qDebug() << text.length();
             qtVGMRoot.OpenRawFile(str);
-//            text += url + QString("\n");
         }
         printf(text.toUtf8().constData());
-//        qtVGMRoot.OpenRawFile(urlList)
-//        setText(text);
-    } else {
-//        setText(tr("Cannot display data"));
     }
-//! [dropEvent() function part2]
-
-//! [dropEvent() function part3]
     setBackgroundRole(QPalette::Dark);
     event->acceptProposedAction();
 
