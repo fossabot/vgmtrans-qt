@@ -22,22 +22,6 @@ matrix:
         - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
         - sudo apt-get update -qq
         - sudo apt-get install qtbase5-dev
-    # Latest
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - gcc-7
-            - g++-7
-            - libglib2.0-dev
-            - libfluidsynth-dev
-      env: CC='gcc-7' CXX='g++-7'
-      before_install:
-        - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-        - sudo apt-get update -qq
-        - sudo apt-get install qt5base-dev
 
 install:
   # We need CMake >= 3.5.0
