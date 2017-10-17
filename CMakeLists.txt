@@ -199,9 +199,20 @@ if(APPLE)
       )
 endif()
 
+# Project target
+
 set(APP_BINARY vgmtrans)
 
 add_executable(
   ${APP_BINARY} ${GUI_TYPE} ${MAIN_FILES} ${UI_FILES}
   ${LIB_FILES} ${UI_RESOURCES})
 target_link_libraries(${APP_BINARY} ${LIBS})
+
+add_custom_target(
+  reformat
+  COMMAND clang-format
+  -style='{BasedOnStyle: Google, SortIncludes: false}'
+  -i
+  ${MAIN_FILES} ${UI_FILES}
+)
+
