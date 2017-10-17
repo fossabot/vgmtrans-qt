@@ -5,7 +5,6 @@ language: generic
 
 matrix:
   include:
-    #TODO: clang
     # Minimum required for C++14
     - os: linux
       addons:
@@ -22,6 +21,26 @@ matrix:
         - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
         - sudo apt-get update -qq
         - sudo apt-get install qtbase5-dev
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-3.9
+          packages:
+            - clang-3.9
+            - libglib2.0-dev
+            - libfluidsynth-dev
+      compiler: clang
+      before_install:
+        - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+        - sudo apt-get update -qq
+        - sudo apt-get install qtbase5-dev
+    - os: osx
+          osx_image: xcode8
+      before_install:
+        - brew update qt || brew install qt
+        - brew update fluid-symth || brew install fluid-synth
 
 install:
   # We need CMake >= 3.5.0
@@ -30,6 +49,8 @@ install:
       CMAKE_URL="https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz"
       mkdir cmake-bin && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake-bin
       export PATH=${TRAVIS_BUILD_DIR}/cmake-bin/bin:${PATH}
+    else
+      brew upgrade cmake || brew install cmake
     fi
 
 script:
