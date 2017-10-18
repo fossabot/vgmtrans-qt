@@ -1,12 +1,14 @@
 #include <qtextedit.h>
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QtWidgets>
 #include "mainwindow.h"
 #include "QtVGMRoot.h"
 #include "RawFileListView.h"
 #include "VGMFileListView.h"
 #include "VGMCollListView.h"
 #include "MdiArea.h"
+#include "Helpers.h"
 
 const int defaultWindowWidth = 800;
 const int defaultWindowHeight = 600;
@@ -15,7 +17,8 @@ const int defaultFileListWidth = 200;
 const int splitterHandleWidth = 1;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-  setAcceptDrops(true);
+  //  createTopbar();
+  setUnifiedTitleAndToolBarOnMac(true);
 
   rawFileListView = new RawFileListView();
   vgmFileListView = new VGMFileListView();
@@ -27,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   QList<int> sizes(
       {defaultWindowHeight - defaultCollListHeight, defaultCollListHeight});
+
   vertSplitter->addWidget(horzSplitter);
   vertSplitter->addWidget(vgmCollListView);
   vertSplitter->setStretchFactor(0, 1);
@@ -35,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   sizes = QList<int>(
       {defaultFileListWidth, defaultWindowWidth - defaultFileListWidth});
+
   horzSplitter->addWidget(vertSplitterLeft);
   horzSplitter->addWidget(MdiArea::getInstance());
   horzSplitter->setStretchFactor(1, 1);
@@ -51,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   setCentralWidget(vertSplitter);
   resize(defaultWindowWidth, defaultWindowHeight);
+
+  setAcceptDrops(true);
 }
 
 MainWindow::~MainWindow() {}
@@ -63,32 +70,21 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *event) {
   event->acceptProposedAction();
 }
 
-wchar_t *qstringTowchar_t(QString text) {
-  wchar_t *c_Text = new wchar_t[text.length() + 1];
-  text.toWCharArray(c_Text);
-
-  c_Text[text.length()] = 0;  // Add this line should work as you expected
-  return c_Text;
+void MainWindow::openFile(QString path) {
+  qtVGMRoot.OpenRawFile(qstringTowchar_t(path));
 }
 
 void MainWindow::dropEvent(QDropEvent *event) {
   const QMimeData *mimeData = event->mimeData();
-  if (mimeData->hasText()) {
-    std::string utf8_text = mimeData->text().toUtf8().constData();
-    printf(utf8_text.c_str());
-  }
+
   if (mimeData->hasUrls()) {
     QList<QUrl> urlList = mimeData->urls();
-    int urlSize = urlList.size();
-    printf("%d", urlSize);
-    QString text;
     for (int i = 0; i < urlList.size() && i < 32; ++i) {
       QString url = urlList.at(i).toLocalFile();
-      wchar_t *str = qstringTowchar_t(url);
-      qtVGMRoot.OpenRawFile(str);
+      openFile(url);
     }
-    printf(text.toUtf8().constData());
   }
+
   setBackgroundRole(QPalette::Dark);
   event->acceptProposedAction();
 }

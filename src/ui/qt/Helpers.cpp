@@ -12,33 +12,6 @@ QIcon iconForFileType(FileType filetype) {
   return QIcon(":/images/audio_file-32.png");
 }
 
-// QColor(65, 159, 211, 255)
-// QColor(73, 164, 219, 255)
-// QColor(92, 130, 211, 255)
-// QColor(95, 131, 219, 255)
-// QColor(117, 109, 220, 255)
-// QColor(117, 108, 213, 255)
-// QColor(142, 101, 207, 255)
-// QColor(149, 91, 214, 255)
-// QColor(194, 81, 215, 255)
-// QColor(189, 77, 213, 255)
-// QColor(208, 64, 125, 255)
-// QColor(212, 66, 129, 255)
-// QColor(209, 69, 70, 255)
-// QColor(214, 62, 74, 255)
-// QColor(210, 120, 68, 255)
-// QColor(209, 121, 73, 255)
-// QColor(205, 178, 73, 255)
-// QColor(206, 176, 62, 255)
-// QColor(200, 210, 87, 255)
-// QColor(190, 211, 72, 255)
-// QColor(132, 213, 72, 255)
-// QColor(136, 205, 63, 255)
-// QColor(89, 201, 73, 255)
-// QColor(85, 198, 67, 255)
-// QColor(58, 212, 98, 255)
-// QColor(73, 202, 101, 255)
-
 // QColor(174, 138, 190, 255) //purple
 // QColor(188, 63, 60, 255) //dark red
 // QColor(158, 41, 39, 255) //bright red
@@ -130,4 +103,12 @@ QColor textColorForEventColor(uint8_t eventColor) {
     default:
       return Qt::black;
   }
+}
+
+wchar_t* qstringTowchar_t(QString text) {
+  wchar_t* cText = new wchar_t[text.length() + 1];
+  text.toWCharArray(cText);
+  cText[text.length()] = 0;
+
+  return cText;
 }

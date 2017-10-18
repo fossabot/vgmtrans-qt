@@ -3,27 +3,26 @@
 //
 
 #include "QtVGMRoot.h"
+#include "MusicPlayer.h"
 
 QtVGMRoot qtVGMRoot;
+MusicPlayer& musicPlayer = MusicPlayer::getInstance();
 
 QtVGMRoot::QtVGMRoot(void) {}
 
 QtVGMRoot::~QtVGMRoot(void) {}
 
-// void QtVGMRoot::Play(void)
-//{
-//
-//}
-//
+void QtVGMRoot::Play(const void* data, size_t len, const void* rawSF2) {
+  musicPlayer.LoadSF2(rawSF2);
+  musicPlayer.PlayMidi(data, len);
+}
+
 // void QtVGMRoot::Pause(void)
 //{
 //
 //}
-//
-// void QtVGMRoot::Stop(void)
-//{
-//
-//}
+
+void QtVGMRoot::Stop() { musicPlayer.StopMidi(); }
 
 void QtVGMRoot::UI_SetRootPtr(VGMRoot** theRoot) { *theRoot = &qtVGMRoot; }
 

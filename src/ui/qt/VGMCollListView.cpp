@@ -18,7 +18,7 @@ const int cellHeight = 20;
 // VGMCollListViewModel
 // ********************
 
-VGMCollListViewModel::VGMCollListViewModel(QObject* parent)
+VGMCollListViewModel::VGMCollListViewModel(QObject *parent)
     : QAbstractListModel(parent) {
   QObject::connect(&qtVGMRoot, SIGNAL(UI_AddedVGMColl()), this,
                    SLOT(changedVGMColls()));
@@ -26,11 +26,11 @@ VGMCollListViewModel::VGMCollListViewModel(QObject* parent)
                    SLOT(changedVGMColls()));
 }
 
-int VGMCollListViewModel::rowCount(const QModelIndex& parent) const {
+int VGMCollListViewModel::rowCount(const QModelIndex &parent) const {
   return qtVGMRoot.vVGMColl.size();
 }
 
-QVariant VGMCollListViewModel::data(const QModelIndex& index, int role) const {
+QVariant VGMCollListViewModel::data(const QModelIndex &index, int role) const {
   if (role == Qt::DisplayRole) {
     return QString::fromStdWString(*qtVGMRoot.vVGMColl[index.row()]->GetName());
   } else if (role == Qt::DecorationRole) {
@@ -47,42 +47,45 @@ void VGMCollListViewModel::changedVGMColls() {
 // VGMCollListView
 // ***************
 
-VGMCollListView::VGMCollListView(QWidget* parent) : QListView(parent) {
-  VGMCollListViewModel* vgmCollListViewModel = new VGMCollListViewModel(this);
+VGMCollListView::VGMCollListView(QWidget *parent) : QListView(parent) {
+  VGMCollListViewModel *vgmCollListViewModel = new VGMCollListViewModel(this);
   this->setModel(vgmCollListViewModel);
+  this->setResizeMode(QListView::Adjust);
   this->setSelectionMode(QAbstractItemView::SingleSelection);
   this->setGridSize(QSize(cellWidth, cellHeight));
   this->setWrapping(true);
-  //    this->setViewMode(QListView::IconMode);
-  //    this->setFlow(QListView::LeftToRight);
-  //    this->setSelectionRectVisible(true);
 }
 
-void VGMCollListView::keyPressEvent(QKeyEvent* e) {
-  // On a spacebar key press, play the selected collection
-  if (e->key() == Qt::Key_Space) {
-    QModelIndexList list = this->selectionModel()->selectedIndexes();
-    if (list.size() == 0 || list[0].row() >= qtVGMRoot.vVGMColl.size()) return;
+void VGMCollListView::keyPressEvent(QKeyEvent *e) {
+  e->accept();  // Stop event propagation
 
-    VGMColl* coll = qtVGMRoot.vVGMColl[list[0].row()];
-    VGMSeq* seq = coll->GetSeq();
-    SF2File* sf2 = coll->CreateSF2File();
-    MidiFile* midi = seq->ConvertToMidi();
+  QModelIndexList list = this->selectionModel()->selectedIndexes();
+  if (list.size() == 0 || list.at(0).row() >= qtVGMRoot.vVGMColl.size()) return;
 
-    std::vector<uint8_t> midiBuf;
-    midi->WriteMidiToBuffer(midiBuf);
+  switch (e->key()) {
+    case (Qt::Key_Space):  // Space = play collection
+    {
+      VGMColl *coll = qtVGMRoot.vVGMColl[list[0].row()];
+      VGMSeq *seq = coll->GetSeq();
+      SF2File *sf2 = coll->CreateSF2File();
+      MidiFile *midi = seq->ConvertToMidi();
 
-    const void* rawSF2 = sf2->SaveToMem();
+      std::vector<uint8_t> midiBuf;
+      midi->WriteMidiToBuffer(midiBuf);
 
-    qDebug() << "Gonna play us some music";
-    MusicPlayer& musicPlayer = MusicPlayer::getInstance();
+      const void *rawSF2 = sf2->SaveToMem();
 
-    musicPlayer.StopMidi();
-    musicPlayer.LoadSF2(rawSF2);
-    musicPlayer.PlayMidi(&midiBuf[0], midiBuf.size());
+      qDebug() << "Starting playback";
+      qtVGMRoot.Stop();
+      qtVGMRoot.Play(&midiBuf[0], midiBuf.size(), rawSF2);
 
-    delete[] rawSF2;
-    delete sf2;
-    delete midi;
+      break;
+    }
+
+    case (Qt::Key_Escape):  // Esc = stop playback
+    {
+      qtVGMRoot.Stop();
+      break;
+    }
   }
 }

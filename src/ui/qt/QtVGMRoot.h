@@ -13,6 +13,9 @@ class QtVGMRoot : public QObject, public VGMRoot {
   QtVGMRoot(void);
   virtual ~QtVGMRoot(void);
 
+  virtual void Play(const void* data, size_t len, const void* rawSF2);
+  virtual void Stop();
+
   virtual void UI_SetRootPtr(VGMRoot** theRoot);
   virtual void UI_PreExit();
   virtual void UI_Exit();

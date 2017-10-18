@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow {
   QListView *collListView;
 
  protected:
+  void openFile(QString path);
   void dragEnterEvent(QDragEnterEvent *event);
   void dragMoveEvent(QDragMoveEvent *event);
   void dropEvent(QDropEvent *event);

@@ -18,12 +18,16 @@ MusicPlayer::MusicPlayer() {
 
   fluid_sfloader_t* loader;
 
-  /* Change the settings if necessary*/
   fluid_settings_setstr(this->settings, "synth.reverb.active", "yes");
   fluid_settings_setstr(this->settings, "synth.chorus.active", "no");
   fluid_settings_setstr(this->settings, "synth.midi-bank-select", "mma");
   fluid_settings_setint(this->settings, "synth.midi-channels", 48);
   fluid_settings_setstr(this->settings, "player.timing-source", "system");
+
+/* Default to Pulseaudio on Linux */
+#ifdef __linux__
+  fluid_settings_setstr(this->settings, "audio.driver", "pulseaudio");
+#endif
 
   /* Create the synthesizer. */
   this->synth = new_fluid_synth(this->settings);
@@ -53,17 +57,6 @@ void MusicPlayer::Shutdown() {
   delete_fluid_player(this->player);
   delete_fluid_synth(this->synth);
   delete_fluid_settings(this->settings);
-}
-
-void MusicPlayer::LoadSF2(const void* data) {
-  if (this->sfont_id > 0 &&
-      fluid_synth_sfunload(this->synth, this->sfont_id, true) != 0) {
-    printf("Error unloading soundfont");
-  }
-
-  // Our memory sfont loader will treat the filename param as a pointer to the
-  // sf2 in memory. No other choice short of changing the fluidsynth code.
-  this->sfont_id = fluid_synth_sfload(this->synth, (const char*)data, 0);
 }
 
 int midi_event_callback(void* data, fluid_midi_event_t* event) {
@@ -98,4 +91,15 @@ void MusicPlayer::PlayMidi(const void* data, size_t len) {
                                        this->synth);
     vgmtrans_fluid_player_play(this->player);
   }
+}
+
+void MusicPlayer::LoadSF2(const void* data) {
+  if (this->sfont_id > 0 &&
+      fluid_synth_sfunload(this->synth, this->sfont_id, true) != 0) {
+    printf("Error unloading soundfont");
+  }
+
+  // Our memory sfont loader will treat the filename param as a pointer to the
+  // sf2 in memory. No other choice short of changing the fluidsynth code.
+  this->sfont_id = fluid_synth_sfload(this->synth, (const char*)data, 0);
 }
