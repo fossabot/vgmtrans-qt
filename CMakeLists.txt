@@ -43,9 +43,6 @@ else()
   # Stripping on OS X causes compilation to fail
   if(NOT APPLE)
     string(APPEND CMAKE_CXX_FLAGS_RELEASE " -s")
-    if(NOT WIN32) # FIXME: zlib doesn't link under MinGW...
-      string(APPEND CMAKE_CXX_FLAGS_RELEASE " -flto")
-    endif()
   endif()
 endif()
 

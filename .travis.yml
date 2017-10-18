@@ -5,7 +5,7 @@ language: generic
 
 matrix:
   include:
-    # Minimum required for C++14
+    # GCC5
     - os: linux
       addons:
         apt:
@@ -21,25 +21,27 @@ matrix:
         - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
         - sudo apt-get update -qq
         - sudo apt-get install qtbase5-dev
+    # LLVM4
     - os: linux
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-3.9
+            - llvm-toolchain-trusty-4.0
           packages:
-            - clang-3.9
+            - clang-4.0
             - libglib2.0-dev
             - libfluidsynth-dev
-      env: CC='clang' CXX='clang++'
+      env: CC='clang-4.0' CXX='clang++-4.0'
       before_install:
         - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
         - sudo apt-get update -qq
         - sudo apt-get install qtbase5-dev
+    # xcode7.3
     - os: osx
       before_install:
-        - brew update qt || brew install qt
-        - brew update fluid-synth || brew install fluid-synth
+        - brew upgrade qt || brew install qt
+        - brew upgrade fluid-synth || brew install fluid-synth
 
 install:
   # We need CMake >= 3.5.0
@@ -49,6 +51,7 @@ install:
       mkdir cmake-bin && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake-bin
       export PATH=${TRAVIS_BUILD_DIR}/cmake-bin/bin:${PATH}
     else
+      # For good measure, since Travis includes 3.6.2 anyway
       brew upgrade cmake || brew install cmake
     fi
 
@@ -56,7 +59,7 @@ script:
   - mkdir build
   - cd build
   - cmake ..
-  - make
+  - make -j$(nproc || sysctl -n hw.ncpu)
 
 branches:
   only:
