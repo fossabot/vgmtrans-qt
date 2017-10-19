@@ -65,6 +65,11 @@ if(WIN32)
   set(GUI_TYPE WIN32)
 endif()
 
+# Workaround to get CMake to find brew-installed Qt5
+if(APPLE AND EXISTS /usr/local/opt/qt5)
+  list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/qt5")
+endif()
+
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
     "${CMAKE_SOURCE_DIR}/contrib/${CMAKE_LIBRARY_ARCHITECTURE}")
 message(STATUS "PREFIX PATH: " ${CMAKE_PREFIX_PATH})
@@ -169,6 +174,9 @@ if(WIN32)
 endif()
 
 if(APPLE)
+  # Strip unreachable code
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-dead_strip,-dead_strip_dylibs")
+
   find_library(IOKIT_LIBRARY IOKit)
   find_library(APPKIT_LIBRARY AppKit)
   find_library(CARBON_LIBRARY Carbon)
