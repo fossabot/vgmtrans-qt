@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/vgmtrans/vgmtrans.svg?branch=master)](https://travis-ci.org/vgmtrans/vgmtrans)
 [![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/djsal74fdlue142s/branch/master?svg=true)](https://ci.appveyor.com/project/mikelow/vgmtrans)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsykhro%2Fvgmtrans-qt.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsykhro%2Fvgmtrans-qt?ref=badge_shield)
 
 VGMTrans - Video Game Music Translator
 ======================================
@@ -67,3 +68,7 @@ Contact
 If you enjoy the software, or have any questions please contact the development team.
 
 <https://github.com/vgmtrans/vgmtrans>
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsykhro%2Fvgmtrans-qt.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsykhro%2Fvgmtrans-qt?ref=badge_large)
